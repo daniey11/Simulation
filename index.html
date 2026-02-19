@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MedSim Synapse — Simulation curriculum</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=IBM+Plex+Mono:wght@300;400;500&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+</head>
+<body>
+
+  <header class="site-header">
+    <div class="header-inner">
+      <div class="logo-block">
+        <div class="logo-icon">
+          <svg viewBox="0 0 40 40" fill="none"><rect x="17" y="4" width="6" height="32" rx="3" fill="currentColor"/><rect x="4" y="17" width="32" height="6" rx="3" fill="currentColor"/></svg>
+        </div>
+        <div class="logo-text">
+          <span class="logo-main">MedSim Synapse</span>
+        </div>
+      </div>
+      <div class="header-status">
+        <span class="status-dot"></span>
+        <span class="status-text">SIMULATION ACTIVE</span>
+      </div>
+    </div>
+  </header>
+
+  <main id="app">
+
+    <!-- HOME -->
+    <div id="screen-home" class="screen active">
+      <div class="home-hero">
+        <div class="hero-eyebrow">
+          <span class="eyebrow-tag">Simulation curriculum</span>
+          <span class="eyebrow-author">Created by: Daniel Yang</span>
+        </div>
+        <h1 class="hero-title">Simulation Experiences</h1>
+        <p class="hero-desc">Three advanced ICU scenarios with live branching based on your clinical decisions. Each management choice drives a different patient trajectory.</p>
+        <div class="objectives-row">
+          <div class="obj-chip">Early recognition of clinical deterioration</div>
+          <div class="obj-chip">Time critical decision making</div>
+          <div class="obj-chip">Shock physiology differentiation</div>
+          <div class="obj-chip">Hemodynamic optimization</div>
+          <div class="obj-chip">Pressor selection</div>
+          <div class="obj-chip">Respiratory failure management</div>
+          <div class="obj-chip">Ventilator strategy selection</div>
+        </div>
+      </div>
+      <div class="module-grid">
+        <!-- Critical Care — ACTIVE -->
+        <div class="module-card module-card--active" data-module="critical" tabindex="0" role="button">
+          <div class="module-bg critical-bg"></div>
+          <div class="module-content">
+            <div class="module-icon-wrap"><svg viewBox="0 0 60 60" fill="none"><rect x="4" y="20" width="52" height="30" rx="4" stroke="currentColor" stroke-width="2"/><path d="M10 37L18 37L22 29L26 45L30 35L34 37L50 37" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><rect x="18" y="8" width="24" height="12" rx="2" stroke="currentColor" stroke-width="2"/><path d="M26 8V4M34 8V4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></div>
+            <div class="module-tag-text">MODULE 01 · ACTIVE</div>
+            <h2 class="module-title">Critical Care<br/>Simulation</h2>
+            <p class="module-desc-text">Three ICU scenarios that manage critical care situations. Your orders determine what happens next.</p>
+            <div class="module-meta-row"><span>3 Cases</span><span class="dot">·</span><span>Advanced · Simulation</span></div>
+            <div class="module-launch">Launch <span>→</span></div>
+          </div>
+        </div>
+        <!-- Sepsis — LOCKED -->
+        <div class="module-card module-card--locked" tabindex="-1">
+          <div class="module-bg sepsis-bg"></div>
+          <div class="lock-overlay">
+            <svg viewBox="0 0 32 32" fill="none" width="40" height="40"><rect x="6" y="14" width="20" height="14" rx="3" stroke="currentColor" stroke-width="2"/><path d="M10 14V10a6 6 0 0112 0v4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="16" cy="21" r="2" fill="currentColor"/></svg>
+            <span class="lock-label">In Development</span>
+            <span class="lock-sub">Sepsis module coming soon</span>
+          </div>
+          <div class="module-content module-content--dim">
+            <div class="module-tag-text">MODULE 02 · COMING SOON</div>
+            <h2 class="module-title">Sepsis<br/>Simulation</h2>
+            <p class="module-desc-text">Community-acquired pneumonia sepsis, urosepsis, and intra-abdominal septic shock.</p>
+            <div class="module-meta-row"><span>3 Cases</span><span class="dot">·</span><span>Intermediate–Advanced</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CASE SELECTION -->
+    <div id="screen-cases" class="screen">
+      <div class="screen-nav">
+        <button class="back-btn" id="back-to-home">← Modules</button>
+        <div class="breadcrumb"><span>Critical Care</span><span class="bc-sep">/</span><span>Select Case</span></div>
+      </div>
+      <div class="cases-header">
+        <div class="cases-eyebrow">CRITICAL CARE SIMULATION · Simulation</div>
+        <h2 class="cases-title">Choose a Scenario</h2>
+        <p class="cases-sub">Your management decisions create different patient responses. There are multiple possible pathways through each case.</p>
+      </div>
+      <div class="cases-grid" id="cases-grid"></div>
+    </div>
+
+    <!-- SIMULATION -->
+    <div id="screen-sim" class="screen">
+      <div class="screen-nav">
+        <button class="back-btn" id="back-to-cases">← Cases</button>
+        <div class="breadcrumb"><span>Critical Care</span><span class="bc-sep">/</span><span id="sim-case-label">Case</span></div>
+        <div class="phase-track" id="phase-track"></div>
+      </div>
+      <div id="sim-content"></div>
+    </div>
+
+  </main>
+
+  <!-- MODAL: RN / SYSTEM FEEDBACK -->
+  <div id="modal-rn" class="modal-overlay" hidden>
+    <div class="modal-box modal-sm">
+      <div class="modal-head">
+        <div><span class="modal-tag" id="rn-tag">RN MESSAGE</span><h3 class="modal-title" id="rn-title">Update</h3></div>
+        <button class="modal-x" id="close-rn">✕</button>
+      </div>
+      <div class="modal-body" id="rn-body"></div>
+      <div class="modal-foot"><button class="btn btn--primary" id="rn-ok">Acknowledged</button></div>
+    </div>
+  </div>
+
+  <!-- MODAL: BRANCH FEEDBACK -->
+  <div id="modal-branch" class="modal-overlay" hidden>
+    <div class="modal-box modal-sm">
+      <div class="modal-head">
+        <div><span class="modal-tag" id="branch-tag">PATIENT RESPONSE</span><h3 class="modal-title" id="branch-title">Result</h3></div>
+        <button class="modal-x" id="close-branch">✕</button>
+      </div>
+      <div class="modal-body" id="branch-body"></div>
+      <div class="modal-foot"><button class="btn btn--primary" id="branch-ok">Continue</button></div>
+    </div>
+  </div>
+
+  <!-- MODAL: POCUS VIDEO -->
+  <div id="modal-pocus" class="modal-overlay" hidden>
+    <div class="modal-box modal-lg">
+      <div class="modal-head">
+        <div><span class="modal-tag">BEDSIDE ULTRASOUND</span><h3 class="modal-title">POCUS — Point-of-Care Ultrasound</h3></div>
+        <button class="modal-x" id="close-pocus">✕</button>
+      </div>
+      <div class="modal-body" style="padding:0;">
+        <div class="pocus-video-grid">
+          <div class="pocus-video-item">
+            <video id="pocus-video" class="pocus-video" autoplay loop muted playsinline>
+              <source src="pocus-loop.mov" type="video/quicktime">
+              <source src="pocus-loop.mp4" type="video/mp4">
+              Your browser does not support the video tag.
+            </video>
+            <div class="pocus-video-label">Cardiac View</div>
+          </div>
+          <div class="pocus-video-item">
+            <video id="pocus-video-ivc" class="pocus-video" autoplay loop muted playsinline>
+              <source src="POCUS-IVC-loop.mov" type="video/quicktime">
+              <source src="POCUS-IVC-loop.mp4" type="video/mp4">
+              Your browser does not support the video tag.
+            </video>
+            <div class="pocus-video-label">IVC View</div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-foot"><button class="btn btn--primary" id="pocus-ok">Close</button></div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
