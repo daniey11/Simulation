@@ -790,3 +790,41 @@ body::after {
     grid-template-columns: 1fr;
   }
 }
+
+/* ===================================================================
+   TREATMENT SECTION STYLING
+   =================================================================== */
+.treatment-container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.treatment-item {
+  background: var(--bg-2);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  padding: 12px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.treatment-name {
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: var(--text);
+}
+
+.treatment-status {
+  font-size: 0.875rem;
+  color: var(--cyan);
+  font-weight: 500;
+}
+
+.treatment-detail {
+  font-size: 0.8125rem;
+  color: var(--text-dim);
+  line-height: 1.4;
+  margin-top: 2px;
+}

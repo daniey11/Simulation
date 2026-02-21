@@ -68,21 +68,15 @@ const CASES = [
     decision1: {
       title: 'Initial Resuscitation Decision',
       prompt: 'What is your initial management? Enter your orders below.',
-      placeholder: `Order your initial resuscitation...
-e.g.:
-• Labs: Lactate, CBC, BMP, Blood cultures
-• Oxygen: 15L NRB, High-flow nasal cannula
-• IV fluids — type, volume, rate
-• Antibiotics — which agents?
-• Vasopressor — which one? at what dose?
-• Consults: MICU, Infectious Disease`,
+      placeholder: `Order your initial management...
+e.g.: Lactate, CBC, CMP, cultures, oxygen, etc.`,
       // Branching logic: evaluate keywords in order text
       branches: [
         {
           id: 'good-resus-with-pressor-and-micu',
           label: '✓ COMPLETE INITIAL MANAGEMENT',
           type: 'good',
-          triggers: ['2l','2000','2400','2460','2500','2600','3l','3000','30 ml/kg','30 cc/kg','30ml/kg','30cc/kg','norepi','norepinephrine','levophed','pressor','micu','icu','critical care','consult'],
+          triggers: ['2l','2000','2400','2460','2500','2600','2.5','2.6','2.5l','2.6l','3l','3000','30 ml/kg','30 cc/kg','30ml/kg','30cc/kg','norepi','norepinephrine','levophed','pressor','micu','icu','critical care','consult'],
           requires: 3, // Need fluids + pressor + MICU
           excludes: ['4l','4000','5l','5000','6l','6000','40 ml/kg','50 ml/kg'], // Exclude excessive fluids
           headline: 'Comprehensive shock management with MICU consultation',
@@ -186,7 +180,7 @@ e.g.:
           type: 'warning',
           triggers: ['500','1l','1000','1500','fluid','bolus','saline','lactated','albumin'],
           requires: 1,
-          excludes: ['2l','2000','2400','2460','2500','2600','3l','3000','30 ml/kg','30 cc/kg','30ml/kg','30cc/kg','4l','4000','5l','5000','6l','6000','40 ml/kg','50 ml/kg'],
+          excludes: ['2l','2000','2400','2460','2500','2600','2.5','2.6','2.5l','2.6l','3l','3000','30 ml/kg','30 cc/kg','30ml/kg','30cc/kg','4l','4000','5l','5000','6l','6000','40 ml/kg','50 ml/kg'],
           headline: 'Fluid resuscitation inadequate',
           narrative: `You ordered IV fluids, but the volume appears insufficient. The patient's hemodynamic response is suboptimal.`,
           showVitalsButton: true,
@@ -323,11 +317,7 @@ e.g.:
       ],
       prompt: 'The patient remains in shock. What additional interventions are needed?',
       placeholder: `Address missing components...
-e.g.:
-• Additional fluid: If initial volume was insufficient
-• Vasopressor: Norepinephrine if MAP <65 mm Hg despite fluids
-• MICU consultation: If not yet called
-• Source control: Antibiotics, imaging as needed`,
+e.g.: Additional interventions, medications, consults, etc.`,
       branches: [
         {
           id: 'rescue-complete',
@@ -464,12 +454,7 @@ e.g.:
       title: 'Vasopressor Escalation — MICU Management',
       prompt: 'The patient remains on norepinephrine. Current dose is trending up to 12 mcg/min and MAP is marginal at 62-64 mm Hg. What is your next step?',
       placeholder: `Enter escalation plan...
-e.g.:
-• Vasopressin 0.03-0.04 units/min (add when norepi >10 mcg/min)
-• Hydrocortisone 50 mg IV q6h OR 100 mg IV q8h
-• Central line, arterial line placement
-• Additional labs: Repeat lactate, cortisol level
-• Sedation if intubation needed`,
+e.g.: Additional medications, procedures, labs, etc.`,
       branches: [
         {
           id: 'vasopressin-and-steroids',
@@ -669,12 +654,7 @@ e.g.:
       title: 'Initial Stabilization',
       prompt: 'The patient is hemodynamically unstable. What are your immediate orders?',
       placeholder: `Enter initial management orders...
-e.g.:
-• Oxygen: Escalate to NRB 15L
-• Vasopressor: Norepinephrine (avoid large fluid bolus!)
-• Anticoagulation: Heparin bolus + infusion
-• Imaging: POCUS already done, LE Doppler
-• Consults: PERT team, MICU, Cardiology`,
+e.g.: Labs, imaging, oxygen, medications, consults, etc.`,
       branches: [
         {
           id: 'pe-complete',
@@ -906,12 +886,7 @@ e.g.:
       title: 'PERT Conference — Treatment Strategy Decision',
       prompt: 'PERT team has assembled: Interventional Radiology, Pulmonary/Critical Care, Cardiology, and Primary Medicine. Patient remains on norepinephrine 12 mcg/min with MAP 58 mm Hg. The team is discussing treatment options. What is your recommendation?',
       placeholder: `Enter your treatment recommendation...
-e.g.:
-• Systemic thrombolysis: Alteplase 100 mg IV over 2 hrs
-• Catheter-directed therapy: IR to perform thrombectomy
-• Medical management: Anticoagulation only
-• Explain rationale and contraindication assessment
-• Monitoring plan during intervention`,
+e.g.: Treatment strategy, rationale, monitoring plan, etc.`,
       branches: [
         {
           id: 'pert-systemic-tpa',
@@ -1079,14 +1054,9 @@ e.g.:
 
     decision1: {
       title: 'Acute Respiratory Failure Management',
-      prompt: 'SpO₂ 84% on max HFNC 60L, patient tiring with accessory muscle use. P/F ratio ~58 (severe hypoxemic respiratory failure). What is your immediate management?',
-      placeholder: `Enter your airway and intubation plan...
-e.g.:
-• Intubation: RSI with ketamine + rocuronium
-• Pre-oxygenation: HFNC flush + NRB + apneic O2
-• Vent settings: VT 6 mL/kg PBW, PEEP, FiO2
-• Sedation: Fentanyl + propofol infusions
-• Respiratory therapy at bedside for vent management`,
+      prompt: 'SpO₂ 84% on max HFNC 60L, patient tiring with accessory muscle use. What is your immediate management?',
+      placeholder: `Enter your management plan...
+e.g.: Airway, medications, ventilation, etc.`,
       branches: [
         {
           id: 'ards-complete-intubation',
@@ -1104,12 +1074,16 @@ e.g.:
           Intubation successful on first attempt. ETT 7.5 at 21 cm at lip.`,
           showVitalsButton: true,
           nextVitals: [
+            { lbl: 'HR',    val: '105',       unit: 'bpm',      st: 'va' },
+            { lbl: 'BP',    val: '92/54',     unit: 'mm Hg',    st: 'va' },
+            { lbl: 'SpO2',  val: '94%',       unit: '',         st: 'vw' },
+            { lbl: 'Temp',  val: '38.5',      unit: '°C',       st: 'va' },
+            { lbl: 'GCS',   val: '13/15',     unit: '',         st: 'va' },
             { lbl: 'Mode',  val: 'AC/VC',     unit: '',         st: 'vn' },
             { lbl: 'VT',    val: '330 mL',    unit: '6 mL/kg',  st: 'vn' },
             { lbl: 'RR',    val: '20',        unit: 'set',      st: 'vn' },
             { lbl: 'PEEP',  val: '10',        unit: 'cm H2O',   st: 'vn' },
             { lbl: 'FiO2',  val: '80%',       unit: '',         st: 'vw' },
-            { lbl: 'SpO2',  val: '90%',       unit: '',         st: 'vw' },
             { lbl: 'Pplat', val: '28',        unit: 'cm H2O',   st: 'vn' },
           ],
           vitalsMsg: `Patient is intubated and on lung-protective ventilation. SpO₂ 90% on FiO₂ 80%, PEEP 10. Plateau pressure 28 cm H₂O (acceptable).<br/><br/>MICU attending: <em>"Excellent intubation and vent settings. This is severe ARDS from influenza. We'll need to optimize PEEP, consider prone positioning, and manage sedation carefully."</em>`,
@@ -1195,7 +1169,7 @@ e.g.:
           id: 'ards-simple-intubation',
           label: '✓ INTUBATION ORDERED',
           type: 'good',
-          triggers: ['intubat','intubation','secure airway','ett'],
+          triggers: ['intubat','secure airway','ett'],
           requires: 1,
           excludes: ['bipap','cpap','niv','continue hfnc','increase oxygen','nrb'],
           headline: 'Appropriate decision to intubate',
@@ -1207,12 +1181,16 @@ e.g.:
           • Post-intubation sedation plan`,
           showVitalsButton: true,
           nextVitals: [
+            { lbl: 'HR',    val: '105',       unit: 'bpm',      st: 'va' },
+            { lbl: 'BP',    val: '92/54',     unit: 'mm Hg',    st: 'va' },
+            { lbl: 'SpO2',  val: '94%',       unit: '',         st: 'vw' },
+            { lbl: 'Temp',  val: '38.5',      unit: '°C',       st: 'va' },
+            { lbl: 'GCS',   val: '13/15',     unit: '',         st: 'va' },
             { lbl: 'Mode',  val: 'AC/VC',     unit: '',         st: 'vn' },
             { lbl: 'VT',    val: '330 mL',    unit: '6 mL/kg',  st: 'vn' },
             { lbl: 'RR',    val: '20',        unit: 'set',      st: 'vn' },
             { lbl: 'PEEP',  val: '10',        unit: 'cm H2O',   st: 'vn' },
             { lbl: 'FiO2',  val: '80%',       unit: '',         st: 'vw' },
-            { lbl: 'SpO2',  val: '90%',       unit: '',         st: 'vw' },
           ],
           vitalsMsg: `Patient successfully intubated. RT has initiated lung-protective ventilation settings. SpO₂ improved to 90%.`,
           nextDecision: 'decision2'
@@ -1333,7 +1311,7 @@ You must specify EXACT numbers:
           id: 'vent-correct-rr-increase',
           label: '✓ APPROPRIATE VENTILATOR ADJUSTMENT',
           type: 'good',
-          triggers: ['rr 24','rr 25','rr 26','rr 27','rr 28','rr 29','rr 30','respiratory rate 24','respiratory rate 25','respiratory rate 26','respiratory rate 27','respiratory rate 28','increase rr','raise rr','peep 14','peep 15','peep 16'],
+          triggers: ['rr 24','rr 25','rr 26','rr 27','rr 28','rr 29','rr 30','rr to 24','rr to 25','rr to 26','rr to 27','rr to 28','rr to 29','rr to 30','respiratory rate 24','respiratory rate 25','respiratory rate 26','respiratory rate 27','respiratory rate 28','respiratory rate to 24','respiratory rate to 25','respiratory rate to 26','respiratory rate to 27','respiratory rate to 28','increase rr','raise rr','higher rr','peep 14','peep 15','peep 16','peep to 14','peep to 15','peep to 16','increase peep','raise peep','higher peep'],
           requires: 2, // Need RR increase AND PEEP increase
           headline: 'Correct ABG-driven ventilator management',
           narrative: `<strong>Your ventilator orders:</strong><br/>
@@ -1354,9 +1332,9 @@ You must specify EXACT numbers:
           id: 'vent-rr-only',
           label: '✓ RR INCREASED BUT PEEP NOT OPTIMIZED',
           type: 'good',
-          triggers: ['rr 24','rr 25','rr 26','rr 27','rr 28','rr 29','rr 30','respiratory rate 24','respiratory rate 25','respiratory rate 26','respiratory rate 27','respiratory rate 28','increase rr','raise rr'],
+          triggers: ['rr 24','rr 25','rr 26','rr 27','rr 28','rr 29','rr 30','rr to 24','rr to 25','rr to 26','rr to 27','rr to 28','rr to 29','rr to 30','respiratory rate 24','respiratory rate 25','respiratory rate 26','respiratory rate 27','respiratory rate 28','respiratory rate to 24','respiratory rate to 25','respiratory rate to 26','respiratory rate to 27','respiratory rate to 28','increase rr','raise rr','higher rr'],
           requires: 1,
-          excludes: ['peep 14','peep 15','peep 16','increase peep','raise peep'],
+          excludes: ['peep 14','peep 15','peep 16','peep to 14','peep to 15','peep to 16','increase peep','raise peep','higher peep'],
           headline: 'Ventilation addressed but oxygenation not optimized',
           narrative: `<strong>Your ventilator orders:</strong><br/>
           • RR: <span class="hl">Increased to 26</span> — addresses respiratory acidosis, good<br/>
@@ -1369,6 +1347,26 @@ You must specify EXACT numbers:
           endState: 'good',
           endMsg: 'Good ventilation management. Remember to also optimize PEEP using ARDSnet FiO₂/PEEP table for oxygenation in severe ARDS.',
           decisions: ['Ordered ABG appropriately', 'Increased RR to target pH >7.20', 'Maintained lung-protective VT', 'Should have increased PEEP for oxygenation']
+        },
+        {
+          id: 'vent-peep-only',
+          label: '✓ PEEP INCREASED BUT RR NOT ADJUSTED',
+          type: 'good',
+          triggers: ['peep 14','peep 15','peep 16','peep to 14','peep to 15','peep to 16','increase peep','raise peep','higher peep'],
+          requires: 1,
+          excludes: ['rr 24','rr 25','rr 26','rr 27','rr 28','rr 29','rr 30','rr to 24','rr to 25','rr to 26','rr to 27','rr to 28','rr to 29','rr to 30','respiratory rate to 24','respiratory rate to 25','respiratory rate to 26','respiratory rate to 27','respiratory rate to 28','increase rr','raise rr','higher rr'],
+          headline: 'Oxygenation addressed but ventilation not optimized',
+          narrative: `<strong>Your ventilator orders:</strong><br/>
+          • PEEP: <span class="hl">Increased to 14-16</span> — addresses oxygenation per ARDSnet table, good<br/>
+          • VT: Kept at 330 mL — correct lung-protective strategy<br/>
+          • RR: Kept at 20 — <span class="hl">missed opportunity to address respiratory acidosis</span><br/><br/>
+          <strong>Repeat ABG:</strong> pH 7.18, PaCO₂ 68, PaO₂ 72, HCO₃ 24<br/>
+          Oxygenation improved (PaO₂ from 58 to 72) but acidosis persists (pH still 7.18).<br/><br/>
+          RT: <em>"The oxygenation is better, but the patient's pH is still 7.18 with PaCO₂ 68. We need to increase respiratory rate to improve ventilation and get the pH above 7.20."</em>`,
+          nextDecision: null,
+          endState: 'good',
+          endMsg: 'Good PEEP optimization. Remember to also address respiratory acidosis by increasing RR when pH <7.20.',
+          decisions: ['Ordered ABG appropriately', 'Optimized PEEP per ARDSnet table', 'Maintained lung-protective VT', 'Should have increased RR to target pH >7.20']
         },
         {
           id: 'vent-increase-vt-wrong',
@@ -1468,6 +1466,11 @@ const State = {
   recognizedOrders: [], // track what was ordered for bedside reassessment
   unlockedResults: new Set(), // track which results have been unlocked
   allOrdersEverOrdered: new Set(), // track every order type ever ordered across all decisions
+  currentOxygenDevice: null, // track oxygen delivery device ordered
+  intubationMeds: null, // track intubation medications
+  ventilatorSettings: null, // track ventilator settings
+  attendingCorrectedVentilator: false, // track if attending corrected vent settings
+  triedHFNC: false, // track if HFNC was tried before intubation
 
   reset() {
     this.caseData = null;
@@ -1477,6 +1480,11 @@ const State = {
     this.recognizedOrders = [];
     this.unlockedResults = new Set();
     this.allOrdersEverOrdered = new Set();
+    this.currentOxygenDevice = null;
+    this.intubationMeds = null;
+    this.ventilatorSettings = null;
+    this.attendingCorrectedVentilator = false;
+    this.triedHFNC = false;
   }
 };
 
@@ -1771,7 +1779,7 @@ const ORDER_CATEGORIES = {
       /\bnon.?rebreather\b/, /\bnrb\b/, /\bmask\b/,
       /\bhigh.?flow\b/, /\bhfnc\b/, /\boptiflow\b/,
       /\bbipap\b/, /\bcpap\b/, /\bniv\b/, /\bnippv\b/,
-      /\bintubat\b/, /\bendotracheal\b/, /\bett\b/,
+      /\bintubat(e|ed|ion|ing)?\b/, /\bendotracheal\b/, /\bett\b/, /\brsi\b/,
       /\bventilat\b/, /\bmechanical vent\b/,
       /\bnebs?\b/, /\bnebulizer\b/, /\balbuterol\b/, /\bipratropium\b/,
       /\bchest tube\b/, /\bthoracostomy\b/, /\bpigtail\b/,
@@ -1801,7 +1809,7 @@ const ORDER_CATEGORIES = {
     typeClass: 'rct-med',
     patterns: [
       // vasopressors
-      /\bnorepinephrine\b/, /\bnorepi\b/,
+      /\bnorepinephrine\b/, /\bnorepi\b/, /\blevophed\b/,
       /\bvasopressin\b/, /\bvaso\b(?!pressor)/,
       /\bepinephrine\b/, /\bepi\b(?![\w])/,
       /\bdopamine\b/,
@@ -1945,9 +1953,7 @@ function getCaseResultCatalog(caseId) {
               <div class="result-card-name">12-Lead ECG</div>
               <div class="result-rows">
                 <div class="result-row"><div class="result-lbl">Rate</div><div class="result-val"><span class="result-num">128</span> <span class="result-unit">bpm</span></div></div>
-                <div class="result-row"><div class="result-lbl">Rhythm</div><div class="result-val"><span class="result-num">Sinus tachycardia</span></div></div>
               </div>
-              <div class="result-interp">${findings[cId] || 'Sinus tachycardia.'}</div>
               <div style="margin-top:12px;">
                 <img src="PE_EKG.png" alt="EKG showing PE pattern" style="width:100%; border-radius:4px; border:1px solid var(--border);">
               </div>
@@ -2028,7 +2034,7 @@ function getCaseResultCatalog(caseId) {
           {lbl:'Type',val:'Albumin (colloid)',unit:'',ref:'',cls:'rv-a'},
         ],'<strong>⚠ Teaching Point:</strong> Albumin was ordered as fluid resuscitation. However, the Surviving Sepsis Campaign guidelines recommend <span class="hl">crystalloids (NS, LR) as first-line</span> for initial resuscitation in septic shock, NOT colloids like albumin.<br/><br/><strong>Evidence:</strong> The SAFE trial showed no mortality benefit of albumin over crystalloids in sepsis, and albumin is significantly more expensive. Crystalloids remain the standard of care for initial fluid resuscitation.<br/><br/><strong>Appropriate use of albumin:</strong> Patients requiring large volumes of crystalloid (>4L), severe hypoalbuminemia, or as rescue therapy — but NOT as first-line fluid.') },
       // MEDS
-      { id:'norepi', cat:'med', triggers:[/\bnorepinephrine\b/,/\bnorepi\b/,/\blevophed\b/],
+      { id:'norepi', cat:'med', triggers:[/\bnorepinephrine\b/,/\bnorepi\b/,/\blevophed\b/,/\blevo\b/],
         card: () => resultCard('med','Vasopressor','Norepinephrine',[
           {lbl:'Status',    val:'Infusing',unit:'',ref:'',cls:'rv-ok'},
           {lbl:'Start dose',val:'4-8',    unit:'mcg/min',ref:'Titrate to MAP ≥65',cls:'rv-ok'},
@@ -2050,7 +2056,7 @@ function getCaseResultCatalog(caseId) {
           {lbl:'Status',val:'Ordered',unit:'',ref:'',cls:'rv-ok'},
           {lbl:'Dose',  val:'1g',     unit:'IV q12h (renal-adjusted)',ref:'',cls:'rv-a'},
         ],'Cefepime ordered. Renal-adjusted dose given AKI. Broad-spectrum coverage including Pseudomonas.') },
-      { id:'duoneb', cat:'med', triggers:[/\bduoneb\b/,/\balbuterol\b/,/\bnebulizer\b/,/\bneb\b(?! )/,/\bbronchodilator\b/,/\bipratropium\b/],
+      { id:'duoneb', cat:'med', triggers:[/\bduoneb\b/,/\balbuterol\b/,/\bnebulizer\b/,/\bbronchodilator\b/,/\bipratropium\b/],
         card: () => resultCard('med','Bronchodilator','Albuterol Nebulizer',[
           {lbl:'Status',val:'Ordered',unit:'',ref:'',cls:'rv-ok'},
           {lbl:'Dose',  val:'2.5-5 mg',unit:'via nebulizer',ref:'',cls:'rv-ok'},
@@ -2147,12 +2153,12 @@ function getCaseResultCatalog(caseId) {
           {lbl:'Status',val:'Ordered',unit:'',ref:'',cls:'rv-a'},
           {lbl:'Type',val:'Albumin (colloid)',unit:'',ref:'',cls:'rv-a'},
         ],'<strong>⚠ Inappropriate in obstructive shock:</strong> Albumin (and all colloids) increase oncotic pressure and worsen RV overload in PE/RV failure. In obstructive shock, fluid resuscitation itself is controversial — and colloids are contraindicated.<br/><br/><strong>Correct approach:</strong> Minimal crystalloid (250-500 mL) only if preload-responsive, prefer vasopressors to maintain SVR.') },
-      { id:'norepi', cat:'med', triggers:[/\bnorepinephrine\b/,/\bnorepi\b/,/\blevophed\b/],
+      { id:'norepi', cat:'med', triggers:[/\bnorepinephrine\b/,/\bnorepi\b/,/\blevophed\b/,/\blevo\b/],
         card: () => resultCard('med','Vasopressor','Norepinephrine',[
           {lbl:'Status',val:'Infusing',unit:'',ref:'',cls:'rv-ok'},
           {lbl:'Dose',  val:'8-12',unit:'mcg/min',ref:'Titrate to MAP ≥65',cls:'rv-ok'},
         ],'Norepinephrine maintains SVR and supports MAP without worsening tachycardia. First-line vasopressor in obstructive shock from PE. Does not fix the cause — definitive therapy required.') },
-      { id:'heparin', cat:'med', triggers:[/\bheparin\b/,/\bunfractionated heparin\b/,/\biv heparin\b/,/\bheparin infusion\b/,/\buah\b/],
+      { id:'heparin', cat:'med', triggers:[/\bheparin\b/,/\bunfractionated heparin\b/,/\biv heparin\b/,/\bheparin infusion\b/,/\buah\b/,/\banticoag/,/\blovenox\b/,/\benoxaparin\b/,/\blmwh\b/],
         card: () => resultCard('med','Anticoagulant','Heparin Infusion',[
           {lbl:'Status',val:'Ordered',unit:'',ref:'',cls:'rv-ok'},
           {lbl:'Bolus', val:'80 units/kg',unit:'IV (weight-based)',ref:'',cls:'rv-ok'},
@@ -2166,7 +2172,7 @@ function getCaseResultCatalog(caseId) {
           {lbl:'Heparin',val:'HOLD',   unit:'during infusion',ref:'',cls:'rv-c'},
           {lbl:'Status', val:'Administering',unit:'',ref:'',cls:'rv-ok'},
         ],'Alteplase 100 mg IV over 2 hours initiated. Standard dose for massive PE. Monitor for bleeding (BP checks q15min, neuro checks). Contraindications reviewed — none identified. Heparin held during infusion. Resume heparin when aPTT <80 (2× ULN) after infusion complete.') },
-      { id:'duoneb', cat:'med', triggers:[/\bduoneb\b/,/\balbuterol\b/,/\bnebulizer\b/,/\bneb\b(?! )/,/\bbronchodilator\b/,/\bipratropium\b/],
+      { id:'duoneb', cat:'med', triggers:[/\bduoneb\b/,/\balbuterol\b/,/\bnebulizer\b/,/\bbronchodilator\b/,/\bipratropium\b/],
         card: () => resultCard('med','Bronchodilator','Albuterol Nebulizer',[
           {lbl:'Status',val:'Ordered',unit:'',ref:'',cls:'rv-ok'},
           {lbl:'Dose',  val:'2.5-5 mg',unit:'via nebulizer',ref:'',cls:'rv-ok'},
@@ -2270,7 +2276,7 @@ function getCaseResultCatalog(caseId) {
           {lbl:'NRB overlay',val:'Applied',unit:'15L during prep',ref:'',cls:'rv-ok'},
           {lbl:'Apneic O₂',  val:'Plan in place',unit:'maintain HFNC during laryngoscopy',ref:'',cls:'rv-ok'},
         ],'Optimal pre-oxygenation strategy in place. HFNC flush provides FiO₂ approaching 1.0. Leave cannula in during laryngoscopy for apneic oxygenation — this extends safe apneic time significantly in obese patients.') },
-      { id:'vent', cat:'med', triggers:[/\bvent\b/,/\bventilat\b/,/\bintubate\b/,/\bintubation\b/,/\bendotracheal\b/,/\bett\b/,/\blung protect\b/,/\bardsnet\b/,/\bpeep\b/,/\btidal vol\b/],
+      { id:'vent', cat:'procedure', triggers:[/\bvent\b/,/\bventilat\b/,/\bintubate\b/,/\bintubation\b/,/\bendotracheal\b/,/\bett\b/,/\blung protect\b/,/\bardsnet\b/,/\bpeep\b/,/\btidal vol\b/],
         card: () => resultCard('med','Ventilator','Post-Intubation Vent Setup',[
           {lbl:'Mode',  val:'Volume Control (AC)',unit:'',ref:'',cls:'rv-ok'},
           {lbl:'VT',    val:'6 mL/kg × PBW',unit:'PBW = 45.5+2.3×(ht"-60)',ref:'NOT actual wt',cls:'rv-ok'},
@@ -2299,7 +2305,31 @@ function getCaseResultCatalog(caseId) {
           {lbl:'Dose',  val:'75 mg',unit:'PO/NG BID × 5 days',ref:'',cls:'rv-ok'},
           {lbl:'Note',  val:'Consider extended course',unit:'in ICU patients',ref:'',cls:'rv-a'},
         ],'Oseltamivir initiated for confirmed influenza A. May reduce duration/severity even when started late in severe cases. Continue throughout ICU stay.') },
-      { id:'duoneb', cat:'med', triggers:[/\bduoneb\b/,/\balbuterol\b/,/\bnebulizer\b/,/\bneb\b(?! )/,/\bbronchodilator\b/,/\bipratropium\b/],
+      { id:'increase-peep', cat:'procedure', triggers:[/\bincrease.*peep\b/i,/\bpeep.*\d+/i,/\bpeep to \d+/i,/\braise peep\b/i,/\bhigher peep\b/i,/\bup.*peep\b/i,/\bpeep.*up\b/i],
+        card: (raw) => resultCard('procedure','Ventilator Adjustment','PEEP Increase',[
+          {lbl:'Order',val:'Increase PEEP',unit:'',ref:'',cls:'rv-ok'},
+          {lbl:'Current',val:'10 cm H₂O',unit:'',ref:'',cls:'rv-ok'},
+          {lbl:'Note',val:'RT will titrate',unit:'per protocol',ref:'',cls:'rv-ok'},
+        ],'PEEP adjustment ordered. RT will increase PEEP in 2-3 cm H₂O increments while monitoring plateau pressure (<30 cm H₂O target), SpO₂, and hemodynamics. Higher PEEP in ARDS can improve oxygenation and recruit collapsed alveoli.') },
+      { id:'increase-rr', cat:'procedure', triggers:[/\bincrease.*r\.?r\.?\b/i,/\bincrease.*respiratory rate\b/i,/\bincrease.*rate\b/i,/\br\.?r\.? to \d+/i,/\brate to \d+/i,/\braise.*rate\b/i,/\bhigher.*rate\b/i,/\bventilator rate\b/i],
+        card: (raw) => resultCard('procedure','Ventilator Adjustment','Respiratory Rate Increase',[
+          {lbl:'Order',val:'Increase respiratory rate',unit:'',ref:'',cls:'rv-ok'},
+          {lbl:'Current',val:'20 breaths/min',unit:'',ref:'',cls:'rv-ok'},
+          {lbl:'Note',val:'RT will adjust',unit:'monitor minute ventilation',ref:'',cls:'rv-ok'},
+        ],'Respiratory rate adjustment ordered. RT will increase rate while monitoring minute ventilation, tidal volume, and arterial blood gases. In ARDS, higher RR may be needed to achieve adequate minute ventilation with lung-protective tidal volumes.') },
+      { id:'decrease-fio2', cat:'procedure', triggers:[/\bdecrease.*fio2\b/i,/\blower.*fio2\b/i,/\bwean.*fio2\b/i,/\btitrate.*fio2\b/i,/\bfio2.*down\b/i,/\breduce.*fio2\b/i],
+        card: (raw) => resultCard('procedure','Ventilator Adjustment','FiO₂ Weaning',[
+          {lbl:'Order',val:'Wean FiO₂',unit:'',ref:'',cls:'rv-ok'},
+          {lbl:'Current',val:'80%',unit:'',ref:'',cls:'rv-ok'},
+          {lbl:'Target',val:'SpO₂ 88-95%',unit:'',ref:'',cls:'rv-ok'},
+        ],'FiO₂ weaning ordered. RT will decrease FiO₂ in 10% decrements while maintaining SpO₂ goal 88-95%. In ARDS, prioritize PEEP optimization before aggressive FiO₂ weaning to avoid derecruitment.') },
+      { id:'vent-adjustments', cat:'procedure', triggers:[/\badjust.*vent\b/i,/\bvent.*settings\b/i,/\bventilator.*changes\b/i,/\bchange.*vent\b/i,/\btitrate.*vent\b/i],
+        card: (raw) => resultCard('procedure','Ventilator Management','Ventilator Adjustments',[
+          {lbl:'Order',val:'Ventilator adjustments',unit:'',ref:'',cls:'rv-ok'},
+          {lbl:'Current Settings',val:'Review with RT',unit:'',ref:'',cls:'rv-ok'},
+          {lbl:'Goals',val:'Lung-protective strategy',unit:'Pplat <30, VT 6 mL/kg',ref:'',cls:'rv-ok'},
+        ],'Ventilator adjustments ordered. RT will work with team to optimize settings while maintaining lung-protective ventilation. Consider ABG in 30 minutes after changes to assess response.') },
+      { id:'duoneb', cat:'med', triggers:[/\bduoneb\b/,/\balbuterol\b/,/\bnebulizer\b/,/\bbronchodilator\b/,/\bipratropium\b/],
         card: () => resultCard('med','Bronchodilator','Albuterol Nebulizer',[
           {lbl:'Status',val:'Ordered',unit:'',ref:'',cls:'rv-ok'},
           {lbl:'Dose',  val:'2.5-5 mg',unit:'via nebulizer',ref:'',cls:'rv-ok'},
@@ -2380,11 +2410,283 @@ function extractFluidVolume(orderText) {
 }
 
 // ── SUBMIT ORDERS — show results with staggered delay ─────────
+// ── INTUBATION MEDICATION POPUP ──────────────────────────────────
+function showIntubationMedsPopup(onComplete) {
+  const modalHTML = `
+    <div class="modal-overlay" id="intubation-meds-modal">
+      <div class="modal-content" style="max-width:600px;">
+        <div class="modal-header">
+          <h3>Intubation Medications</h3>
+        </div>
+        <div class="modal-body">
+          <p style="margin-bottom:16px;">You ordered intubation. Please specify your RSI medications and sedation plan:</p>
+          <div style="margin-bottom:16px;">
+            <label style="display:block;font-weight:600;margin-bottom:4px;">Induction Agent:</label>
+            <textarea id="induction-med" rows="2" placeholder="e.g., Ketamine 2 mg/kg IV, Etomidate 0.3 mg/kg IV" style="width:100%;padding:8px;border:1px solid var(--border);border-radius:4px;font-family:inherit;"></textarea>
+          </div>
+          <div style="margin-bottom:16px;">
+            <label style="display:block;font-weight:600;margin-bottom:4px;">Paralytic:</label>
+            <textarea id="paralytic-med" rows="2" placeholder="e.g., Rocuronium 1 mg/kg IV, Succinylcholine 1.5 mg/kg IV" style="width:100%;padding:8px;border:1px solid var(--border);border-radius:4px;font-family:inherit;"></textarea>
+          </div>
+          <div style="margin-bottom:16px;">
+            <label style="display:block;font-weight:600;margin-bottom:4px;">Post-Intubation Sedation:</label>
+            <textarea id="sedation-med" rows="2" placeholder="e.g., Propofol 20-50 mcg/kg/min, Fentanyl 50 mcg q1h PRN" style="width:100%;padding:8px;border:1px solid var(--border);border-radius:4px;font-family:inherit;"></textarea>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn--primary" id="submit-intubation-meds">Continue →</button>
+        </div>
+      </div>
+    </div>
+  `;
+  
+  document.body.insertAdjacentHTML('beforeend', modalHTML);
+  
+  const submitBtn = $('submit-intubation-meds');
+  submitBtn.addEventListener('click', () => {
+    const induction = $('induction-med').value.trim();
+    const paralytic = $('paralytic-med').value.trim();
+    const sedation = $('sedation-med').value.trim();
+    
+    if (!induction || !paralytic || !sedation) {
+      alert('Please specify all three medication categories.');
+      return;
+    }
+    
+    // Store the medications
+    State.intubationMeds = { induction, paralytic, sedation };
+    
+    // Remove modal
+    const modal = $('intubation-meds-modal');
+    if (modal) modal.remove();
+    
+    if (onComplete) onComplete();
+  });
+}
+
+// ── VENTILATOR SETTINGS POPUP ────────────────────────────────────
+function showVentilatorSettingsPopup(onComplete) {
+  const modalHTML = `
+    <div class="modal-overlay" id="ventilator-settings-modal">
+      <div class="modal-content" style="max-width:600px;">
+        <div class="modal-header">
+          <h3>Ventilator Settings</h3>
+        </div>
+        <div class="modal-body">
+          <p style="margin-bottom:16px;">Please specify your initial ventilator settings:</p>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
+            <div>
+              <label style="display:block;font-weight:600;margin-bottom:4px;">Mode:</label>
+              <input type="text" id="vent-mode" placeholder="e.g., AC/VC, SIMV" style="width:100%;padding:8px;border:1px solid var(--border);border-radius:4px;font-family:inherit;">
+            </div>
+            <div>
+              <label style="display:block;font-weight:600;margin-bottom:4px;">Tidal Volume:</label>
+              <input type="text" id="vent-vt" placeholder="e.g., 330 mL, 6 mL/kg" style="width:100%;padding:8px;border:1px solid var(--border);border-radius:4px;font-family:inherit;">
+            </div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
+            <div>
+              <label style="display:block;font-weight:600;margin-bottom:4px;">Respiratory Rate:</label>
+              <input type="text" id="vent-rr" placeholder="e.g., 20, 16" style="width:100%;padding:8px;border:1px solid var(--border);border-radius:4px;font-family:inherit;">
+            </div>
+            <div>
+              <label style="display:block;font-weight:600;margin-bottom:4px;">PEEP:</label>
+              <input type="text" id="vent-peep" placeholder="e.g., 10, 8" style="width:100%;padding:8px;border:1px solid var(--border);border-radius:4px;font-family:inherit;">
+            </div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+            <div>
+              <label style="display:block;font-weight:600;margin-bottom:4px;">FiO₂:</label>
+              <input type="text" id="vent-fio2" placeholder="e.g., 80%, 100%" style="width:100%;padding:8px;border:1px solid var(--border);border-radius:4px;font-family:inherit;">
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn--primary" id="submit-ventilator-settings">Complete Intubation →</button>
+        </div>
+      </div>
+    </div>
+  `;
+  
+  document.body.insertAdjacentHTML('beforeend', modalHTML);
+  
+  const submitBtn = $('submit-ventilator-settings');
+  submitBtn.addEventListener('click', () => {
+    const mode = $('vent-mode').value.trim();
+    const vt = $('vent-vt').value.trim();
+    const rr = $('vent-rr').value.trim();
+    const peep = $('vent-peep').value.trim();
+    const fio2 = $('vent-fio2').value.trim();
+    
+    if (!mode || !vt || !rr || !peep || !fio2) {
+      alert('Please specify all ventilator parameters.');
+      return;
+    }
+    
+    // Store the user's original ventilator settings
+    State.ventilatorSettings = { mode, vt, rr, peep, fio2 };
+    
+    // Validate settings for Case 3 (ARDS - lung-protective ventilation)
+    const caseId = State.caseData?.id;
+    let needsCorrection = false;
+    
+    if (caseId === 'cc-3') {
+      // Check for lung-protective ventilation (6 mL/kg PBW)
+      const vtLower = vt.toLowerCase();
+      const rrNum = parseInt(rr);
+      const peepNum = parseInt(peep);
+      const fio2Num = parseInt(fio2.replace('%', ''));
+      
+      // Check if tidal volume is too high (not lung-protective)
+      const isHighVT = vtLower.includes('8') || vtLower.includes('9') || vtLower.includes('10') || 
+                       (parseInt(vt) > 400) || vtLower.includes('12 ml/kg') || vtLower.includes('10 ml/kg');
+      
+      // Check if using actual weight instead of PBW
+      const notUsingPBW = !vtLower.includes('pbw') && !vtLower.includes('6 ml/kg') && 
+                          !vtLower.includes('330') && parseInt(vt) !== 330;
+      
+      // Check if RR too low for ventilation
+      const lowRR = rrNum < 16;
+      
+      // Check if PEEP too low for severe ARDS
+      const lowPEEP = peepNum < 8;
+      
+      // Check if FiO2 suboptimal
+      const lowFiO2 = fio2Num < 70;
+      
+      if (isHighVT || notUsingPBW || lowRR || lowPEEP || lowFiO2) {
+        needsCorrection = true;
+      }
+    }
+    
+    // Remove modal
+    const modal = $('ventilator-settings-modal');
+    if (modal) modal.remove();
+    
+    // Show attending correction if needed
+    if (needsCorrection) {
+      showAttendingCorrection(() => {
+        if (onComplete) onComplete();
+      });
+    } else {
+      if (onComplete) onComplete();
+    }
+  });
+}
+
+// ── ATTENDING CORRECTION FOR VENTILATOR SETTINGS ─────────────────
+function showAttendingCorrection(onComplete) {
+  const correctionHTML = `
+    <div class="modal-overlay" id="attending-correction-modal">
+      <div class="modal-content" style="max-width:650px;">
+        <div class="modal-header">
+          <h3>⚕️ MICU Attending Intervention</h3>
+        </div>
+        <div class="modal-body">
+          <p style="margin-bottom:12px;"><strong>MICU Attending:</strong> <em>"I've reviewed your ventilator settings. For severe ARDS with influenza pneumonia, we need to optimize lung-protective ventilation to prevent ventilator-induced lung injury."</em></p>
+          
+          <div style="background:var(--bg-2);border:1px solid var(--border);border-radius:8px;padding:16px;margin:16px 0;">
+            <div style="font-weight:600;margin-bottom:12px;color:var(--cyan);">Attending Made the Following Adjustments:</div>
+            <div style="display:grid;gap:8px;font-size:0.9rem;">
+              <div style="display:grid;grid-template-columns:140px 1fr;gap:8px;">
+                <span style="color:var(--text-dim);">Mode:</span>
+                <span style="font-weight:600;">AC/VC</span>
+              </div>
+              <div style="display:grid;grid-template-columns:140px 1fr;gap:8px;">
+                <span style="color:var(--text-dim);">Tidal Volume:</span>
+                <span style="font-weight:600;">330 mL (6 mL/kg PBW)</span>
+              </div>
+              <div style="display:grid;grid-template-columns:140px 1fr;gap:8px;">
+                <span style="color:var(--text-dim);">Respiratory Rate:</span>
+                <span style="font-weight:600;">20 breaths/min</span>
+              </div>
+              <div style="display:grid;grid-template-columns:140px 1fr;gap:8px;">
+                <span style="color:var(--text-dim);">PEEP:</span>
+                <span style="font-weight:600;">10 cm H₂O</span>
+              </div>
+              <div style="display:grid;grid-template-columns:140px 1fr;gap:8px;">
+                <span style="color:var(--text-dim);">FiO₂:</span>
+                <span style="font-weight:600;">80%</span>
+              </div>
+            </div>
+          </div>
+          
+          <div style="background:var(--bg-3);border-left:3px solid var(--cyan);padding:12px;margin-top:16px;font-size:0.875rem;">
+            <div style="font-weight:600;margin-bottom:6px;">Key Teaching Points:</div>
+            <ul style="margin:0;padding-left:20px;color:var(--text-dim);">
+              <li><strong>VT 6 mL/kg PBW:</strong> Use predicted body weight, NOT actual weight</li>
+              <li><strong>PEEP 10-14:</strong> Per ARDSnet FiO₂/PEEP table for severe ARDS</li>
+              <li><strong>Plateau pressure &lt;30:</strong> Monitor to prevent barotrauma</li>
+              <li><strong>Permissive hypercapnia:</strong> Accept pH ≥7.20, avoid increasing VT</li>
+            </ul>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn--primary" id="acknowledge-correction">Understood, Proceed to Reassessment →</button>
+        </div>
+      </div>
+    </div>
+  `;
+  
+  document.body.insertAdjacentHTML('beforeend', correctionHTML);
+  
+  // Update State with corrected settings
+  State.ventilatorSettings = {
+    mode: 'AC/VC',
+    vt: '330 mL (6 mL/kg PBW)',
+    rr: '20',
+    peep: '10',
+    fio2: '80%'
+  };
+  State.attendingCorrectedVentilator = true;
+  
+  const acknowledgeBtn = $('acknowledge-correction');
+  acknowledgeBtn.addEventListener('click', () => {
+    const modal = $('attending-correction-modal');
+    if (modal) modal.remove();
+    if (onComplete) onComplete();
+  });
+}
+
 function processOrdersAndShowResults(orderText, decisionKey, onAllDone) {
   const caseId = State.caseData.id;
   const catalog = getCaseResultCatalog(caseId);
   const lines = orderText.split('\n').filter(l => l.trim().length > 1);
   const lower = orderText.toLowerCase();
+
+  // Check for intubation order
+  const intubationOrdered = /\b(intubat(e|ed|ion|ing)?|rsi|secure airway|ett)\b/.test(lower);
+  
+  // For Cases 1 and 2, check if they tried HFNC before intubating
+  if (intubationOrdered && (caseId === 'cc-1' || caseId === 'cc-2') && !State.triedHFNC) {
+    // Show nurse prompt suggesting HFNC first
+    showRNMsg(
+      'Alternative Oxygenation Strategy',
+      'Doctor, before we intubate, should we try high-flow nasal cannula first? The patient\'s oxygenation might improve with HFNC, and we could avoid intubation if it works.\n\nHFNC can deliver up to 60L/min with FiO₂ up to 100%, and it often improves oxygenation in patients with moderate hypoxemia.\n\nWould you like to try HFNC before proceeding with intubation?',
+      'RN SUGGESTION'
+    );
+    // Don't process the intubation order - return early
+    if (onAllDone) onAllDone();
+    return;
+  }
+  
+  // Check for oxygen orders to update vitals
+  let oxygenUpdate = null;
+  if (/\bhfnc\b|\bhigh.?flow\b/.test(lower)) {
+    oxygenUpdate = 'HFNC';
+    State.triedHFNC = true; // Track that HFNC was tried
+  } else if (/\bbipap\b|\bcpap\b|\bniv\b/.test(lower)) {
+    oxygenUpdate = 'BiPAP';
+  } else if (/\bnasal cannula\b|\bnc\b|\b2l\b|\b4l\b|\b6l\b/.test(lower)) {
+    oxygenUpdate = 'NC';
+  } else if (/\bnrb\b|\bnon.?rebreather\b|\b15l\b/.test(lower)) {
+    oxygenUpdate = 'NRB';
+  }
+  
+  // Store oxygen update for later use in vitals
+  if (oxygenUpdate) {
+    State.currentOxygenDevice = oxygenUpdate;
+  }
 
   // Find which catalog items were triggered
   const triggered = catalog.filter(item => 
@@ -2420,61 +2722,85 @@ function processOrdersAndShowResults(orderText, decisionKey, onAllDone) {
     return;
   }
 
-  // For decision1 and decision2, store orders for later reveal and show acknowledgment
-  if (decisionKey === 'decision1' || decisionKey === 'decision2') {
-    // Store recognized orders with their display info
-    // Filter out fluids and medications - only keep labs, imaging, and diagnostics
-    const newOrders = unique
-      .filter(item => item.cat !== 'fluid' && item.cat !== 'med')
-      .map(item => {
-        // Generate a friendly display name
-        let displayName = item.id;
-        
-        // Map common IDs to display names
-        const nameMap = {
-          'ekg': '12-Lead EKG',
-          'lactate': 'Lactate Level',
-          'cbc': 'Complete Blood Count (CBC)',
-          'bmp': 'Basic Metabolic Panel (BMP)',
-          'culture': 'Blood Cultures',
-          'chest-xray': 'Chest X-Ray',
-          'ddimer': 'D-Dimer',
-          'troponin': 'Troponin',
-          'bnp': 'BNP',
-          'abg': 'Arterial Blood Gas (ABG)',
-          'cxr': 'Chest X-Ray',
-          'ct': 'CT Scan',
-          'echo': 'Echocardiogram',
-          'pocus': 'POCUS (Bedside Ultrasound)',
-          'ua': 'Urinalysis',
-          'procalcitonin': 'Procalcitonin',
-          'crp': 'C-Reactive Protein (CRP)',
-          'esr': 'ESR',
-          'coags': 'Coagulation Panel (PT/INR)',
-          'type-screen': 'Type & Screen',
-          'lft': 'Liver Function Tests (LFT)'
-        };
-        
-        displayName = nameMap[item.id] || item.id.toUpperCase();
-        
-        return {
-          id: item.id,
-          name: displayName,
-          card: item.card,
-          resultHTML: null
-        };
-      });
-    
-    // Append to existing orders (for decision2)
-    State.recognizedOrders = [...(State.recognizedOrders || []), ...newOrders];
-    
-    feedCards.innerHTML = `<div class="processing-row"><div class="proc-dot"></div>Orders acknowledged. Nurse is implementing your plan...</div>`;
-    setTimeout(() => { if (onAllDone) onAllDone(); }, 800);
+  // Store recognized orders for bedside reassessment
+  // Filter out fluids - only keep labs, imaging, diagnostics, and medications
+  const newOrders = unique
+    .filter(item => item.cat !== 'fluid')
+    .map(item => {
+      // Generate a friendly display name
+      let displayName = item.id;
+      
+      // Map common IDs to display names
+      const nameMap = {
+        'ekg': '12-Lead EKG',
+        'lactate': 'Lactate Level',
+        'cbc': 'Complete Blood Count (CBC)',
+        'bmp': 'Basic Metabolic Panel (BMP)',
+        'culture': 'Blood Cultures',
+        'chest-xray': 'Chest X-Ray',
+        'ddimer': 'D-Dimer',
+        'troponin': 'Troponin',
+        'bnp': 'BNP',
+        'abg': 'Arterial Blood Gas (ABG)',
+        'cxr': 'Chest X-Ray',
+        'ct': 'CT Scan',
+        'echo': 'Echocardiogram',
+        'pocus': 'POCUS (Bedside Ultrasound)',
+        'ua': 'Urinalysis',
+        'procalcitonin': 'Procalcitonin',
+        'crp': 'C-Reactive Protein (CRP)',
+        'esr': 'ESR',
+        'coags': 'Coagulation Panel (PT/INR)',
+        'type-screen': 'Type & Screen',
+        'lft': 'Liver Function Tests (LFT)',
+        'duoneb': 'Albuterol Nebulizer (DuoNeb)',
+        'norepi': 'Norepinephrine',
+        'vasopressin': 'Vasopressin',
+        'epi': 'Epinephrine',
+        'dopamine': 'Dopamine',
+        'phenylephrine': 'Phenylephrine',
+        'pip': 'Piperacillin-Tazobactam (Zosyn)',
+        'vancomycin': 'Vancomycin',
+        'ceftriaxone': 'Ceftriaxone',
+        'meropenem': 'Meropenem',
+        'azithromycin': 'Azithromycin',
+        'heparin': 'Heparin',
+        'propofol': 'Propofol',
+        'fentanyl': 'Fentanyl',
+        'midazolam': 'Midazolam',
+        'ketamine': 'Ketamine',
+        'etomidate': 'Etomidate',
+        'rocuronium': 'Rocuronium',
+        'vecuronium': 'Vecuronium',
+        'hydrocortisone': 'Hydrocortisone'
+      };
+      
+      displayName = nameMap[item.id] || item.id.toUpperCase();
+      
+      return {
+        id: item.id,
+        name: displayName,
+        cat: item.cat,
+        card: item.card,
+        resultHTML: null
+      };
+    });
+  
+  // Append to existing orders (for decision2)
+  State.recognizedOrders = [...(State.recognizedOrders || []), ...newOrders];
+
+  // For Phase 4 decisions, just show acknowledgment - results will appear locked in bedside reassessment
+  if (decisionKey) {
+    feedCards.innerHTML = `<div class="processing-row"><div class="proc-dot"></div>Orders acknowledged. Processing ${unique.length} order${unique.length > 1 ? 's' : ''}...</div>`;
+    setTimeout(() => { 
+      if (onAllDone) onAllDone();
+    }, 1000);
     return;
   }
 
-  // For other decisions, show results normally
+  // For non-decision order entry (Phase 3 style), show results normally - display result cards
   feedCards.innerHTML = `<div class="processing-row" id="proc-indicator"><div class="proc-dot"></div>Processing ${unique.length} order${unique.length > 1 ? 's' : ''}…</div>`;
+
 
   // Stagger results at 600ms intervals
   let delay = 600;
@@ -2496,7 +2822,17 @@ function processOrdersAndShowResults(orderText, decisionKey, onAllDone) {
 
       // After last result, call onAllDone
       if (idx === unique.length - 1) {
-        setTimeout(() => { if (onAllDone) onAllDone(); }, 800);
+        setTimeout(() => { 
+          if (intubationOrdered) {
+            showIntubationMedsPopup(() => {
+              showVentilatorSettingsPopup(() => {
+                if (onAllDone) onAllDone();
+              });
+            });
+          } else {
+            if (onAllDone) onAllDone();
+          }
+        }, 800);
       }
     }, delay * (idx + 1));
   });
@@ -2505,34 +2841,67 @@ function processOrdersAndShowResults(orderText, decisionKey, onAllDone) {
 // ── GENERATE ORDERS REVIEW — what was ordered vs what was missed ─────────
 function generateOrdersReview() {
   const ordered = State.allOrdersEverOrdered;
+  const caseId = State.caseData?.id;
   
-  // Define critical orders for septic shock
-  const criticalOrders = {
-    'Diagnostic': {
-      'culture': 'Blood cultures (before antibiotics)',
-      'lactate': 'Lactate level',
-      'cbc': 'Complete Blood Count (CBC)',
-      'bmp': 'Basic Metabolic Panel (BMP)',
-      'chest-xray': 'Chest X-Ray'
-    },
-    'Hemodynamic': {
-      'ivfluid': 'IV fluid resuscitation (30 mL/kg)',
-      'albumin': 'Albumin (NOT recommended first-line)',
-      'norepi': 'Norepinephrine (for MAP <65)',
-      'vasopressin': 'Vasopressin (for escalation)',
-      'hydrocortisone': 'Stress-dose steroids'
-    },
-    'Medications': {
-      'vancomycin': 'Vancomycin',
-      'ceftriaxone': 'Ceftriaxone',
-      'piperacillin': 'Piperacillin-tazobactam',
-      'meropenem': 'Meropenem',
-      'azithromycin': 'Azithromycin'
-    },
-    'Consultations': {
-      'micu': 'MICU consultation'
-    }
-  };
+  // Define critical orders per case
+  let criticalOrders = {};
+  
+  if (caseId === 'cc-1') {
+    // Case 1: Septic Shock
+    criticalOrders = {
+      'Diagnostic': {
+        'culture': 'Blood cultures (before antibiotics)',
+        'lactate': 'Lactate level',
+        'cbc': 'Complete Blood Count',
+        'bmp': 'Basic Metabolic Panel'
+      },
+      'Hemodynamic': {
+        'ivfluid': 'IV fluid resuscitation (30 mL/kg)',
+        'norepi': 'Norepinephrine (first-line vasopressor)'
+      },
+      'Antibiotics': {
+        'vancomycin': 'Vancomycin',
+        'piperacillin': 'Piperacillin-tazobactam or Ceftriaxone'
+      },
+      'Consultations': {
+        'micu': 'MICU consultation'
+      }
+    };
+  } else if (caseId === 'cc-2') {
+    // Case 2: Massive PE
+    criticalOrders = {
+      'Diagnostic': {
+        'pocus': 'POCUS (assess RV function)',
+        'ekg': '12-Lead EKG',
+        'ddimer': 'D-Dimer',
+        'troponin': 'Troponin',
+        'bnp': 'BNP'
+      },
+      'Oxygen/Hemodynamic': {
+        'norepi': 'Norepinephrine (avoid large fluid bolus)',
+        'heparin': 'Heparin anticoagulation'
+      },
+      'Consultations': {
+        'pert': 'PERT team activation',
+        'micu': 'MICU consultation'
+      }
+    };
+  } else if (caseId === 'cc-3') {
+    // Case 3: ARDS/Influenza
+    criticalOrders = {
+      'Airway Management': {
+        'intubation': 'Intubation (RSI)',
+        'abg': 'Arterial Blood Gas'
+      },
+      'Ventilator': {
+        'lung-protective': 'Lung-protective ventilation (6 mL/kg PBW)'
+      },
+      'Medications': {
+        'sedation': 'Post-intubation sedation',
+        'neuromuscular': 'Neuromuscular blockade (if needed)'
+      }
+    };
+  }
   
   let html = '<div style="margin-top:20px;padding:16px;background:var(--bg-2);border:1px solid var(--border);border-radius:var(--r-sm);">';
   html += '<div style="font-weight:600;font-size:1.05rem;margin-bottom:12px;color:var(--text);">📋 Your Orders Review</div>';
@@ -2545,12 +2914,29 @@ function generateOrdersReview() {
   for (const [category, orders] of Object.entries(criticalOrders)) {
     const categoryOrders = [];
     for (const [id, name] of Object.entries(orders)) {
-      const wasOrdered = ordered.has(id) || 
-                        (id === 'norepi' && (ordered.has('norepinephrine') || ordered.has('norepi'))) ||
-                        (id === 'ivfluid' && ordered.has('ivfluid')) ||
-                        (id === 'micu' && (ordered.has('micu') || ordered.has('icu'))) ||
-                        (id === 'vasopressin' && (ordered.has('vasopressin') || ordered.has('pitressin'))) ||
-                        (id === 'hydrocortisone' && (ordered.has('hydrocortisone') || ordered.has('steroid')));
+      let wasOrdered = ordered.has(id);
+      
+      // Handle aliases
+      if (id === 'norepi') wasOrdered = wasOrdered || ordered.has('norepinephrine') || ordered.has('levophed') || ordered.has('levo');
+      if (id === 'micu') wasOrdered = wasOrdered || ordered.has('icu');
+      if (id === 'pert') wasOrdered = wasOrdered || ordered.has('pe-team');
+      if (id === 'heparin') {
+        // Check for heparin itself and common anticoagulation terms
+        wasOrdered = wasOrdered || 
+                    ordered.has('heparin') || 
+                    ordered.has('anticoagulation') || 
+                    ordered.has('anticoagulate') ||
+                    ordered.has('lovenox') || 
+                    ordered.has('enoxaparin') ||
+                    ordered.has('lmwh');
+      }
+      if (id === 'vancomycin') wasOrdered = wasOrdered || ordered.has('vanco') || ordered.has('vanc');
+      if (id === 'piperacillin') wasOrdered = wasOrdered || ordered.has('ceftriaxone') || ordered.has('pip-tazo') || ordered.has('pip') || ordered.has('zosyn') || ordered.has('piptaz');
+      if (id === 'intubation') wasOrdered = wasOrdered || ordered.has('intubate') || ordered.has('rsi') || ordered.has('ett');
+      if (id === 'lung-protective') wasOrdered = wasOrdered || ordered.has('6 ml/kg') || ordered.has('pbw') || ordered.has('vent');
+      if (id === 'sedation') wasOrdered = wasOrdered || ordered.has('propofol') || ordered.has('fentanyl') || ordered.has('midazolam');
+      if (id === 'neuromuscular') wasOrdered = wasOrdered || ordered.has('rocuronium') || ordered.has('vecuronium') || ordered.has('cisatracurium');
+      if (id === 'ivfluid') wasOrdered = wasOrdered || ordered.has('fluid') || ordered.has('bolus') || ordered.has('ns') || ordered.has('lr') || ordered.has('saline');
       
       if (wasOrdered) {
         categoryOrders.push(`<li style="color:var(--green);">✓ ${name}</li>`);
@@ -2567,12 +2953,29 @@ function generateOrdersReview() {
   for (const [category, orders] of Object.entries(criticalOrders)) {
     const categoryMissed = [];
     for (const [id, name] of Object.entries(orders)) {
-      const wasOrdered = ordered.has(id) || 
-                        (id === 'norepi' && (ordered.has('norepinephrine') || ordered.has('norepi'))) ||
-                        (id === 'ivfluid' && ordered.has('ivfluid')) ||
-                        (id === 'micu' && (ordered.has('micu') || ordered.has('icu'))) ||
-                        (id === 'vasopressin' && (ordered.has('vasopressin') || ordered.has('pitressin'))) ||
-                        (id === 'hydrocortisone' && (ordered.has('hydrocortisone') || ordered.has('steroid')));
+      let wasOrdered = ordered.has(id);
+      
+      // Handle aliases (same as above)
+      if (id === 'norepi') wasOrdered = wasOrdered || ordered.has('norepinephrine') || ordered.has('levophed') || ordered.has('levo');
+      if (id === 'micu') wasOrdered = wasOrdered || ordered.has('icu');
+      if (id === 'pert') wasOrdered = wasOrdered || ordered.has('pe-team');
+      if (id === 'heparin') {
+        // Check for heparin itself and common anticoagulation terms
+        wasOrdered = wasOrdered || 
+                    ordered.has('heparin') || 
+                    ordered.has('anticoagulation') || 
+                    ordered.has('anticoagulate') ||
+                    ordered.has('lovenox') || 
+                    ordered.has('enoxaparin') ||
+                    ordered.has('lmwh');
+      }
+      if (id === 'vancomycin') wasOrdered = wasOrdered || ordered.has('vanco') || ordered.has('vanc');
+      if (id === 'piperacillin') wasOrdered = wasOrdered || ordered.has('ceftriaxone') || ordered.has('pip-tazo') || ordered.has('pip') || ordered.has('zosyn') || ordered.has('piptaz');
+      if (id === 'intubation') wasOrdered = wasOrdered || ordered.has('intubate') || ordered.has('rsi') || ordered.has('ett');
+      if (id === 'lung-protective') wasOrdered = wasOrdered || ordered.has('6 ml/kg') || ordered.has('pbw') || ordered.has('vent');
+      if (id === 'sedation') wasOrdered = wasOrdered || ordered.has('propofol') || ordered.has('fentanyl') || ordered.has('midazolam');
+      if (id === 'neuromuscular') wasOrdered = wasOrdered || ordered.has('rocuronium') || ordered.has('vecuronium') || ordered.has('cisatracurium');
+      if (id === 'ivfluid') wasOrdered = wasOrdered || ordered.has('fluid') || ordered.has('bolus') || ordered.has('ns') || ordered.has('lr') || ordered.has('saline');
       
       if (!wasOrdered) {
         categoryMissed.push(`<li style="color:var(--red);">✗ ${name}</li>`);
@@ -2827,7 +3230,18 @@ function evaluateBranch(decisionKey, orderText) {
   }
 
   State.decisions.push({ decKey: decisionKey, branchId: matched.id, type: matched.type });
-  renderBranchResult(decisionKey, matched);
+  
+  // Check if intubation was ordered and show popups before rendering result
+  const intubationOrdered = /\b(intubat(e|ed|ion|ing)?|rsi|secure airway|ett)\b/.test(lower);
+  if (intubationOrdered) {
+    showIntubationMedsPopup(() => {
+      showVentilatorSettingsPopup(() => {
+        renderBranchResult(decisionKey, matched);
+      });
+    });
+  } else {
+    renderBranchResult(decisionKey, matched);
+  }
 }
 
 // ═══════════════════════════════════════════════════════════════
@@ -2947,6 +3361,210 @@ function bindNextActions(decisionKey, branch) {
   if (homeBtn) homeBtn.addEventListener('click', () => { State.reset(); showScreen('screen-home'); });
 }
 
+// ═══════════════════════════════════════════════════════════════
+//  MEDICATION DISPLAY METADATA & HELPER
+// ═══════════════════════════════════════════════════════════════
+
+// Medication display metadata for realistic ICU formatting
+const MED_DISPLAY_INFO = {
+  'norepi': {
+    dose: '4-20 mcg/min',
+    route: 'IV continuous',
+    indication: 'First-line vasopressor for septic shock',
+    monitoring: 'Titrate to MAP ≥65 mm Hg'
+  },
+  'norepinephrine': {
+    dose: '4-20 mcg/min',
+    route: 'IV continuous',
+    indication: 'First-line vasopressor for septic shock',
+    monitoring: 'Titrate to MAP ≥65 mm Hg'
+  },
+  'vasopressin': {
+    dose: '0.03-0.04 units/min',
+    route: 'IV continuous',
+    indication: 'Adjunct vasopressor (VASST trial)',
+    monitoring: 'Fixed dose, do not titrate'
+  },
+  'epinephrine': {
+    dose: '2-10 mcg/min',
+    route: 'IV continuous',
+    indication: 'Refractory shock',
+    monitoring: 'Alpha and beta effects'
+  },
+  'epi': {
+    dose: '2-10 mcg/min',
+    route: 'IV continuous',
+    indication: 'Refractory shock',
+    monitoring: 'Alpha and beta effects'
+  },
+  'vancomycin': {
+    dose: '15-20 mg/kg IV loading',
+    route: 'IV intermittent',
+    indication: 'Gram-positive coverage',
+    monitoring: 'Trough goal 15-20 mcg/mL',
+    renalNote: 'Dose adjust for CrCl <50: extend interval to q12-24h'
+  },
+  'vanco': {
+    dose: '15-20 mg/kg IV loading',
+    route: 'IV intermittent',
+    indication: 'Gram-positive coverage',
+    monitoring: 'Trough goal 15-20 mcg/mL',
+    renalNote: 'Dose adjust for CrCl <50: extend interval to q12-24h'
+  },
+  'piperacillin': {
+    dose: '3.375 g IV q6h',
+    route: 'IV intermittent',
+    indication: 'Broad-spectrum coverage',
+    monitoring: 'Extended infusion if available',
+    renalNote: 'CrCl <40: reduce to q8h; <20: q12h'
+  },
+  'pip-tazo': {
+    dose: '3.375 g IV q6h',
+    route: 'IV intermittent',
+    indication: 'Broad-spectrum coverage',
+    monitoring: 'Extended infusion if available',
+    renalNote: 'CrCl <40: reduce to q8h; <20: q12h'
+  },
+  'pip': {
+    dose: '3.375 g IV q6h',
+    route: 'IV intermittent',
+    indication: 'Broad-spectrum coverage',
+    monitoring: 'Extended infusion if available',
+    renalNote: 'CrCl <40: reduce to q8h; <20: q12h'
+  },
+  'ceftriaxone': {
+    dose: '2 g IV q24h',
+    route: 'IV intermittent',
+    indication: 'Third-generation cephalosporin',
+    monitoring: 'Once daily dosing'
+  },
+  'meropenem': {
+    dose: '1-2 g IV q8h',
+    route: 'IV intermittent',
+    indication: 'Carbapenem for resistant organisms',
+    monitoring: 'Extended infusion preferred',
+    renalNote: 'CrCl <50: reduce dose or extend interval'
+  },
+  'heparin': {
+    dose: '80 units/kg bolus, then 18 units/kg/hr',
+    route: 'IV continuous',
+    indication: 'Therapeutic anticoagulation',
+    monitoring: 'PTT goal 60-80 sec, check q6h'
+  },
+  'lovenox': {
+    dose: '1 mg/kg SC q12h',
+    route: 'Subcutaneous',
+    indication: 'Therapeutic anticoagulation',
+    monitoring: 'Anti-Xa if needed',
+    renalNote: 'CrCl <30: reduce to 1 mg/kg q24h'
+  },
+  'propofol': {
+    dose: '5-50 mcg/kg/min',
+    route: 'IV continuous',
+    indication: 'Sedation',
+    monitoring: 'Titrate to RASS -2 to -3'
+  },
+  'fentanyl': {
+    dose: '25-100 mcg/hr or PRN',
+    route: 'IV continuous or intermittent',
+    indication: 'Analgesia and sedation',
+    monitoring: 'Assess pain and respiratory status'
+  },
+  'midazolam': {
+    dose: '1-5 mg/hr',
+    route: 'IV continuous',
+    indication: 'Sedation',
+    monitoring: 'Titrate to RASS target'
+  },
+  'ketamine': {
+    dose: '1-2 mg/kg IV bolus',
+    route: 'IV push',
+    indication: 'RSI induction agent',
+    monitoring: 'Maintains hemodynamics'
+  },
+  'etomidate': {
+    dose: '0.3 mg/kg IV bolus',
+    route: 'IV push',
+    indication: 'RSI induction agent',
+    monitoring: 'Minimal hemodynamic effects'
+  },
+  'rocuronium': {
+    dose: '1-1.2 mg/kg IV bolus',
+    route: 'IV push',
+    indication: 'Neuromuscular blockade for intubation',
+    monitoring: 'Duration 45-60 minutes'
+  },
+  'vecuronium': {
+    dose: '0.1 mg/kg IV bolus',
+    route: 'IV push',
+    indication: 'Neuromuscular blockade for intubation',
+    monitoring: 'Duration 45-60 minutes'
+  },
+  'hydrocortisone': {
+    dose: '50 mg IV q6h',
+    route: 'IV push or short infusion',
+    indication: 'Vasopressor-refractory shock',
+    monitoring: 'Stress-dose steroids'
+  },
+  'steroid': {
+    dose: '50 mg IV q6h',
+    route: 'IV push or short infusion',
+    indication: 'Vasopressor-refractory shock',
+    monitoring: 'Stress-dose steroids'
+  },
+  'duoneb': {
+    dose: 'Albuterol 2.5 mg + Ipratropium 0.5 mg',
+    route: 'Nebulizer',
+    indication: 'Bronchodilation',
+    monitoring: 'Can repeat q4-6h PRN'
+  },
+  'albuterol': {
+    dose: '2.5-5 mg',
+    route: 'Nebulizer',
+    indication: 'Bronchodilation',
+    monitoring: 'Can repeat q4-6h PRN'
+  },
+  'azithromycin': {
+    dose: '500 mg IV/PO daily',
+    route: 'IV or PO',
+    indication: 'Atypical coverage',
+    monitoring: 'QTc prolongation risk'
+  }
+};
+
+// Helper function to format medication display
+function formatMedicationDisplay(order, medStatus) {
+  const medInfo = MED_DISPLAY_INFO[order.id] || {};
+  
+  // Determine current rate/status
+  let statusLine = '';
+  if (medStatus) {
+    statusLine = `Currently: ${medStatus.val} ${medStatus.unit}`;
+  } else if (medInfo.dose) {
+    statusLine = `Dose: ${medInfo.dose}`;
+  } else {
+    statusLine = 'Ordered and being administered';
+  }
+  
+  // Build detail lines
+  let detailLines = [];
+  if (medInfo.route) detailLines.push(`Route: ${medInfo.route}`);
+  if (medInfo.indication) detailLines.push(`Indication: ${medInfo.indication}`);
+  if (medInfo.monitoring) detailLines.push(`Monitoring: ${medInfo.monitoring}`);
+  
+  let detailText = detailLines.join(' • ');
+  if (!detailText) {
+    detailText = 'Medication infusing per protocol.';
+  }
+  
+  // Add renal dosing note if present
+  let renalNote = medInfo.renalNote ? `<div style="margin-top:6px; padding:6px; background:var(--bg-3); border-left:3px solid var(--amber); font-size:11px; color:var(--tx-2);">
+    <strong style="color:var(--amber);">⚠ Renal Dosing:</strong> ${medInfo.renalNote}
+  </div>` : '';
+  
+  return { statusLine, detailText, renalNote };
+}
+
 function showVitalsAndProceed(branch) {
   // Build a full Phase 3-style reassessment page with vital signs and physical exam
   const c = State.caseData;
@@ -2959,40 +3577,167 @@ function showVitalsAndProceed(branch) {
   
   // Build objective labs/imaging section from recognized orders
   let objectiveSection = '';
+  let treatmentSection = '';
+  
   if (State.recognizedOrders && State.recognizedOrders.length > 0) {
-    const labItems = State.recognizedOrders.map((order, idx) => {
-      const isUnlocked = State.unlockedResults.has(order.id);
-      const uniqueId = `result-${order.id}-${idx}`;
-      
-      if (isUnlocked) {
-        // Show the actual result
-        return `
-          <div class="objective-item unlocked" id="${uniqueId}">
-            <div class="objective-item-header">
-              <span class="objective-item-name">${order.name}</span>
-              <span class="objective-item-badge" style="color:var(--green)">✓ Unlocked</span>
-            </div>
-            <div class="objective-item-result">
-              ${order.card ? order.card('', State.caseData?.id) : '<div class="result-pending">Result not available</div>'}
-            </div>
-          </div>
-        `;
-      } else {
-        // Show locked state
-        return `
-          <div class="objective-item locked" id="${uniqueId}">
-            <div class="objective-item-header">
-              <span class="objective-item-name">${order.name}</span>
-              <button class="btn btn--sm btn--secondary unlock-btn" data-order-id="${order.id}" data-item-id="${uniqueId}">
-                🔒 Unlock
-              </button>
-            </div>
-          </div>
-        `;
-      }
-    }).join('');
+    // Separate medications from labs/imaging
+    const medications = State.recognizedOrders.filter(order => order.cat === 'med');
+    const labsImaging = State.recognizedOrders.filter(order => order.cat !== 'med');
     
-    objectiveSection = labItems; // Just the items, wrapper added in main template
+    // Build treatment section for medications (no unlock needed)
+    if (medications.length > 0) {
+      const treatmentItems = medications.map((order, idx) => {
+        // Get medication status from vitals if present
+        const medStatus = branch.nextVitals?.find(v => 
+          v.lbl?.toLowerCase().includes(order.id) || 
+          (order.id === 'norepi' && v.lbl === 'Norepi') ||
+          (order.id === 'vasopressin' && v.lbl === 'Vasopressin')
+        );
+        
+        // Use helper function to format medication
+        const { statusLine, detailText, renalNote } = formatMedicationDisplay(order, medStatus);
+        
+        return `
+          <div class="treatment-item">
+            <div class="treatment-name">${order.name}</div>
+            <div class="treatment-status">${statusLine}</div>
+            <div class="treatment-detail">${detailText}</div>
+            ${renalNote}
+          </div>
+        `;
+      }).join('');
+      
+      treatmentSection = treatmentItems;
+    }
+    
+    // Add ventilator settings to treatment section if patient is intubated
+    if (State.ventilatorSettings) {
+      const ventSettings = State.ventilatorSettings;
+      const ventItem = `
+        <div class="treatment-item" style="background:linear-gradient(135deg, var(--bg-2) 0%, var(--bg-3) 100%); border:2px solid var(--cyan); border-radius:8px; padding:16px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+          <div class="treatment-name" style="font-size:16px; font-weight:700; color:var(--cyan); margin-bottom:4px;">🫁 Mechanical Ventilator</div>
+          <div class="treatment-status" style="color:var(--tx-2); font-size:13px; margin-bottom:12px;">Patient intubated and mechanically ventilated</div>
+          <table class="vitals-tbl" style="width:100%; margin-top:0;">
+            <thead>
+              <tr>
+                <th style="text-align:left;">Parameter</th>
+                <th style="text-align:left;">Value</th>
+                <th style="text-align:left;">Notes</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Mode</td>
+                <td class="vn">${ventSettings.mode}</td>
+                <td>Volume control</td>
+              </tr>
+              <tr>
+                <td>Tidal Volume</td>
+                <td class="vn">${ventSettings.vt}</td>
+                <td>Lung-protective</td>
+              </tr>
+              <tr>
+                <td>Respiratory Rate</td>
+                <td class="vn">${ventSettings.rr}</td>
+                <td>breaths/min</td>
+              </tr>
+              <tr>
+                <td>PEEP</td>
+                <td class="vn">${ventSettings.peep} cm H₂O</td>
+                <td>Optimal for ARDS</td>
+              </tr>
+              <tr>
+                <td>FiO₂</td>
+                <td class="vw">${ventSettings.fio2}</td>
+                <td>High oxygen</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      `;
+      // Add ventilator at the beginning of treatment section
+      treatmentSection = ventItem + (treatmentSection || '');
+    }
+    
+    // Build objective section for labs/imaging (with unlock)
+    if (labsImaging.length > 0) {
+      const labItems = labsImaging.map((order, idx) => {
+        const isUnlocked = State.unlockedResults.has(order.id);
+        const uniqueId = `result-${order.id}-${idx}`;
+        
+        if (isUnlocked) {
+          // Show the actual result
+          return `
+            <div class="objective-item unlocked" id="${uniqueId}">
+              <div class="objective-item-header">
+                <span class="objective-item-name">${order.name}</span>
+                <span class="objective-item-badge" style="color:var(--green)">✓ Unlocked</span>
+              </div>
+              <div class="objective-item-result">
+                ${order.card ? order.card('', State.caseData?.id) : '<div class="result-pending">Result not available</div>'}
+              </div>
+            </div>
+          `;
+        } else {
+          // Show locked state
+          return `
+            <div class="objective-item locked" id="${uniqueId}">
+              <div class="objective-item-header">
+                <span class="objective-item-name">${order.name}</span>
+                <button class="btn btn--sm btn--secondary unlock-btn" data-order-id="${order.id}" data-item-id="${uniqueId}">
+                  🔒 Unlock
+                </button>
+              </div>
+            </div>
+          `;
+        }
+      }).join('');
+      
+      objectiveSection = labItems;
+    }
+  }
+  
+  // Update vitals with oxygen device if ordered, and filter out vent settings
+  let displayVitals = branch.nextVitals;
+  
+  // If patient is intubated, remove ventilator settings from vitals (they'll show in treatment section)
+  if (State.ventilatorSettings && displayVitals) {
+    displayVitals = displayVitals.filter(v => {
+      const ventLabels = ['Mode', 'VT', 'RR', 'PEEP', 'FiO2', 'FiO₂', 'Pplat'];
+      return !ventLabels.includes(v.lbl);
+    });
+  }
+  
+  if (State.currentOxygenDevice && displayVitals) {
+    displayVitals = displayVitals.map(v => {
+      if (v.lbl === 'SpO₂' || v.lbl === 'SpO2') {
+        // Update oxygen device in unit field
+        let deviceText = v.unit;
+        let newSpO2 = v.val;
+        const caseId = State.caseData?.id;
+        
+        if (State.currentOxygenDevice === 'HFNC') {
+          deviceText = 'HFNC 60L';
+          // Improve SpO2 for Cases 1 and 2 when HFNC is used
+          if (caseId === 'cc-1' || caseId === 'cc-2') {
+            // Parse current SpO2 value
+            const currentSpO2 = parseInt(v.val);
+            if (!isNaN(currentSpO2) && currentSpO2 < 94) {
+              // Improve to 94-96% with HFNC
+              newSpO2 = '94%';
+            }
+          }
+        } else if (State.currentOxygenDevice === 'BiPAP') {
+          deviceText = 'BiPAP';
+        } else if (State.currentOxygenDevice === 'NC') {
+          deviceText = '6L NC';
+        } else if (State.currentOxygenDevice === 'NRB') {
+          deviceText = 'NRB 15L';
+        }
+        return { ...v, val: newSpO2, unit: deviceText };
+      }
+      return v;
+    });
   }
   
   $('sim-content').innerHTML = `
@@ -3004,10 +3749,11 @@ function showVitalsAndProceed(branch) {
       </div>
       <div class="sim-card-body">
         
+        <!-- Top row: Vitals (left) and Labs/Imaging (right) -->
         <div class="reassessment-grid">
           <div class="reassessment-col">
             <div class="sec-lbl">Updated Vital Signs</div>
-            ${vitalsTable(branch.nextVitals)}
+            ${vitalsTable(displayVitals)}
           </div>
           
           ${objectiveSection ? `
@@ -3019,6 +3765,16 @@ function showVitalsAndProceed(branch) {
             </div>
           ` : ''}
         </div>
+        
+        <!-- Bottom row: Treatment (full width) -->
+        ${treatmentSection ? `
+          <div style="margin-top:20px;">
+            <div class="sec-lbl">Treatment</div>
+            <div class="treatment-container">
+              ${treatmentSection}
+            </div>
+          </div>
+        ` : ''}
         
         <div class="mt-20">
           <div class="vignette" style="padding:16px;background:var(--bg-3);border-left:3px solid var(--cyan);border-radius:var(--r-sm);">
@@ -3088,7 +3844,7 @@ function bindUnlockButtons() {
             <span class="objective-item-badge" style="color:var(--green)">✓ Unlocked</span>
           </div>
           <div class="objective-item-result">
-            ${order.card ? order.card() : '<div class="result-pending">Result not available</div>'}
+            ${order.card ? order.card('', State.caseData?.id) : '<div class="result-pending">Result not available</div>'}
           </div>
         `;
       }
