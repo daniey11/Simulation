@@ -351,6 +351,37 @@ e.g.: Additional interventions, medications, consults, etc.`,
           ]
         },
         {
+          id: 'rescue-fluid-only',
+          label: '✓ ADDITIONAL FLUID GIVEN',
+          type: 'warning',
+          triggers: ['fluid'], // Simplified - actual check is in evaluateBranch
+          requires: 1,
+          excludes: ['norepi','norepinephrine','levophed','pressor'],
+          headline: 'Adequate fluid volume achieved',
+          narrative: `You've now given additional fluid. Combined with your initial order, the patient has received adequate fluid resuscitation (approximately 2.5L total for this 82 kg patient).<br/><br/>
+          However, the patient remains hypotensive despite completing fluid resuscitation. MAP remains <65 mm Hg despite adequate volume. What's your next step?`,
+          showVitalsButton: true,
+          nextVitals: [
+            { lbl: 'HR',    val: '116',   unit: 'bpm',    st: 'vw' },
+            { lbl: 'BP',    val: '84/48', unit: 'mm Hg',  st: 'vw' },
+            { lbl: 'MAP',   val: '60',    unit: 'mm Hg',  st: 'vw' },
+            { lbl: 'SpO₂',  val: '93%',   unit: '4L NC',  st: 'vw' },
+            { lbl: 'UO',    val: '18 mL', unit: 'last hr',st: 'vw' },
+          ],
+          vitalsMsg: `After completing fluid resuscitation, BP has improved slightly to 84/48 mm Hg (MAP 60 mm Hg). However, MAP remains <65 mm Hg despite adequate fluid.<br/><br/>
+          RN: <em>"We've given the full amount now. His pressure is a little better but still low. What do you want to do next?"</em>`,
+          nextDecision: 'decision1_6',
+          updatedExam: [
+            { icon:'🧠', lbl:'Neuro',   key:'neuro',   text:'Confused. GCS 12. Slowly improving.' },
+            { icon:'👁️', lbl:'General', key:'gen',     text:'Ill-appearing. Diaphoretic. Still looks unwell.' },
+            { icon:'👄', lbl:'HEENT',   key:'heent',   text:'Dry mucous membranes improving. No JVD.' },
+            { icon:'❤️', lbl:'Cardiac', key:'cardiac', text:'Tachycardic (HR 116). Regular. Peripheral pulses palpable but weak.' },
+            { icon:'🫁', lbl:'Lungs',   key:'lungs',   text:'Crackles right lower lobe. RR 26.' },
+            { icon:'🫃', lbl:'Abdomen', key:'abd',     text:'Soft, mild RLQ tenderness.' },
+            { icon:'🦵', lbl:'Extrem',  key:'ext',     text:'Slightly warmer but still cool. Cap refill 3 sec.' }
+          ]
+        },
+        {
           id: 'rescue-pressor-only',
           label: '⚠ ADDED PRESSOR BUT STILL MISSING COMPONENTS',
           type: 'warning',
@@ -358,7 +389,7 @@ e.g.: Additional interventions, medications, consults, etc.`,
           requires: 1,
           excludes: ['micu','icu','2l','2000','2400','2460','2500','2600','3l','3000','30 ml/kg','30 cc/kg'],
           headline: 'Vasopressor started but management still incomplete',
-          narrative: `Norepinephrine has been started, which addresses part of the problem. However, if initial fluid resuscitation was inadequate, additional fluid may still be needed. MICU consultation is also critical for ongoing management.`,
+          narrative: `Norepinephrine has been started, which addresses part of the problem. However, if initial fluid resuscitation was inadequate, additional fluid may still be needed. The nurse is setting up the norepinephrine infusion now.`,
           showVitalsButton: true,
           nextVitals: [
             { lbl: 'HR',    val: '116',   unit: 'bpm',    st: 'vw' },
@@ -367,15 +398,19 @@ e.g.: Additional interventions, medications, consults, etc.`,
             { lbl: 'SpO₂',  val: '92%',   unit: '4L NC',  st: 'vw' },
             { lbl: 'Norepi',val: '10',    unit: 'mcg/min',st: 'vw' },
           ],
-          vitalsMsg: `MAP improved to 63 mm Hg with norepinephrine, but patient remains critically ill. MICU consultation should be initiated for ICU-level care.`,
-          nextDecision: null,
-          endState: 'concern',
-          endMsg: `<strong>Partial Rescue:</strong><br/>
-          • Vasopressor was appropriately added<br/>
-          • However, complete shock bundle includes: adequate fluid (30 mL/kg), vasopressors if needed, MICU consultation, source control<br/>
-          • Delayed MICU consultation can lead to delayed escalation of care<br/><br/>
-          <strong>Remember:</strong> Septic shock patients on vasopressors require ICU-level monitoring.`,
-          decisions: ['Pressor added appropriately', 'Missed MICU consultation', 'Review complete septic shock management']
+          vitalsMsg: `MAP has improved to 63 mm Hg with norepinephrine. The patient is showing some improvement.<br/><br/>
+          <strong>Charge Nurse approaches you:</strong><br/>
+          <em>"Doctor, good call starting the norepinephrine. I'm seeing some improvement in his vitals. But I need to bring something up — typically when patients are on vasopressors like this, they need ICU-level monitoring. Should I call the MICU team to arrange transfer? Patients on pressors really need continuous monitoring and titration in the unit."</em>`,
+          nextDecision: 'decision1_7',
+          updatedExam: [
+            { icon:'🧠', lbl:'Neuro',   key:'neuro',   text:'Confused. GCS 12. Slowly improving.' },
+            { icon:'👁️', lbl:'General', key:'gen',     text:'Ill-appearing but stabilizing. Still diaphoretic.' },
+            { icon:'👄', lbl:'HEENT',   key:'heent',   text:'Dry mucous membranes. No JVD.' },
+            { icon:'❤️', lbl:'Cardiac', key:'cardiac', text:'Tachycardic (HR 116). Regular rhythm. Peripheral pulses improving.' },
+            { icon:'🫁', lbl:'Lungs',   key:'lungs',   text:'Crackles right lower lobe. Tachypneic (RR 26).' },
+            { icon:'🫃', lbl:'Abdomen', key:'abd',     text:'Soft, mild RLQ tenderness.' },
+            { icon:'🦵', lbl:'Extrem',  key:'ext',     text:'Warming slightly. Cap refill 3 sec.' }
+          ]
         },
         {
           id: 'rescue-micu-only',
@@ -444,6 +479,263 @@ e.g.: Additional interventions, medications, consults, etc.`,
             { icon:'🫁', lbl:'Lungs',   key:'lungs',   text:'Crackles. Tachypneic.' },
             { icon:'🫃', lbl:'Abdomen', key:'abd',     text:'Distended, rigid.' },
             { icon:'🦵', lbl:'Extrem',  key:'ext',     text:'<span class="hl">Cold, mottled. No palpable peripheral pulses.</span>' }
+          ]
+        }
+      ]
+    },
+
+    // DECISION POINT 1.6 — Post-fluid pressor decision
+    decision1_6: {
+      title: 'Persistent Hypotension Despite Adequate Fluid',
+      conditionAlert: true,
+      alertText: 'Completed 30 mL/kg fluid resuscitation, but MAP remains <65 mm Hg',
+      alertSub: 'Patient has received adequate volume but remains hypotensive. Consider vasopressor support.',
+      vitals: [
+        { lbl: 'HR',   val: '116',   unit: 'bpm',    st: 'vw' },
+        { lbl: 'BP',   val: '84/48', unit: 'mm Hg',  st: 'vw' },
+        { lbl: 'MAP',  val: '60',    unit: 'mm Hg',  st: 'vw' },
+        { lbl: 'SpO₂', val: '93%',   unit: '4L NC',  st: 'vw' },
+        { lbl: 'Fluids', val: '2.5L', unit: '(30 mL/kg)', st: 'vn' }
+      ],
+      prompt: 'The patient has received adequate fluid resuscitation but MAP remains <65 mm Hg. What is your next step?',
+      placeholder: `Next intervention...
+e.g.: vasopressor, MICU consult, etc.`,
+      branches: [
+        {
+          id: 'post-fluid-pressor-and-micu',
+          label: '✓ VASOPRESSOR + MICU CONSULTATION',
+          type: 'good',
+          triggers: ['norepi','norepinephrine','levophed','pressor','vasopressor','micu','icu','critical care'],
+          requires: 2,
+          headline: 'Appropriate management of fluid-refractory shock',
+          narrative: `Excellent decision-making. You completed adequate fluid resuscitation (30 mL/kg), recognized persistent hypotension (MAP <65 mm Hg), and appropriately initiated vasopressor support with MICU consultation.<br/><br/>
+          <strong>Key Learning:</strong> In septic shock, if MAP remains <65 mm Hg despite adequate fluid (30 mL/kg), start norepinephrine. This is "fluid-refractory" shock and requires vasopressor support.`,
+          showVitalsButton: true,
+          showMICUTransfer: true,
+          nextVitals: [
+            { lbl: 'HR',    val: '108',   unit: 'bpm',    st: 'vw' },
+            { lbl: 'BP',    val: '96/58', unit: 'mm Hg',  st: 'vn' },
+            { lbl: 'MAP',   val: '71',    unit: 'mm Hg',  st: 'vn' },
+            { lbl: 'SpO₂',  val: '95%',   unit: '4L NC',  st: 'vn' },
+            { lbl: 'Norepi',val: '8',     unit: 'mcg/min',st: 'vw' },
+            { lbl: 'UO',    val: '35 mL', unit: 'last hr',st: 'vn' },
+          ],
+          vitalsMsg: `After initiating norepinephrine 8 mcg/min, MAP has improved to 71 mm Hg. Urine output improving. The patient is stabilizing.<br/><br/>
+          MICU attending arrives: <em>"Perfect management. You recognized fluid-refractory shock and started pressors appropriately. Let's transfer to ICU for continued vasopressor titration and monitoring."</em>`,
+          nextDecision: 'decision2',
+          updatedExam: [
+            { icon:'🧠', lbl:'Neuro',   key:'neuro',   text:'Improved. GCS 14. More alert and responsive.' },
+            { icon:'👁️', lbl:'General', key:'gen',     text:'Still ill-appearing but clearly improving. Less diaphoretic.' },
+            { icon:'👄', lbl:'HEENT',   key:'heent',   text:'Mucous membranes improving. No JVD.' },
+            { icon:'❤️', lbl:'Cardiac', key:'cardiac', text:'Tachycardic (HR 108). Regular rhythm. Warming extremities. Stronger pulses.' },
+            { icon:'🫁', lbl:'Lungs',   key:'lungs',   text:'Crackles right lower lobe. RR 22 (improved).' },
+            { icon:'🫃', lbl:'Abdomen', key:'abd',     text:'Soft, mild RLQ tenderness.' },
+            { icon:'🦵', lbl:'Extrem',  key:'ext',     text:'Warming nicely. Cap refill 2 sec (much improved).' }
+          ]
+        },
+        {
+          id: 'post-fluid-pressor-only',
+          label: '✓ VASOPRESSOR STARTED',
+          type: 'good',
+          triggers: ['norepi','norepinephrine','levophed','pressor','vasopressor'],
+          requires: 1,
+          excludes: ['micu','icu','critical care'],
+          headline: 'Vasopressor appropriately initiated',
+          narrative: `Good recognition. You identified fluid-refractory shock (MAP <65 despite 30 mL/kg fluid) and started norepinephrine. This is the correct next step.<br/><br/>
+          The nurse is setting up the norepinephrine infusion now.`,
+          showVitalsButton: true,
+          nextVitals: [
+            { lbl: 'HR',    val: '110',   unit: 'bpm',    st: 'vw' },
+            { lbl: 'BP',    val: '92/54', unit: 'mm Hg',  st: 'vw' },
+            { lbl: 'MAP',   val: '67',    unit: 'mm Hg',  st: 'vn' },
+            { lbl: 'SpO₂',  val: '94%',   unit: '4L NC',  st: 'vn' },
+            { lbl: 'Norepi',val: '10',    unit: 'mcg/min',st: 'vw' },
+          ],
+          vitalsMsg: `MAP has improved to 67 mm Hg on norepinephrine. The patient is stabilizing.<br/><br/>
+          <strong>Charge Nurse approaches you:</strong><br/>
+          <em>"Doctor, I'm glad we started the norepinephrine. The patient looks better already. But I need to mention something — typically when patients are on pressors like this, they need ICU-level monitoring. Should I call the MICU team to arrange transfer? Patients on vasopressors really should be in the unit for continuous monitoring and titration."</em>`,
+          nextDecision: 'decision1_7',
+          updatedExam: [
+            { icon:'🧠', lbl:'Neuro',   key:'neuro',   text:'Improved. GCS 14. More alert and responsive.' },
+            { icon:'👁️', lbl:'General', key:'gen',     text:'Still ill-appearing but clearly improving. Less diaphoretic.' },
+            { icon:'👄', lbl:'HEENT',   key:'heent',   text:'Mucous membranes improving. No JVD.' },
+            { icon:'❤️', lbl:'Cardiac', key:'cardiac', text:'Tachycardic (HR 110). Regular rhythm. Warming extremities. Stronger pulses.' },
+            { icon:'🫁', lbl:'Lungs',   key:'lungs',   text:'Crackles right lower lobe. RR 22 (improved).' },
+            { icon:'🫃', lbl:'Abdomen', key:'abd',     text:'Soft, mild RLQ tenderness.' },
+            { icon:'🦵', lbl:'Extrem',  key:'ext',     text:'Warming nicely. Cap refill 2 sec (much improved).' }
+          ]
+        },
+        {
+          id: 'post-fluid-more-fluid',
+          label: '⚠ ADDITIONAL FLUID AFTER COMPLETING 30 mL/kg',
+          type: 'warning',
+          triggers: ['fluid','bolus','saline','lr','lactated','ringer','crystalloid','1l','1000','500'],
+          requires: 1,
+          excludes: ['norepi','norepinephrine','pressor'],
+          headline: 'Excessive fluid without vasopressor',
+          narrative: `You've already given 30 mL/kg fluid resuscitation. The patient remains hypotensive (MAP <65 mm Hg) despite adequate volume — this is "fluid-refractory" shock.<br/><br/>
+          Further fluid without vasopressor support will not improve MAP and risks fluid overload. The appropriate next step is to start norepinephrine, not give more fluid.`,
+          showVitalsButton: true,
+          nextVitals: [
+            { lbl: 'HR',    val: '118',   unit: 'bpm',    st: 'vw' },
+            { lbl: 'BP',    val: '86/46', unit: 'mm Hg',  st: 'vw' },
+            { lbl: 'MAP',   val: '59',    unit: 'mm Hg',  st: 'vw' },
+            { lbl: 'SpO₂',  val: '91%',   unit: '6L NC',  st: 'vw' },
+            { lbl: 'Fluids',val: '3.5L',  unit: 'total',  st: 'vw' },
+          ],
+          vitalsMsg: `After an additional liter of fluid (now 3.5L total), BP remains low at 86/46 mm Hg. Patient is showing early signs of fluid overload with worsening oxygenation.<br/><br/>
+          RN: <em>"Doctor, his pressure isn't coming up and he's getting more short of breath. I'm hearing crackles in both lungs now."</em>`,
+          nextDecision: null,
+          endState: 'bad',
+          endMsg: `<strong>Inappropriate Fluid Escalation:</strong><br/>
+          • Patient had already received adequate fluid (30 mL/kg = 2.5L)<br/>
+          • MAP remained <65 mm Hg → this is "fluid-refractory" shock<br/>
+          • Additional fluid without vasopressor = inappropriate and harmful<br/>
+          • Patient developed fluid overload with pulmonary edema<br/><br/>
+          <strong>Surviving Sepsis Guidelines:</strong><br/>
+          1. Initial 30 mL/kg crystalloid in first 3 hours<br/>
+          2. If MAP <65 mm Hg despite adequate fluid → START NOREPINEPHRINE<br/>
+          3. Further fluid only if evidence of fluid responsiveness (PPV, PLR, IVC)<br/><br/>
+          <strong>Teaching Point:</strong> Recognize fluid-refractory shock and transition to vasopressor support. More fluid is NOT always better.`,
+          decisions: ['Excessive fluid administration', 'Failed to recognize fluid-refractory shock', 'Review indications for vasopressor initiation'],
+          updatedExam: [
+            { icon:'🧠', lbl:'Neuro',   key:'neuro',   text:'Confused. GCS 12. Anxious.' },
+            { icon:'👁️', lbl:'General', key:'gen',     text:'Ill-appearing. Increasingly dyspneic.' },
+            { icon:'👄', lbl:'HEENT',   key:'heent',   text:'Moist mucous membranes. JVD now present (fluid overload).' },
+            { icon:'❤️', lbl:'Cardiac', key:'cardiac', text:'Tachycardic (HR 118). Bounding pulses.' },
+            { icon:'🫁', lbl:'Lungs',   key:'lungs',   text:'<span class="hl">Bilateral crackles</span> (fluid overload). Increased work of breathing.' },
+            { icon:'🫃', lbl:'Abdomen', key:'abd',     text:'Soft, mild RLQ tenderness.' },
+            { icon:'🦵', lbl:'Extrem',  key:'ext',     text:'Warm, developing edema. Cap refill 2 sec.' }
+          ]
+        },
+        {
+          id: 'post-fluid-wait',
+          label: '⚠ NO INTERVENTION',
+          type: 'bad',
+          triggers: [],
+          requires: 0,
+          headline: 'Delayed vasopressor initiation',
+          narrative: `The patient has received adequate fluid (30 mL/kg) but MAP remains <65 mm Hg. This is fluid-refractory shock requiring immediate vasopressor support.<br/><br/>
+          Waiting or ordering more labs without starting norepinephrine will allow continued hypoperfusion and organ damage.`,
+          showVitalsButton: true,
+          nextVitals: [
+            { lbl: 'HR',    val: '126',   unit: 'bpm',    st: 'vc' },
+            { lbl: 'BP',    val: '76/42', unit: 'mm Hg',  st: 'vc' },
+            { lbl: 'MAP',   val: '53',    unit: 'mm Hg',  st: 'vc' },
+            { lbl: 'SpO₂',  val: '90%',   unit: '6L NC',  st: 'vw' },
+            { lbl: 'Lactate',val:'6.2',   unit: 'mmol/L', st: 'vc' },
+          ],
+          vitalsMsg: `Without vasopressor support, the patient continues to deteriorate. BP dropping to 76/42 mm Hg. Repeat lactate now 6.2 mmol/L (worsening).<br/><br/>
+          Overhead page: <em>"Rapid response, Tower 5 Bed 5. Patient deteriorating despite fluids."</em>`,
+          nextDecision: null,
+          endState: 'bad',
+          endMsg: `<strong>Failure to Initiate Vasopressor:</strong><br/>
+          • Patient received adequate fluid (30 mL/kg)<br/>
+          • MAP remained <65 mm Hg = fluid-refractory shock<br/>
+          • Norepinephrine should have been started immediately<br/>
+          • Delay in vasopressor initiation led to continued hypoperfusion<br/>
+          • Rising lactate and worsening organ dysfunction<br/><br/>
+          <strong>Critical Learning:</strong> In septic shock, if MAP <65 mm Hg DESPITE adequate fluid resuscitation, start norepinephrine immediately. Every hour of delayed vasopressor support increases mortality.`,
+          decisions: ['Failed to recognize fluid-refractory shock', 'Delayed vasopressor initiation', 'Review septic shock management algorithm'],
+          updatedExam: [
+            { icon:'🧠', lbl:'Neuro',   key:'neuro',   text:'Worsening confusion. GCS 11. Minimally responsive.' },
+            { icon:'👁️', lbl:'General', key:'gen',     text:'Critically ill-appearing. Cold, mottled.' },
+            { icon:'👄', lbl:'HEENT',   key:'heent',   text:'Dry mucous membranes. Flat neck veins.' },
+            { icon:'❤️', lbl:'Cardiac', key:'cardiac', text:'Severe tachycardia (HR 126). Weak, thready pulses.' },
+            { icon:'🫁', lbl:'Lungs',   key:'lungs',   text:'Crackles. Tachypneic (RR 30).' },
+            { icon:'🫃', lbl:'Abdomen', key:'abd',     text:'Soft, tender.' },
+            { icon:'🦵', lbl:'Extrem',  key:'ext',     text:'<span class="hl">Cold, mottled. Poor perfusion.</span>' }
+          ]
+        }
+      ]
+    },
+
+    // DECISION POINT 1.7 — MICU consultation after pressor
+    decision1_7: {
+      title: 'ICU Transfer — Patient on Vasopressors',
+      conditionAlert: true,
+      alertText: 'Patient stabilizing on norepinephrine but requires ICU-level care',
+      alertSub: 'The charge nurse is asking about MICU consultation for ICU transfer.',
+      vitals: [
+        { lbl: 'HR',   val: '110',   unit: 'bpm',    st: 'vw' },
+        { lbl: 'BP',   val: '92/54', unit: 'mm Hg',  st: 'vw' },
+        { lbl: 'MAP',  val: '67',    unit: 'mm Hg',  st: 'vn' },
+        { lbl: 'SpO₂', val: '94%',   unit: '4L NC',  st: 'vn' },
+        { lbl: 'Norepi', val: '10',  unit: 'mcg/min', st: 'vw' }
+      ],
+      prompt: 'The charge nurse is right — the patient is on vasopressors and needs ICU-level monitoring. What do you want to do?',
+      placeholder: `Your response...
+e.g.: MICU consult, ICU transfer, etc.`,
+      branches: [
+        {
+          id: 'micu-consult-added',
+          label: '✓ MICU CONSULTATION INITIATED',
+          type: 'good',
+          triggers: ['micu','icu','critical care','consult','intensivist','transfer'],
+          requires: 1,
+          headline: 'ICU transfer appropriately arranged',
+          narrative: `Excellent. You recognized that any patient on vasopressors requires ICU-level monitoring and initiated MICU consultation.<br/><br/>
+          <strong>Key Learning:</strong> Vasopressors = ICU care. Patients on norepinephrine need continuous hemodynamic monitoring, frequent titration, and close observation that can only be provided in an ICU setting.`,
+          showVitalsButton: true,
+          showMICUTransfer: true,
+          nextVitals: [
+            { lbl: 'HR',    val: '108',   unit: 'bpm',    st: 'vw' },
+            { lbl: 'BP',    val: '96/58', unit: 'mm Hg',  st: 'vn' },
+            { lbl: 'MAP',   val: '71',    unit: 'mm Hg',  st: 'vn' },
+            { lbl: 'SpO₂',  val: '95%',   unit: '4L NC',  st: 'vn' },
+            { lbl: 'Norepi',val: '8',     unit: 'mcg/min',st: 'vw' },
+            { lbl: 'UO',    val: '35 mL', unit: 'last hr',st: 'vn' },
+          ],
+          vitalsMsg: `The MICU attending arrives and reviews the case. MAP is now 71 mm Hg on norepinephrine 8 mcg/min. Urine output is improving.<br/><br/>
+          MICU Attending: <em>"Good management. You recognized septic shock, gave appropriate initial fluid resuscitation, started pressors for fluid-refractory shock, and called us for ICU transfer. That's exactly the right sequence. We'll take over from here and continue titrating the pressor. Nice work."</em>`,
+          nextDecision: 'decision2',
+          updatedExam: [
+            { icon:'🧠', lbl:'Neuro',   key:'neuro',   text:'Alert and oriented. GCS 15. Responding appropriately.' },
+            { icon:'👁️', lbl:'General', key:'gen',     text:'Still ill but clearly improving. Much less diaphoretic.' },
+            { icon:'👄', lbl:'HEENT',   key:'heent',   text:'Mucous membranes moist. No JVD.' },
+            { icon:'❤️', lbl:'Cardiac', key:'cardiac', text:'Tachycardic (HR 108) but improved. Regular rhythm. Warm extremities. Strong pulses.' },
+            { icon:'🫁', lbl:'Lungs',   key:'lungs',   text:'Crackles right lower lobe. RR 20 (improved).' },
+            { icon:'🫃', lbl:'Abdomen', key:'abd',     text:'Soft, mild RLQ tenderness.' },
+            { icon:'🦵', lbl:'Extrem',  key:'ext',     text:'Warm. Cap refill <2 sec (normal perfusion restored).' }
+          ]
+        },
+        {
+          id: 'no-micu-consult',
+          label: '⚠ DECLINED ICU TRANSFER',
+          type: 'bad',
+          triggers: [],
+          requires: 0,
+          headline: 'Inappropriate decision to keep patient on floor',
+          narrative: `You chose not to call the MICU despite the patient being on vasopressors. This is inappropriate and potentially dangerous.`,
+          showVitalsButton: true,
+          nextVitals: [
+            { lbl: 'HR',    val: '118',   unit: 'bpm',    st: 'vw' },
+            { lbl: 'BP',    val: '86/48', unit: 'mm Hg',  st: 'vw' },
+            { lbl: 'MAP',   val: '61',    unit: 'mm Hg',  st: 'vw' },
+            { lbl: 'SpO₂',  val: '91%',   unit: '4L NC',  st: 'vw' },
+            { lbl: 'Norepi',val: '15',    unit: 'mcg/min',st: 'vc' },
+          ],
+          vitalsMsg: `Without ICU-level monitoring, the patient's condition worsens. The floor nurse is unable to properly titrate the norepinephrine infusion. MAP is dropping and the pressor dose has escalated to 15 mcg/min.<br/><br/>
+          Overhead page: <em>"Rapid response, Tower 5. Patient on pressors deteriorating on the floor. We need ICU backup NOW."</em><br/><br/>
+          The MICU team arrives emergently and immediately transfers the patient to the ICU.`,
+          nextDecision: null,
+          endState: 'bad',
+          endMsg: `<strong>Critical Error — Inappropriate Floor Management:</strong><br/>
+          • Patient on vasopressors MUST be in ICU<br/>
+          • Floor nurses are not trained to titrate pressors<br/>
+          • Lack of continuous monitoring led to deterioration<br/>
+          • This represents a serious lapse in judgment<br/><br/>
+          <strong>Absolute Rule:</strong> Vasopressors = ICU. There are NO exceptions. Any patient requiring norepinephrine, vasopressin, epinephrine, or other vasopressors must be managed in an ICU setting with appropriate monitoring and nursing expertise.<br/><br/>
+          <strong>Teaching Point:</strong> The floor is not equipped for vasopressor management. Even if the patient seems stable, vasopressor titration requires ICU-level care.`,
+          decisions: ['Inappropriately kept patient on floor', 'Failed to recognize ICU indication', 'Review absolute indications for ICU transfer'],
+          updatedExam: [
+            { icon:'🧠', lbl:'Neuro',   key:'neuro',   text:'Worsening confusion. GCS 12. Lethargic.' },
+            { icon:'👁️', lbl:'General', key:'gen',     text:'Deteriorating. Diaphoretic. Anxious.' },
+            { icon:'👄', lbl:'HEENT',   key:'heent',   text:'Dry mucous membranes. Flat neck veins.' },
+            { icon:'❤️', lbl:'Cardiac', key:'cardiac', text:'Tachycardic (HR 118). Thready pulses.' },
+            { icon:'🫁', lbl:'Lungs',   key:'lungs',   text:'Crackles. Tachypneic (RR 26).' },
+            { icon:'🫃', lbl:'Abdomen', key:'abd',     text:'Soft, tender.' },
+            { icon:'🦵', lbl:'Extrem',  key:'ext',     text:'Cool extremities. Poor perfusion.' }
           ]
         }
       ]
@@ -612,12 +904,12 @@ e.g.: Additional medications, procedures, labs, etc.`,
     ],
 
     vitals: [
-      { lbl: 'HR',   val: '128',   unit: 'bpm, sinus', st: 'vc' },
-      { lbl: 'BP',   val: '78/46', unit: 'mm Hg',      st: 'vc' },
-      { lbl: 'RR',   val: '32',    unit: '/min',        st: 'vc' },
-      { lbl: 'SpO₂', val: '84%',   unit: '6L NC',      st: 'vc' },
+      { lbl: 'HR',   val: '118',   unit: 'bpm, sinus', st: 'vw' },
+      { lbl: 'BP',   val: '107/64', unit: 'mm Hg',      st: 'vw' },
+      { lbl: 'RR',   val: '28',    unit: '/min',        st: 'vc' },
+      { lbl: 'SpO₂', val: '86%',   unit: '6L NC',      st: 'vc' },
       { lbl: 'Temp', val: '36.8°C',unit: 'oral',        st: 'vn' },
-      { lbl: 'JVP',  val: 'Elevated', unit: '~12 cm',  st: 'vc' }
+      { lbl: 'JVP',  val: 'Elevated', unit: '~10 cm',  st: 'vw' }
     ],
 
     labs: [
@@ -652,7 +944,7 @@ e.g.: Additional medications, procedures, labs, etc.`,
 
     decision1: {
       title: 'Initial Stabilization',
-      prompt: 'The patient is hemodynamically unstable. What are your immediate orders?',
+      prompt: 'The patient is severely hypoxic and tachypneic. What are your immediate orders?',
       placeholder: `Enter initial management orders...
 e.g.: Labs, imaging, oxygen, medications, consults, etc.`,
       branches: [
@@ -714,6 +1006,7 @@ e.g.: Labs, imaging, oxygen, medications, consults, etc.`,
           narrative: `You gave a large fluid bolus. In obstructive shock with RV failure, aggressive fluid loading is <span class="hl">harmful</span>. The RV is already severely distended and pressure-overloaded.<br/><br/>
           After the bolus: HR → 148, BP paradoxically drops to <span class="hl">66/38 mm Hg</span>. The patient becomes less responsive. POCUS shows worsening RV dilation with interventricular septal shift bowing into the LV.`,
           showVitalsButton: true,
+          showCodeBlue: true, // NEW: trigger code blue modal
           nextVitals: [
             { lbl: 'HR',    val: '148',   unit: 'bpm',    st: 'vc' },
             { lbl: 'BP',    val: '66/38', unit: 'mm Hg',  st: 'vc' },
@@ -721,7 +1014,8 @@ e.g.: Labs, imaging, oxygen, medications, consults, etc.`,
             { lbl: 'SpO₂',  val: '82%',   unit: '6L NC',  st: 'vc' },
             { lbl: 'GCS',   val: '10',    unit: '/15',    st: 'vc' },
           ],
-          vitalsMsg: `<strong>Key learning:</strong> In obstructive shock, fluids worsen RV dilation → impair LV filling → reduce CO → more hypotension. Limit to 250-500 mL only if clearly preload-responsive.<br/><br/>RN calls code blue. The PERT team and MICU are rushing to bedside.`,
+          vitalsMsg: `<strong>Key learning:</strong> In obstructive shock, fluids worsen RV dilation → impair LV filling → reduce CO → more hypotension. Limit to 250-500 mL only if clearly preload-responsive.<br/><br/>
+          After ROSC, the PERT team and MICU continue advanced resuscitation and stabilization.`,
           nextDecision: 'decision2'
         },
         {
@@ -764,6 +1058,26 @@ e.g.: Labs, imaging, oxygen, medications, consults, etc.`,
           nextDecision: 'decision1_5'
         },
         {
+          id: 'pe-diagnostic-workup',
+          label: 'DIAGNOSTIC WORKUP ORDERED',
+          type: 'neutral',
+          triggers: [/\bcta\b/,/\bctpa\b/,/\bct.?pulmonary\b/,/\bct.?angio\b/,/\becho\b/,/\bechocardiogram\b/,/\bimaging\b/],
+          requires: 1,
+          excludes: ['norepinephrine','norepi','levophed','heparin','anticoagul','pert','1l','2l','1000','2000','liter','bolus'],
+          headline: 'Diagnostic imaging ordered',
+          narrative: `You've ordered diagnostic imaging. The team is mobilizing to get the study completed.<br/><br/>
+          While awaiting results, the patient remains tachypneic and hypoxic but hemodynamically stable enough for imaging.`,
+          showVitalsButton: true,
+          nextVitals: [
+            { lbl: 'HR',    val: '122',   unit: 'bpm',    st: 'vw' },
+            { lbl: 'BP',    val: '102/60', unit: 'mm Hg',  st: 'vw' },
+            { lbl: 'MAP',   val: '74',    unit: 'mm Hg',  st: 'vn' },
+            { lbl: 'SpO₂',  val: '88%',   unit: '6L NC',  st: 'vc' },
+          ],
+          vitalsMsg: `Diagnostic imaging is being processed. Patient remains stable for workup. The nurse asks: "While we're waiting for results, do you want to start any empiric treatment?"`,
+          nextDecision: 'decision1_5'
+        },
+        {
           id: 'pe-default',
           label: 'ORDERS RECEIVED',
           type: 'neutral',
@@ -788,7 +1102,7 @@ e.g.: Labs, imaging, oxygen, medications, consults, etc.`,
       title: 'Bedside Reassessment — Additional Orders',
       conditionAlert: true,
       alertText: 'Patient remains in shock. Management is incomplete.',
-      alertSub: 'Massive PE requires: vasopressor support, anticoagulation, and PERT/MICU activation.',
+      alertSub: 'Consider vasopressor support, underlying cause, and critical care consultation.',
       vitals: [
         { lbl: 'HR',   val: '136',   unit: 'bpm',    st: 'vc' },
         { lbl: 'BP',   val: '70/38', unit: 'mm Hg',  st: 'vc' },
@@ -802,13 +1116,13 @@ e.g.: Labs, imaging, oxygen, medications, consults, etc.`,
           id: 'pe-rescue-complete',
           label: '✓ COMPLETE MANAGEMENT',
           type: 'good',
-          triggers: ['norepinephrine','norepi','levophed','heparin','anticoagul','pert','micu','icu'],
+          triggers: ['norepinephrine','norepi','levophed','heparin','anticoagul','pert','micu'],
           requires: 3, // Need pressor + anticoag + team
           headline: 'Essential interventions added',
           narrative: `You completed the management plan:<br/>
           • <span class="hl">Norepinephrine started</span> — maintains SVR<br/>
           • <span class="hl">Heparin initiated</span> — prevents clot propagation<br/>
-          • <span class="hl">PERT team activated</span> — for thrombolysis discussion<br/><br/>
+          • <span class="hl">PERT/MICU team activated</span> — for advanced management<br/><br/>
           Critical interventions are now in place.`,
           showVitalsButton: true,
           showMICUTransfer: true,
@@ -820,6 +1134,25 @@ e.g.: Labs, imaging, oxygen, medications, consults, etc.`,
             { lbl: 'Norepi',val: '12',    unit: 'mcg/min',st: 'vw' },
           ],
           vitalsMsg: `MAP improving to 60 mm Hg on norepinephrine. Heparin infusing.<br/><br/>PERT team arrives: <em>"We've reviewed the case. This is massive PE with hemodynamic instability. We need to make a thrombolysis decision now."</em>`,
+          nextDecision: 'decision2'
+        },
+        {
+          id: 'pe-rescue-heparin-team-no-pressor',
+          label: '⚠ ANTICOAGULATION AND TEAM WITHOUT PRESSOR',
+          type: 'warning',
+          triggers: ['heparin','anticoagul','pert','micu'],
+          requires: 2, // heparin + (pert or micu)
+          excludes: ['norepinephrine','norepi','levophed'],
+          headline: 'Anticoagulation and team called, but vasopressor missing',
+          narrative: `Good initial steps — heparin started and critical care team called. However, patient remains in shock (MAP 49 mm Hg) and requires vasopressor support. Norepinephrine is first-line for obstructive shock.`,
+          showVitalsButton: true,
+          nextVitals: [
+            { lbl: 'HR',    val: '138',   unit: 'bpm',    st: 'vc' },
+            { lbl: 'BP',    val: '72/40', unit: 'mm Hg',  st: 'vc' },
+            { lbl: 'MAP',   val: '51',    unit: 'mm Hg',  st: 'vc' },
+            { lbl: 'SpO₂',  val: '87%',   unit: 'NRB 15L',st: 'vw' },
+          ],
+          vitalsMsg: `Heparin infusing. MICU team arrives and immediately starts norepinephrine for hemodynamic support. RN: <em>"They're taking over the pressor management."</em><br/><br/>PERT consult is also activated to discuss thrombolysis.`,
           nextDecision: 'decision2'
         },
         {
@@ -843,6 +1176,30 @@ e.g.: Labs, imaging, oxygen, medications, consults, etc.`,
           nextDecision: 'decision2'
         },
         {
+          id: 'pe-rescue-fluids',
+          label: '⚠ LARGE FLUID BOLUS IN RV FAILURE',
+          type: 'bad',
+          triggers: ['1l','1000','1500','2l','2000','fluid','bolus','normal saline','lactated ringer','liter','ns','lr'],
+          requires: 1,
+          excludes: ['small','cautious','250','500'],
+          headline: 'Large fluid bolus worsens RV failure',
+          narrative: `You ordered additional fluid resuscitation despite the patient already showing signs of RV failure from massive PE.<br/><br/>
+          In obstructive shock with RV dysfunction, large fluid boluses are <span class="hl">contraindicated</span>. The RV is already pressure-overloaded and cannot handle additional preload.<br/><br/>
+          After the fluid bolus: HR → 152, BP drops to <span class="hl">58/32 mm Hg</span>. The patient becomes unresponsive. Monitor shows PEA arrest.`,
+          showVitalsButton: true,
+          showCodeBlue: true,
+          nextVitals: [
+            { lbl: 'HR',    val: '152',   unit: 'bpm',    st: 'vc' },
+            { lbl: 'BP',    val: '58/32', unit: 'mm Hg',  st: 'vc' },
+            { lbl: 'MAP',   val: '41',    unit: 'mm Hg',  st: 'vc' },
+            { lbl: 'SpO₂',  val: '78%',   unit: 'NRB',    st: 'vc' },
+            { lbl: 'GCS',   val: '3',     unit: '/15',    st: 'vc' },
+          ],
+          vitalsMsg: `<strong>Critical Error:</strong> Large volume fluid administration in massive PE with RV dysfunction caused acute RV distension → complete hemodynamic collapse → PEA arrest.<br/><br/>
+          After ROSC is achieved, emergency PERT consultation is called. The team proceeds with emergent catheter-directed thrombolysis in the ICU.`,
+          nextDecision: 'decision2'
+        },
+        {
           id: 'pe-rescue-anticoag-only',
           label: '⚠ ANTICOAGULATION WITHOUT PRESSOR',
           type: 'warning',
@@ -863,28 +1220,29 @@ e.g.: Labs, imaging, oxygen, medications, consults, etc.`,
         },
         {
           id: 'pe-rescue-default',
-          label: 'INCOMPLETE MANAGEMENT',
+          label: 'ADDITIONAL ORDERS NEEDED',
           type: 'neutral',
           triggers: [],
           requires: 0,
           headline: 'Critical interventions still needed',
-          narrative: `Patient remains in shock without adequate intervention. The rapid response team is escalating management.`,
+          narrative: `The patient remains hemodynamically unstable. Additional management is required.<br/><br/>
+          Massive PE requires: vasopressor support (norepinephrine), anticoagulation (heparin), and PERT activation for advanced therapy discussion.`,
           showVitalsButton: true,
           nextVitals: [
-            { lbl: 'HR',    val: '144',   unit: 'bpm',    st: 'vc' },
-            { lbl: 'BP',    val: '66/38', unit: 'mm Hg',  st: 'vc' },
-            { lbl: 'MAP',   val: '47',    unit: 'mm Hg',  st: 'vc' },
-            { lbl: 'SpO₂',  val: '84%',   unit: 'NRB 15L',st: 'vc' },
+            { lbl: 'HR',    val: '138',   unit: 'bpm',    st: 'vc' },
+            { lbl: 'BP',    val: '74/42', unit: 'mm Hg',  st: 'vc' },
+            { lbl: 'MAP',   val: '53',    unit: 'mm Hg',  st: 'vc' },
+            { lbl: 'SpO₂',  val: '86%',   unit: 'NRB 15L',st: 'vc' },
           ],
-          vitalsMsg: `The rapid response team initiates norepinephrine and heparin. PERT team is urgently paged.`,
-          nextDecision: 'decision2'
+          vitalsMsg: `RN: <em>"The patient is still very hypotensive. What else should we do? Should I call the PERT team and MICU?"</em>`,
+          nextDecision: 'decision1_5'
         }
       ]
     },
 
     decision2: {
       title: 'PERT Conference — Treatment Strategy Decision',
-      prompt: 'PERT team has assembled: Interventional Radiology, Pulmonary/Critical Care, Cardiology, and Primary Medicine. Patient remains on norepinephrine 12 mcg/min with MAP 58 mm Hg. The team is discussing treatment options. What is your recommendation?',
+      prompt: 'PERT team has assembled: Interventional Radiology, Pulmonary/Critical Care, Cardiology, and Primary Medicine. The patient remains critically ill with massive PE and hemodynamic instability. The team is discussing treatment options. What is your recommendation?',
       placeholder: `Enter your treatment recommendation...
 e.g.: Treatment strategy, rationale, monitoring plan, etc.`,
       branches: [
@@ -1087,6 +1445,14 @@ e.g.: Airway, medications, ventilation, etc.`,
             { lbl: 'Pplat', val: '28',        unit: 'cm H2O',   st: 'vn' },
           ],
           vitalsMsg: `Patient is intubated and on lung-protective ventilation. SpO₂ 90% on FiO₂ 80%, PEEP 10. Plateau pressure 28 cm H₂O (acceptable).<br/><br/>MICU attending: <em>"Excellent intubation and vent settings. This is severe ARDS from influenza. We'll need to optimize PEEP, consider prone positioning, and manage sedation carefully."</em>`,
+          updatedExam: [
+            { icon:'😴', lbl:'General', key:'gen',     text:'Intubated and sedated. RASS -2 (light sedation). No spontaneous movement. Ventilator-synchronous.' },
+            { icon:'🧠', lbl:'Neuro',   key:'neuro',   text:'Sedated on propofol. RASS -2. Pupils equal and reactive. Moving all extremities to noxious stimuli.' },
+            { icon:'🫁', lbl:'Lungs',   key:'lungs',   text:'Intubated. Equal bilateral breath sounds. Diffuse crackles bilaterally. Ventilator cycling normally.' },
+            { icon:'❤️', lbl:'Cardiac', key:'cardiac', text:'Tachycardia improved from pre-intubation. Regular rhythm. No murmurs.' },
+            { icon:'🫃', lbl:'Abdomen', key:'abd',     text:'Soft, non-distended. OG tube in place with minimal output.' },
+            { icon:'🦵', lbl:'Extrem',  key:'ext',     text:'Warm. No edema. Good peripheral pulses. No DVT signs.' }
+          ],
           nextDecision: 'decision2'
         },
         {
@@ -1115,6 +1481,14 @@ e.g.: Airway, medications, ventilation, etc.`,
           • Pplat <30 cm H₂O<br/>
           • Permissive hypercapnia acceptable (pH ≥7.20)<br/><br/>
           RT: <em>"We need to reduce the tidal volume immediately to 328 mL."</em>`,
+          updatedExam: [
+            { icon:'😴', lbl:'General', key:'gen',     text:'Intubated and sedated. RASS -2. Ventilator alarming "high pressure". Patient appears uncomfortable.' },
+            { icon:'🧠', lbl:'Neuro',   key:'neuro',   text:'Sedated on propofol. RASS -2. Pupils equal and reactive. Moving all extremities.' },
+            { icon:'🫁', lbl:'Lungs',   key:'lungs',   text:'Intubated. Equal bilateral breath sounds. Diffuse crackles. High plateau pressure on ventilator (34 cm H₂O).' },
+            { icon:'❤️', lbl:'Cardiac', key:'cardiac', text:'Tachycardic, hypotensive. Likely from high intrathoracic pressure reducing venous return.' },
+            { icon:'🫃', lbl:'Abdomen', key:'abd',     text:'Soft, mildly distended from high airway pressures. OG tube in place.' },
+            { icon:'🦵', lbl:'Extrem',  key:'ext',     text:'Warm. No edema. Pulses present but weak.' }
+          ],
           nextDecision: 'decision2'
         },
         {
@@ -1126,9 +1500,9 @@ e.g.: Airway, medications, ventilation, etc.`,
           excludes: ['intubat','rsi','etomidate','ketamine'],
           headline: 'NIV attempted — high failure risk in severe ARDS',
           narrative: `You tried BiPAP. While NIV can work in mild-moderate hypoxemic respiratory failure, this patient has:<br/>
-          • P/F ratio 58 (severe hypoxemic respiratory failure)<br/>
-          • SpO₂ 84% on max HFNC<br/>
-          • Accessory muscle use and tiring<br/><br/>
+          • SpO₂ 84% on max HFNC (severe hypoxemic respiratory failure)<br/>
+          • Accessory muscle use and tiring<br/>
+          • Altered mental status<br/><br/>
           After 10 minutes on BiPAP 18/10: SpO₂ drops to <span class="hl">78%</span>. Patient is combative, pulling at mask. GCS declining to 10.`,
           showVitalsButton: true,
           nextVitals: [
@@ -1149,7 +1523,7 @@ e.g.: Airway, medications, ventilation, etc.`,
           excludes: ['intubat','rsi','bipap','cpap','niv'],
           headline: 'Airway management not addressed',
           narrative: `You escalated oxygen without securing the airway. This patient has:<br/>
-          • Severe hypoxemic respiratory failure (P/F 58)<br/>
+          • Severe hypoxemic respiratory failure<br/>
           • HFNC failure (SpO₂ 84% on max flow)<br/>
           • Work of breathing with accessory muscles<br/>
           • Tiring and unable to sustain effort<br/><br/>
@@ -1249,6 +1623,14 @@ e.g.: Airway, medications, ventilation, etc.`,
             { lbl: 'SpO2',  val: '88%',       unit: '',         st: 'vw' },
           ],
           vitalsMsg: `Patient intubated. Initial SpO₂ 88% on vent. RT managing ventilator settings.`,
+          updatedExam: [
+            { icon:'😴', lbl:'General', key:'gen',     text:'Intubated and sedated post-emergent intubation. RASS -2. Stabilizing on ventilator.' },
+            { icon:'🧠', lbl:'Neuro',   key:'neuro',   text:'Sedated on propofol. RASS -2. Pupils equal and reactive. Responds to noxious stimuli.' },
+            { icon:'🫁', lbl:'Lungs',   key:'lungs',   text:'Intubated. Equal bilateral breath sounds. Diffuse crackles. Ventilator cycling normally.' },
+            { icon:'❤️', lbl:'Cardiac', key:'cardiac', text:'Heart rate improved from 148 to normal range. Hemodynamics stabilizing post-intubation.' },
+            { icon:'🫃', lbl:'Abdomen', key:'abd',     text:'Soft, non-distended. OG tube placed.' },
+            { icon:'🦵', lbl:'Extrem',  key:'ext',     text:'Warm. No edema. Pulses palpable.' }
+          ],
           nextDecision: 'decision2'
         },
         {
@@ -1271,6 +1653,14 @@ e.g.: Airway, medications, ventilation, etc.`,
             { lbl: 'SpO2',  val: '84%',       unit: '',         st: 'vc' },
           ],
           vitalsMsg: `Crash intubation performed. More difficult due to delay. SpO₂ 84%, requires FiO₂ 100%.`,
+          updatedExam: [
+            { icon:'😴', lbl:'General', key:'gen',     text:'Intubated and deeply sedated post-crash intubation. RASS -3. Required more sedation due to difficult intubation.' },
+            { icon:'🧠', lbl:'Neuro',   key:'neuro',   text:'Deeply sedated on propofol. RASS -3. Pupils equal. Unresponsive to voice, minimal response to pain.' },
+            { icon:'🫁', lbl:'Lungs',   key:'lungs',   text:'Intubated after difficult crash intubation. Equal breath sounds. Requires FiO₂ 100% for severe hypoxemia.' },
+            { icon:'❤️', lbl:'Cardiac', key:'cardiac', text:'Tachycardic from stress of crash intubation. Hemodynamics marginal.' },
+            { icon:'🫃', lbl:'Abdomen', key:'abd',     text:'Soft but distended from mask ventilation attempt. OG tube placed.' },
+            { icon:'🦵', lbl:'Extrem',  key:'ext',     text:'Cool peripherally. Delayed capillary refill. Stress response from crash intubation.' }
+          ],
           nextDecision: 'decision2'
         },
         {
@@ -1320,13 +1710,47 @@ You must specify EXACT numbers:
           • PEEP: <span class="hl">Increase to 14-16</span> per ARDSnet FiO₂/PEEP table<br/>
           • FiO₂: Keep 80% for now, reassess after PEEP increase<br/><br/>
           <strong>Reasoning:</strong> pH 7.18 with PaCO₂ 68 = respiratory acidosis. <span class="hl">Permissive hypercapnia is acceptable (target pH >7.20)</span>, but pH 7.18 is just below threshold. Increasing RR will improve ventilation. PaO₂ 58 on FiO₂ 80% = severe hypoxemia → increase PEEP for recruitment.<br/><br/>
-          <strong>Repeat ABG in 30 minutes:</strong><br/>
-          pH 7.24, PaCO₂ 58, PaO₂ 78, HCO₃ 24<br/>
-          SpO₂ improved to 92%. Patient is synchronous with ventilator.`,
-          nextDecision: null,
-          endState: 'good',
-          endMsg: 'Excellent ABG interpretation and ventilator management. You correctly: (1) maintained VT 6 mL/kg PBW, (2) increased RR to target pH >7.20, (3) increased PEEP for oxygenation per ARDSnet table, (4) understood permissive hypercapnia principles.',
-          decisions: ['Intubated appropriately', 'Ordered post-intubation ABG', 'Correctly interpreted respiratory acidosis', 'Maintained lung-protective VT', 'Increased RR to improve ventilation (pH >7.20)', 'Optimized PEEP per ARDSnet FiO₂/PEEP table', 'Demonstrated permissive hypercapnia understanding']
+          
+          <strong>RT:</strong> <em>"Perfect adjustments. Let me make those changes now. We'll reassess vitals and ABG in 30 minutes."</em>`,
+          showVitalsButton: true,
+          nextVitals: [
+            { lbl: 'HR',    val: '108',       unit: 'bpm',      st: 'va' },
+            { lbl: 'BP',    val: '118/72',    unit: 'mm Hg',    st: 'va' },
+            { lbl: 'SpO2',  val: '92%',       unit: '',         st: 'vw' },
+            { lbl: 'Temp',  val: '38.5',      unit: '°C',       st: 'va' },
+            { lbl: 'Mode',  val: 'AC/VC',     unit: '',         st: 'vn' },
+            { lbl: 'VT',    val: '330 mL',    unit: '6 mL/kg',  st: 'vn' },
+            { lbl: 'RR',    val: '28',        unit: 'set',      st: 'vn' },
+            { lbl: 'PEEP',  val: '15',        unit: 'cm H2O',   st: 'vn' },
+            { lbl: 'FiO2',  val: '80%',       unit: '',         st: 'vw' },
+            { lbl: 'pH',    val: '7.24',      unit: '',         st: 'vn' },
+            { lbl: 'PaCO2', val: '58',        unit: 'mm Hg',    st: 'vn' },
+            { lbl: 'PaO2',  val: '78',        unit: 'mm Hg',    st: 'vw' },
+            { lbl: 'HCO3',  val: '24',        unit: 'mEq/L',    st: 'vn' },
+            { lbl: 'SaO2',  val: '94%',       unit: '',         st: 'vn' }
+          ],
+          vitalsMsg: `<strong>30-Minute Follow-up After Ventilator Adjustments:</strong><br/><br/>
+          Vital signs improved: SpO₂ 92%, HR 108, BP 118/72.<br/><br/>
+          <strong>Follow-up ABG Results:</strong><br/>
+          • pH: 7.24 (improved from 7.18) ✓<br/>
+          • PaCO₂: 58 mm Hg (improved from 68)<br/>
+          • PaO₂: 78 mm Hg (improved from 58) ✓<br/>
+          • HCO₃: 24 mEq/L<br/>
+          • SaO₂: 94%<br/><br/>
+          <strong>Analysis:</strong><br/>
+          • Ventilation: Improved (pH 7.18 → 7.24, now >7.20 target)<br/>
+          • Oxygenation: Improved (PaO₂ 58 → 78, P/F ratio 72 → 97)<br/>
+          • Patient: Synchronous with ventilator<br/><br/>
+          <strong>RT:</strong> <em>"Excellent response to your adjustments. Ventilation and oxygenation both improved. The patient is much more stable now."</em>`,
+          updatedExam: [
+            { icon:'😴', lbl:'General', key:'gen',     text:'Intubated and sedated. RASS -1 to -2. Comfortable on ventilator. Improved from initial presentation.' },
+            { icon:'🧠', lbl:'Neuro',   key:'neuro',   text:'Sedated on propofol. RASS -1 (easily arousable). Pupils equal and reactive. Follows simple commands when aroused.' },
+            { icon:'🫁', lbl:'Lungs',   key:'lungs',   text:'Intubated. Equal bilateral breath sounds. Crackles improved compared to admission. No bronchospasm. Synchronous with ventilator.' },
+            { icon:'❤️', lbl:'Cardiac', key:'cardiac', text:'Heart rate normalized (108 bpm). Regular rhythm. Hemodynamically stable off pressors.' },
+            { icon:'🫃', lbl:'Abdomen', key:'abd',     text:'Soft, non-distended. OG tube draining bilious fluid. No rigidity or tenderness.' },
+            { icon:'🦵', lbl:'Extrem',  key:'ext',     text:'Warm and well-perfused. No edema. Capillary refill <2 seconds.' }
+          ],
+          nextDecision: 'decision3'
         },
         {
           id: 'vent-rr-only',
@@ -1343,10 +1767,38 @@ You must specify EXACT numbers:
           <strong>Repeat ABG:</strong> pH 7.23, PaCO₂ 59, PaO₂ 62, HCO₃ 24<br/>
           Ventilation improved (pH now >7.20) but oxygenation still suboptimal (PaO₂ 62 on FiO₂ 80%).<br/><br/>
           RT: <em>"The P/F ratio is still only 78 (62/0.8). Per ARDSnet table, at FiO₂ 80%, we should increase PEEP to 14-16 for recruitment."</em>`,
-          nextDecision: null,
-          endState: 'good',
-          endMsg: 'Good ventilation management. Remember to also optimize PEEP using ARDSnet FiO₂/PEEP table for oxygenation in severe ARDS.',
-          decisions: ['Ordered ABG appropriately', 'Increased RR to target pH >7.20', 'Maintained lung-protective VT', 'Should have increased PEEP for oxygenation']
+          showVitalsButton: true,
+          nextVitals: [
+            { lbl: 'HR',    val: '110',       unit: 'bpm',      st: 'va' },
+            { lbl: 'BP',    val: '115/70',    unit: 'mm Hg',    st: 'va' },
+            { lbl: 'SpO2',  val: '90%',       unit: '',         st: 'vw' },
+            { lbl: 'Mode',  val: 'AC/VC',     unit: '',         st: 'vn' },
+            { lbl: 'VT',    val: '330 mL',    unit: '6 mL/kg',  st: 'vn' },
+            { lbl: 'RR',    val: '26',        unit: 'set',      st: 'vn' },
+            { lbl: 'PEEP',  val: '10',        unit: 'cm H2O',   st: 'vw' },
+            { lbl: 'FiO2',  val: '80%',       unit: '',         st: 'vw' },
+            { lbl: 'pH',    val: '7.23',      unit: '',         st: 'vn' },
+            { lbl: 'PaCO2', val: '59',        unit: 'mm Hg',    st: 'vn' },
+            { lbl: 'PaO2',  val: '62',        unit: 'mm Hg',    st: 'vw' },
+            { lbl: 'HCO3',  val: '24',        unit: 'mEq/L',    st: 'vn' }
+          ],
+          vitalsMsg: `<strong>30-Minute Follow-up:</strong><br/><br/>
+          <strong>Follow-up ABG Results:</strong><br/>
+          • pH: 7.23 (improved from 7.18) ✓<br/>
+          • PaCO₂: 59 mm Hg (improved from 68)<br/>
+          • PaO₂: 62 mm Hg (minimal improvement from 58)<br/>
+          • P/F ratio: 78 (still severe ARDS)<br/><br/>
+          <strong>Analysis:</strong> Ventilation improved (pH now >7.20), but oxygenation remains suboptimal. PEEP optimization would help with recruitment.<br/><br/>
+          <strong>RT:</strong> <em>"The ventilation is better now. But we still need to address oxygenation - consider increasing PEEP per ARDSnet table."</em>`,
+          updatedExam: [
+            { icon:'😴', lbl:'General', key:'gen',     text:'Intubated and sedated. RASS -2. Ventilator-synchronous but oxygenation still marginal.' },
+            { icon:'🧠', lbl:'Neuro',   key:'neuro',   text:'Sedated on propofol. RASS -2. Pupils equal and reactive.' },
+            { icon:'🫁', lbl:'Lungs',   key:'lungs',   text:'Intubated. Equal breath sounds. Persistent crackles. Could benefit from more PEEP.' },
+            { icon:'❤️', lbl:'Cardiac', key:'cardiac', text:'Heart rate 110 bpm. Regular rhythm. Stable hemodynamics.' },
+            { icon:'🫃', lbl:'Abdomen', key:'abd',     text:'Soft, non-distended. OG tube in place.' },
+            { icon:'🦵', lbl:'Extrem',  key:'ext',     text:'Warm. No edema. Good pulses.' }
+          ],
+          nextDecision: 'decision3'
         },
         {
           id: 'vent-peep-only',
@@ -1363,10 +1815,38 @@ You must specify EXACT numbers:
           <strong>Repeat ABG:</strong> pH 7.18, PaCO₂ 68, PaO₂ 72, HCO₃ 24<br/>
           Oxygenation improved (PaO₂ from 58 to 72) but acidosis persists (pH still 7.18).<br/><br/>
           RT: <em>"The oxygenation is better, but the patient's pH is still 7.18 with PaCO₂ 68. We need to increase respiratory rate to improve ventilation and get the pH above 7.20."</em>`,
-          nextDecision: null,
-          endState: 'good',
-          endMsg: 'Good PEEP optimization. Remember to also address respiratory acidosis by increasing RR when pH <7.20.',
-          decisions: ['Ordered ABG appropriately', 'Optimized PEEP per ARDSnet table', 'Maintained lung-protective VT', 'Should have increased RR to target pH >7.20']
+          showVitalsButton: true,
+          nextVitals: [
+            { lbl: 'HR',    val: '112',       unit: 'bpm',      st: 'va' },
+            { lbl: 'BP',    val: '116/74',    unit: 'mm Hg',    st: 'va' },
+            { lbl: 'SpO2',  val: '91%',       unit: '',         st: 'vw' },
+            { lbl: 'Mode',  val: 'AC/VC',     unit: '',         st: 'vn' },
+            { lbl: 'VT',    val: '330 mL',    unit: '6 mL/kg',  st: 'vn' },
+            { lbl: 'RR',    val: '20',        unit: 'set',      st: 'vw' },
+            { lbl: 'PEEP',  val: '15',        unit: 'cm H2O',   st: 'vn' },
+            { lbl: 'FiO2',  val: '80%',       unit: '',         st: 'vw' },
+            { lbl: 'pH',    val: '7.18',      unit: '',         st: 'vc' },
+            { lbl: 'PaCO2', val: '68',        unit: 'mm Hg',    st: 'vc' },
+            { lbl: 'PaO2',  val: '72',        unit: 'mm Hg',    st: 'vw' },
+            { lbl: 'HCO3',  val: '24',        unit: 'mEq/L',    st: 'vn' }
+          ],
+          vitalsMsg: `<strong>30-Minute Follow-up:</strong><br/><br/>
+          <strong>Follow-up ABG Results:</strong><br/>
+          • pH: 7.18 (unchanged) ⚠<br/>
+          • PaCO₂: 68 mm Hg (unchanged)<br/>
+          • PaO₂: 72 mm Hg (improved from 58) ✓<br/>
+          • P/F ratio: 90 (still severe ARDS but improved)<br/><br/>
+          <strong>Analysis:</strong> Oxygenation improved with PEEP increase, but respiratory acidosis persists (pH still <7.20). Need to increase RR to improve ventilation.<br/><br/>
+          <strong>RT:</strong> <em>"PEEP helped with oxygenation, but we still need to address the acidosis. Let's increase the respiratory rate."</em>`,
+          updatedExam: [
+            { icon:'😴', lbl:'General', key:'gen',     text:'Intubated and sedated. RASS -2. Better oxygenation but still acidotic.' },
+            { icon:'🧠', lbl:'Neuro',   key:'neuro',   text:'Sedated on propofol. RASS -2. Responsive to stimulation.' },
+            { icon:'🫁', lbl:'Lungs',   key:'lungs',   text:'Intubated. Equal breath sounds. Crackles improved with PEEP recruitment.' },
+            { icon:'❤️', lbl:'Cardiac', key:'cardiac', text:'Heart rate 112 bpm. Regular rhythm. Hemodynamics stable.' },
+            { icon:'🫃', lbl:'Abdomen', key:'abd',     text:'Soft, non-distended. OG tube in place.' },
+            { icon:'🦵', lbl:'Extrem',  key:'ext',     text:'Warm. No edema. Good pulses.' }
+          ],
+          nextDecision: 'decision3'
         },
         {
           id: 'vent-increase-vt-wrong',
@@ -1384,10 +1864,7 @@ You must specify EXACT numbers:
           • Accept <strong>permissive hypercapnia</strong> (pH ≥7.20)<br/>
           • Maintain VT 6 mL/kg to prevent volutrauma<br/><br/>
           RT: <em>"Plateau pressure is now 34 cm H₂O — we're back above the 30 limit. We need to reduce VT back to 330 mL and increase RR instead."</em>`,
-          nextDecision: null,
-          endState: 'concern',
-          endMsg: 'Do not increase tidal volume to correct respiratory acidosis in ARDS. Maintain VT 6 mL/kg PBW and increase RR. Accept permissive hypercapnia (pH ≥7.20).',
-          decisions: ['Intubated appropriately', 'Ordered ABG', 'Incorrectly increased VT — violates lung-protective strategy', 'Should increase RR, not VT, for ventilation']
+          nextDecision: 'decision3',
         },
         {
           id: 'vent-no-changes',
@@ -1403,10 +1880,7 @@ You must specify EXACT numbers:
           • PaO₂ 58 on FiO₂ 80% = <span class="hl">P/F ratio 72 (severe hypoxemia)</span><br/><br/>
           While permissive hypercapnia is acceptable in ARDS, pH should be maintained <span class="hl">≥7.20</span>. At pH 7.18, you should increase respiratory rate to improve ventilation.<br/><br/>
           For oxygenation (P/F 72), PEEP should be optimized using ARDSnet FiO₂/PEEP table.`,
-          nextDecision: null,
-          endState: 'concern',
-          endMsg: 'ABG-driven ventilator management is essential. Target pH ≥7.20 by adjusting RR. Optimize PEEP per ARDSnet table for oxygenation.',
-          decisions: ['Ordered ABG', 'Failed to adjust ventilator based on ABG results', 'Review permissive hypercapnia targets', 'Review ARDSnet FiO₂/PEEP table']
+          nextDecision: 'decision3',
         },
         {
           id: 'vent-default',
@@ -1425,10 +1899,284 @@ You must specify EXACT numbers:
           • P/F ratio: 58/0.8 = 72 (severe ARDS)<br/>
           • Intervention: <span class="hl">Increase PEEP</span> per ARDSnet table (10 → 14-16)<br/>
           • FiO₂ 80% with PEEP 10 is lower PEEP strategy — should use higher PEEP`,
-          nextDecision: null,
+          nextDecision: 'decision3',
           endState: 'concern',
           endMsg: 'Review ABG-driven ventilator management. Adjust RR for ventilation, PEEP for oxygenation. Maintain VT 6 mL/kg PBW.',
           decisions: ['Practice ABG interpretation', 'Review ARDSnet ventilator protocol']
+        }
+      ]
+    },
+
+    decision3: {
+      title: 'Follow-up ABG After Ventilator Adjustments',
+      prompt: `<strong>30 Minutes Post-Adjustment</strong><br/><br/>
+      
+You increased RR to 28 and PEEP to 15 cm H₂O. The patient has stabilized and you order a follow-up ABG to assess your ventilator changes.<br/><br/>
+
+Review the updated vital signs, ABG results, and physical exam. What are your next management steps?`,
+      vitals: [
+        { lbl: 'HR',    val: '108',       unit: 'bpm',      st: 'vn' },
+        { lbl: 'BP',    val: '118/72',    unit: 'mm Hg',    st: 'vn' },
+        { lbl: 'SpO₂',  val: '92%',       unit: '',         st: 'vw' },
+        { lbl: 'Temp',  val: '38.3°C',    unit: '',         st: 'va' },
+        { lbl: 'Mode',  val: 'AC/VC',     unit: '',         st: 'vn' },
+        { lbl: 'VT',    val: '330 mL',    unit: '6 mL/kg',  st: 'vn' },
+        { lbl: 'RR',    val: '28',        unit: 'set',      st: 'vn' },
+        { lbl: 'PEEP',  val: '15',        unit: 'cm H₂O',   st: 'vn' },
+        { lbl: 'FiO₂',  val: '80%',       unit: '',         st: 'vw' },
+        { lbl: 'Pplat', val: '28',        unit: 'cm H₂O',   st: 'vn' },
+      ],
+      labs: [
+        {
+          cat: 'ABG',
+          name: 'Arterial Blood Gas',
+          needsUnlock: true,
+          unlockMsg: 'ABG results available',
+          results: [
+            { test: 'pH', value: '7.24', flag: 'L', reference: '7.35-7.45' },
+            { test: 'PaCO₂', value: '58 mm Hg', flag: 'H', reference: '35-45 mm Hg' },
+            { test: 'PaO₂', value: '78 mm Hg', flag: 'L', reference: '80-100 mm Hg' },
+            { test: 'HCO₃', value: '24 mEq/L', flag: '', reference: '22-26 mEq/L' },
+            { test: 'SaO₂', value: '94%', flag: '', reference: '>95%' },
+            { test: '', value: '', flag: '', reference: '' },
+            { test: 'P/F Ratio', value: '97', flag: 'C', reference: '>300 mm Hg' },
+            { test: 'Interpretation', value: 'Severe ARDS (P/F <100)', flag: 'C', reference: '' },
+          ],
+          interpretation: `<strong>ABG Interpretation:</strong><br/>
+          • <strong>Ventilation:</strong> Improved (pH 7.18 → 7.24, PaCO₂ 68 → 58)<br/>
+          • <strong>Oxygenation:</strong> Improved (PaO₂ 58 → 78)<br/>
+          • <strong>P/F Ratio:</strong> 97 (severe ARDS, improved from 72)<br/>
+          • <strong>pH Status:</strong> Acceptable with permissive hypercapnia (target ≥7.20)<br/>
+          • <strong>Clinical Status:</strong> Patient synchronous with ventilator, hemodynamically stable`
+        }
+      ],
+      placeholder: `Review ABG and vitals, then enter your next orders...
+
+Key considerations:
+• P/F ratio 97 = severe ARDS (threshold <100)
+• pH 7.24 is acceptable (permissive hypercapnia)
+• FiO₂ 80% is high but necessary for current oxygenation
+• What adjunctive therapies are indicated for severe ARDS?`,
+      branches: [
+        {
+          id: 'prone-positioning-ordered',
+          label: '✓ PRONE POSITIONING ORDERED',
+          type: 'good',
+          triggers: ['prone','proning','prone position','prone positioning','flip prone','turn prone'],
+          requires: 1,
+          headline: 'Excellent ARDS management — prone positioning initiated',
+          narrative: `<strong>Your order:</strong> Initiate prone positioning<br/><br/>
+          
+          <strong>Outstanding clinical reasoning:</strong> With P/F ratio 97 (severe ARDS, <150 mm Hg threshold) and FiO₂ 80%, prone positioning is indicated per PROSEVA trial.<br/><br/>
+          
+          <strong>PROSEVA Trial (2013):</strong><br/>
+          • P/F <150 mm Hg + FiO₂ ≥60% = prone indication<br/>
+          • 16% absolute mortality reduction with prone ≥16 hrs/day<br/>
+          • Should be initiated within 36 hours of ARDS diagnosis<br/><br/>
+          
+          <strong>RT coordinates prone protocol:</strong><br/>
+          Team assembles (6+ staff needed for safe turn). Patient positioned prone with pressure point protection. Ventilator settings maintained.<br/><br/>
+          
+          <strong>4-hour reassessment (after prone positioning):</strong><br/>
+          • SpO₂: 96% (improved from 92%)<br/>
+          • ABG: pH 7.26, PaCO₂ 56, <span class="hl">PaO₂ 110</span> (improved from 78!)<br/>
+          • P/F ratio: 138 (still severe, but improved from 97)<br/>
+          • FiO₂ successfully weaned to 65%<br/><br/>
+          
+          <strong>RT:</strong> <em>"Excellent response to proning! PaO₂ jumped from 78 to 110. We're now able to wean FiO₂. This is exactly what the PROSEVA trial showed - early prone positioning in severe ARDS saves lives."</em>`,
+          showVitalsButton: true,
+          nextVitals: [
+            { lbl: 'HR',   val: '100',   unit: 'bpm',      st: 'vn' },
+            { lbl: 'BP',   val: '118/68', unit: 'mm Hg',   st: 'vn' },
+            { lbl: 'SpO2', val: '96%',   unit: '',         st: 'vn' },
+            { lbl: 'Mode', val: 'AC/VC', unit: 'prone',    st: 'vn' },
+            { lbl: 'VT',   val: '330 mL', unit: '6 mL/kg', st: 'vn' },
+            { lbl: 'RR',   val: '28',    unit: 'set',      st: 'vn' },
+            { lbl: 'PEEP', val: '15',    unit: 'cm H2O',   st: 'vn' },
+            { lbl: 'FiO2', val: '65%',   unit: '',         st: 'vw' },
+          ],
+          vitalsMsg: `<strong>Exceptional ARDS management!</strong> You recognized severe ARDS (P/F <100) requiring prone positioning per evidence-based guidelines.<br/><br/>
+          <strong>Key decisions:</strong><br/>
+          • Appropriately intubated with lung-protective ventilation<br/>
+          • Optimized PEEP per ARDSnet protocol<br/>
+          • Recognized severe ARDS with P/F ratio 97<br/>
+          • Ordered prone positioning per PROSEVA criteria (P/F <150, FiO₂ ≥60%)<br/>
+          • Demonstrated complete evidence-based ARDS management<br/><br/>
+          The patient continues to improve with prone positioning and will require ongoing ventilator management in the MICU.`,
+          nextDecision: null
+        },
+        {
+          id: 'maintain-settings-acceptable',
+          label: '✓ MAINTAIN SETTINGS (ACCEPTABLE)',
+          type: 'good',
+          triggers: ['maintain','keep same','no change','continue current','stay at','hold','monitor'],
+          requires: 1,
+          excludes: ['prone','proning'],
+          headline: 'Stabilization period - but consider adjunctive therapies',
+          narrative: `<strong>Your decision:</strong> Maintain current ventilator settings and monitor.<br/><br/>
+          
+          <strong>Current status:</strong><br/>
+          • VT: 330 mL (6 mL/kg) ✓<br/>
+          • RR: 28 ✓<br/>
+          • PEEP: 15 cm H₂O ✓<br/>
+          • FiO₂: 80%<br/>
+          • pH: 7.24 (acceptable with permissive hypercapnia)<br/>
+          • P/F ratio: 97 (severe ARDS)<br/><br/>
+          
+          <strong>Reasonable approach</strong> - allowing stabilization before further changes. However, you missed an important opportunity:<br/><br/>
+          
+          <strong>Teaching point:</strong> P/F ratio 97 with FiO₂ 80% meets criteria for <span class="hl">prone positioning</span> (PROSEVA trial: P/F <150 + FiO₂ ≥60%).<br/><br/>
+          
+          <strong>4-hour reassessment:</strong><br/>
+          SpO₂ 92-93%, patient stable. RT asks: <em>"With P/F ratio still in severe range (97), should we consider prone positioning? The evidence shows significant mortality benefit in severe ARDS."</em><br/><br/>
+          
+          Patient continues on current settings. Oxygenation remains marginal with high FiO₂.`,
+          nextDecision: null,
+        },
+        {
+          id: 'wean-fio2-premature',
+          label: '⚠ PREMATURE FiO₂ WEANING',
+          type: 'warning',
+          triggers: ['wean fio2','decrease fio2','lower fio2','fio2 70','fio2 60','fio2 to 70','fio2 to 60','titrate fio2','reduce fio2','fio2 down'],
+          requires: 1,
+          headline: 'FiO₂ weaning attempted - marginal for severe ARDS',
+          narrative: `<strong>Your ventilator orders:</strong><br/>
+          • FiO₂: <span class="hl">Wean to 60-70%</span><br/><br/>
+          
+          <strong>Result:</strong> You attempted to wean FiO₂ from 80% to 65%.<br/><br/>
+          
+          <strong>30-minute ABG:</strong><br/>
+          • pH: 7.26<br/>
+          • PaCO₂: 56<br/>
+          • PaO₂: <span class="hl">68</span> (dropped from 78)<br/>
+          • SpO₂: 88-89%<br/>
+          • P/F ratio: 105 (still severe ARDS)<br/><br/>
+          
+          <strong>Teaching point:</strong> While technically adequate (SpO₂ 88% is acceptable in ARDS), you're working at the margin. With P/F ratio still <150 and requiring FiO₂ >60%, <span class="hl">prone positioning</span> should be considered first.<br/><br/>
+          
+          <strong>PROSEVA trial:</strong> P/F <150 + FiO₂ ≥60% = prone positioning indication. This provides recruitment and improved V/Q matching, allowing subsequent FiO₂ reduction.<br/><br/>
+          
+          <strong>RT:</strong> <em>"We're able to wean FiO₂ a bit, but we're still at 65% with borderline oxygenation. With severe ARDS and this degree of hypoxemia, should we consider prone positioning? The literature shows significant mortality benefit."</em>`,
+          nextDecision: null,
+        },
+        {
+          id: 'further-increase-rr',
+          label: '⚠ FURTHER RR INCREASE UNNECESSARY',
+          type: 'warning',
+          triggers: ['rr 30','rr 32','rr 34','increase rr','raise rr','higher rr','rr to 30','rr to 32'],
+          requires: 1,
+          headline: 'Over-adjustment of respiratory rate',
+          narrative: `<strong>Your ventilator orders:</strong><br/>
+          • RR: <span class="hl">Increase to 30-32</span> - unnecessary, pH already 7.24<br/><br/>
+          
+          <strong>Teaching point:</strong> pH 7.24 with PaCO₂ 58 is <strong>acceptable</strong> with permissive hypercapnia strategy in ARDS. Target pH is ≥7.20, which you've achieved.<br/><br/>
+          
+          <strong>Key principles:</strong><br/>
+          • <span class="hl">pH ≥7.20 is the goal</span> - you don't need to normalize pH<br/>
+          • Higher RR → increased minute ventilation → potential for auto-PEEP<br/>
+          • Accept PaCO₂ in 50s-60s if pH adequate<br/><br/>
+          
+          <strong>Result with RR 32:</strong><br/>
+          pH 7.28, PaCO₂ 52, PaO₂ 76<br/>
+          Patient developing auto-PEEP (total PEEP 18 cm H₂O). Starting to fight the ventilator.<br/><br/>
+          
+          <strong>RT:</strong> <em>"The pH looks better, but we're creating auto-PEEP. Remember, we don't need to normalize pH in ARDS - 7.24 was perfectly acceptable."</em>`,
+          nextDecision: null,
+        },
+        {
+          id: 'decrease-peep-wrong',
+          label: '⚠ PREMATURE PEEP REDUCTION',
+          type: 'bad',
+          triggers: ['decrease peep','lower peep','reduce peep','peep 12','peep 10','peep down','wean peep'],
+          requires: 1,
+          headline: 'Inappropriate de-recruitment',
+          narrative: `<strong>Your ventilator orders:</strong><br/>
+          • PEEP: <span class="hl">Decrease to 12</span> - WRONG, premature de-recruitment<br/><br/>
+          
+          <strong>Critical error:</strong> You decreased PEEP when the patient just achieved adequate oxygenation. P/F ratio is 97 (still severe ARDS) - PEEP should be maintained.<br/><br/>
+          
+          <strong>Result with PEEP 12:</strong><br/>
+          SpO₂ drops to 86% within 5 minutes<br/>
+          ABG: pH 7.26, PaCO₂ 55, <span class="hl">PaO₂ 56</span> (worsened from 78)<br/><br/>
+          
+          <strong>Teaching point:</strong><br/>
+          • Don't wean PEEP when P/F ratio <200 (severe/moderate ARDS)<br/>
+          • Wean <span class="hl">FiO₂ first</span>, then consider PEEP reduction<br/>
+          • ARDSnet: Wean FiO₂ to 40-50% before reducing PEEP<br/><br/>
+          
+          <strong>RT:</strong> <em>"We're losing our recruitment! PEEP needs to go back to 15. In ARDS, we wean oxygen first, then PEEP much later."</em>`,
+          nextDecision: null,
+        },
+        {
+          id: 'increase-fio2-wrong',
+          label: '⚠ UNNECESSARY FiO₂ INCREASE',
+          type: 'warning',
+          triggers: ['increase fio2','fio2 90','fio2 100','raise fio2','higher fio2','fio2 up'],
+          requires: 1,
+          headline: 'Oxygen toxicity risk',
+          narrative: `<strong>Your ventilator orders:</strong><br/>
+          • FiO₂: <span class="hl">Increase to 90-100%</span> - unnecessary, oxygenation already improved<br/><br/>
+          
+          <strong>Current status:</strong><br/>
+          • PaO₂ 78 on FiO₂ 80% → adequate oxygenation<br/>
+          • SpO₂ 94% → within target range (88-95%)<br/>
+          • PEEP optimized at 15 cm H₂O<br/><br/>
+          
+          <strong>Teaching point:</strong> With improved oxygenation and optimized PEEP, the goal is to <span class="hl">wean FiO₂</span> to reduce oxygen toxicity, not increase it.<br/><br/>
+          
+          <strong>FiO₂ strategy in ARDS:</strong><br/>
+          • Use high FiO₂ initially for rescue<br/>
+          • Optimize PEEP for recruitment (done ✓)<br/>
+          • Once oxygenation improves, wean FiO₂ to <60% if possible<br/>
+          • Prolonged FiO₂ >60% → risk of oxygen toxicity<br/><br/>
+          
+          <strong>RT:</strong> <em>"The patient's oxygenation is better now. We should be thinking about weaning oxygen, not increasing it. Let's avoid oxygen toxicity."</em>`,
+          nextDecision: null,
+        },
+        {
+          id: 'decision3-default',
+          label: 'REVIEW ABG AND ADJUST',
+          type: 'neutral',
+          triggers: [],
+          requires: 0,
+          headline: 'Consider next ventilator adjustments',
+          narrative: `<strong>ABG Analysis Guide:</strong><br/><br/>
+          
+          <strong>Current ABG (30 min after adjustments):</strong><br/>
+          pH 7.24, PaCO₂ 58, PaO₂ 78, HCO₃ 24, SaO₂ 94%<br/><br/>
+          
+          <strong>Interpretation:</strong><br/>
+          • pH 7.24 = <span class="hl">ACCEPTABLE</span> (target ≥7.20 in permissive hypercapnia)<br/>
+          • PaCO₂ 58 = Acceptable with pH 7.24<br/>
+          • PaO₂ 78 = Improved (was 58)<br/>
+          • P/F ratio: 78/0.8 = 97 (still severe ARDS but improved from 72)<br/><br/>
+          
+          <strong>Next steps to consider:</strong><br/><br/>
+          
+          <strong>1. FiO₂ Weaning (RECOMMENDED):</strong><br/>
+          • Current: FiO₂ 80%, PaO₂ 78, SpO₂ 94%<br/>
+          • With PEEP optimized (15 cm H₂O), can wean FiO₂<br/>
+          • Target: Wean to 60-70% while maintaining SpO₂ 88-95%<br/>
+          • Rationale: Reduce oxygen toxicity risk<br/><br/>
+          
+          <strong>2. Maintain Current Settings:</strong><br/>
+          • Reasonable if you want stability before changes<br/>
+          • Settings are appropriate for severe ARDS<br/>
+          • Consider weaning FiO₂ at next reassessment<br/><br/>
+          
+          <strong>3. What NOT to do:</strong><br/>
+          • ❌ Don't increase RR (pH 7.24 is acceptable)<br/>
+          • ❌ Don't decrease PEEP (P/F still <200)<br/>
+          • ❌ Don't increase FiO₂ (oxygenation adequate)<br/><br/>
+          
+          <strong>ARDSnet Weaning Strategy:</strong><br/>
+          1. Optimize PEEP ✓ (done)<br/>
+          2. Wean FiO₂ to 40-50% ← You are here<br/>
+          3. Then consider stepwise PEEP reduction`,
+          nextDecision: null,
+          endState: 'concern',
+          endMsg: 'Review ARDS ventilator weaning strategies. After PEEP optimization, wean FiO₂ first before considering PEEP reduction.',
+          decisions: ['Practice ABG interpretation in ARDS', 'Review FiO₂ weaning strategies', 'Review ARDSnet protocol']
         }
       ]
     }
@@ -1471,6 +2219,8 @@ const State = {
   ventilatorSettings: null, // track ventilator settings
   attendingCorrectedVentilator: false, // track if attending corrected vent settings
   triedHFNC: false, // track if HFNC was tried before intubation
+  totalFluidGiven: 0, // track cumulative fluid volume across all decisions (in mL)
+  micuPromptedNotOrdered: false, // track if MICU was prompted but not initially ordered
 
   reset() {
     this.caseData = null;
@@ -1485,6 +2235,8 @@ const State = {
     this.ventilatorSettings = null;
     this.attendingCorrectedVentilator = false;
     this.triedHFNC = false;
+    this.totalFluidGiven = 0;
+    this.micuPromptedNotOrdered = false;
   }
 };
 
@@ -1648,7 +2400,9 @@ function bindExamButtons() {
       State.revealed.add(key);
       btn.classList.add('revealed');
       btn.querySelector('.eb-hint').textContent = 'Examined ✓';
-      const sys = State.caseData.examSystems.find(s => s.key === key);
+      // Use currentExamSystems if available (for updated exams), otherwise use original
+      const examSystems = State.currentExamSystems || State.caseData.examSystems;
+      const sys = examSystems.find(s => s.key === key);
       if (!sys) return;
       const card = CE('div');
       card.className = 'reveal-card';
@@ -2002,12 +2756,12 @@ function getCaseResultCatalog(caseId) {
           {lbl:'HCO₃', val:'16', unit:'mEq/L', ref:'22–28',    cls:'rv-c'},
           {lbl:'SpO₂', val:'93%',unit:'',      ref:'>95%',     cls:'rv-a'},
         ],'') },
-      { id:'cultures', cat:'lab', triggers:[/\bblood culture\b/,/\bbc\b(?![\w])/,/\bculture\b/],
+      { id:'cultures', cat:'lab', triggers:[/\bblood cultures?\b/,/\bbc\b(?![\w])/,/\bcultures?\b/],
         card: () => resultCard('lab','Lab','Blood Cultures × 2',[
           {lbl:'Status',val:'Pending',unit:'',ref:'',cls:'rv-a'},
           {lbl:'Gram stain',val:'Pending',unit:'',ref:'',cls:'rv-a'},
         ],'') },
-      { id:'ua', cat:'lab', triggers:[/\bua\b(?![\w])/,/\burinalysis\b/,/\burine culture\b/],
+      { id:'ua', cat:'lab', triggers:[/\bua\b(?![\w])/,/\burinalysis\b/,/\burine cultures?\b/],
         card: () => resultCard('lab','Lab','Urinalysis + Culture',[
           {lbl:'Color',  val:'Dark yellow',unit:'',ref:'',cls:'rv-a'},
           {lbl:'WBC',    val:'>50',unit:'/hpf',  ref:'<5',  cls:'rv-c'},
@@ -2084,14 +2838,20 @@ function getCaseResultCatalog(caseId) {
       // PROCEDURES
       { id:'central-line', cat:'procedure', triggers:[/\bcentral line\b/,/\bcentral access\b/,/\bcvc\b/,/\bijv\b/,/\bsubclavian\b/,/\bfemoral line\b/,/\btripl?e lumen\b/],
         card: () => resultCard('procedure','Procedure','Central Line Insertion',[
-          {lbl:'Status',val:'Preparing',unit:'',ref:'',cls:'rv-ok'},
-          {lbl:'Team',val:'Setting up',unit:'',ref:'',cls:'rv-ok'},
-        ],'The team is helping prep and set up for this procedure.') },
+          {lbl:'Status',val:'Fellow setting up',unit:'',ref:'',cls:'rv-ok'},
+          {lbl:'Site',val:'Internal jugular or subclavian',unit:'',ref:'',cls:'rv-ok'},
+        ],'Central line ordered. Fellow is gathering supplies and prepping the patient. Triple-lumen catheter will provide central venous access for medications and monitoring. Will be placed at bedside using ultrasound guidance and sterile technique.') },
       { id:'arterial-line', cat:'procedure', triggers:[/\barterial line\b/,/\ba.?line\b/,/\bart line\b/,/\bradial art\b/,/\bfemoral art\b/],
         card: () => resultCard('procedure','Procedure','Arterial Line Insertion',[
-          {lbl:'Status',val:'Preparing',unit:'',ref:'',cls:'rv-ok'},
-          {lbl:'Team',val:'Setting up',unit:'',ref:'',cls:'rv-ok'},
-        ],'The team is helping prep and set up for this procedure.') },
+          {lbl:'Status',val:'Fellow setting up',unit:'',ref:'',cls:'rv-ok'},
+          {lbl:'Site',val:'Radial artery (preferred)',unit:'',ref:'',cls:'rv-ok'},
+        ],'Arterial line ordered. Fellow is gathering supplies and prepping the patient. A-line will provide continuous blood pressure monitoring and arterial blood gas access. Will be placed at bedside using ultrasound guidance.') },
+      // CONSULTATIONS
+      { id:'micu', cat:'consult', triggers:[/\bmicu\b/,/\bicu\b(?! )/,/\bcritical care\b/,/\bintensiv(e|ist)/],
+        card: () => resultCard('consult','Consultation','MICU Consultation',[
+          {lbl:'Status',val:'Consult placed',unit:'',ref:'',cls:'rv-ok'},
+          {lbl:'Team',val:'MICU attending paged',unit:'',ref:'',cls:'rv-ok'},
+        ],'MICU consult placed. Attending will evaluate for ICU admission criteria and assist with critical care management.') },
       commonEKG,
     ],
 
@@ -2106,6 +2866,11 @@ function getCaseResultCatalog(caseId) {
       { id:'lactate', cat:'lab', triggers:[/\blactate\b/,/\blactic acid\b/],
         card: () => resultCard('lab','Lab','Lactate',[
           {lbl:'Lactate',val:'5.2',unit:'mmol/L',ref:'0.5–2.0',cls:'rv-c'}
+        ],'') },
+      { id:'cultures', cat:'lab', triggers:[/\bblood cultures?\b/,/\bbc\b(?![\w])/,/\bcultures?\b/],
+        card: () => resultCard('lab','Lab','Blood Cultures × 2',[
+          {lbl:'Status',val:'Pending',unit:'',ref:'',cls:'rv-a'},
+          {lbl:'Gram stain',val:'Pending',unit:'',ref:'',cls:'rv-a'},
         ],'') },
       { id:'troponin', cat:'lab', triggers:[/\btroponin\b/,/\bhstrop\b/,/\bcardiac enzymes\b/],
         card: () => resultCard('lab','Lab','Troponin I (hs)',[
@@ -2132,10 +2897,13 @@ function getCaseResultCatalog(caseId) {
           {lbl:'PTX',val:'None',unit:'',ref:'',cls:'rv-ok'},
           {lbl:'Effusion',val:'None',unit:'',ref:'',cls:'rv-ok'},
         ],'') },
-      { id:'ctpa', cat:'imaging', triggers:[/\bctpa\b/,/\bct.?pulmonary\b/,/\bct.?angio\b/,/\bct.?chest\b/],
+      { id:'ctpa', cat:'imaging', triggers:[/\bctpa\b/,/\bct.?pulmonary\b/,/\bct.?angio\b/,/\bct.?chest\b/,/\bcta\b/,/\bpe.?protocol\b/,/\bcta?.?pe\b/,/\bct\s*a\s*pe\b/],
         card: () => resultCard('imaging','Imaging','CT Pulmonary Angiogram',[
-          {lbl:'Status',val:'NOT RECOMMENDED',unit:'(patient too unstable)',ref:'',cls:'rv-c'},
-        ],'⚠ CT-PA requires transport and contrast load. In a hemodynamically UNSTABLE patient, POCUS demonstrating RV failure + DVT is sufficient to diagnose massive PE and initiate thrombolysis. Do not delay treatment for CT.') },
+          {lbl:'Finding',val:'BILATERAL SADDLE PULMONARY EMBOLISM',unit:'',ref:'',cls:'rv-c'},
+          {lbl:'Location',val:'Extensive thrombus in main pulmonary arteries',unit:'bilaterally extending into lobar branches',ref:'',cls:'rv-c'},
+          {lbl:'RV/LV ratio',val:'>1.0',unit:'(severe RV dilation)',ref:'Normal <0.9',cls:'rv-c'},
+          {lbl:'RV strain',val:'Present',unit:'(septal bowing)',ref:'',cls:'rv-c'},
+        ],'<strong>MASSIVE PULMONARY EMBOLISM:</strong> Large bilateral saddle PE with RV/LV ratio >1.0 indicating acute RV dysfunction. This is a massive PE requiring immediate advanced therapy (thrombolysis vs embolectomy). Activate PERT team urgently.') },
       { id:'ivfluid', cat:'fluid', triggers:[/\blr\b(?![\w])/,/\blactated ringer\b/,/\bnormal saline\b/,/\bns\b(?![\w])/,/\bcrystalloid\b/,/\bbolus\b/,/\biv fluid\b/],
         card: (raw) => {
           const vol = extractFluidVolume(raw);
@@ -2178,6 +2946,16 @@ function getCaseResultCatalog(caseId) {
           {lbl:'Dose',  val:'2.5-5 mg',unit:'via nebulizer',ref:'',cls:'rv-ok'},
           {lbl:'Frequency',val:'Q4-6h PRN',unit:'',ref:'',cls:'rv-ok'},
         ],'Albuterol nebulizer treatment ordered. Bronchodilator for wheezing or bronchospasm. Respiratory therapy notified.') },
+      { id:'echo', cat:'imaging', triggers:[/\becho\b/,/\bechocardiogram\b/,/\btte\b/,/\btransthoracic echo\b/,/\bformal echo\b/],
+        card: () => resultCard('imaging','Imaging','Formal Echocardiogram (TTE)',[
+          {lbl:'RV size',val:'Severely dilated',unit:'RV/LV ratio >0.9',ref:'Normal <0.9',cls:'rv-c'},
+          {lbl:'RV function',val:'Severely reduced',unit:'TAPSE 12 mm',ref:'Normal >16 mm',cls:'rv-c'},
+          {lbl:'Septal motion',val:'Paradoxical (D-sign)',unit:'bowing into LV',ref:'',cls:'rv-c'},
+          {lbl:'TR',val:'Moderate-severe',unit:'peak velocity 3.2 m/s',ref:'',cls:'rv-c'},
+          {lbl:'RVSP',val:'Elevated (~55 mm Hg)',unit:'',ref:'Normal <35',cls:'rv-c'},
+          {lbl:'LV function',val:'Normal (EF 60%)',unit:'underfilled',ref:'',cls:'rv-ok'},
+          {lbl:'IVC',val:'Plethoric',unit:'>2.1 cm, <50% collapse',ref:'',cls:'rv-c'},
+        ],'<strong>IMPRESSION:</strong> <span class="hl">Right ventricular (RV) strain — acute pressure overload</span> — characterized by RV dilation (RV/LV ratio >0.9), paradoxical septal motion (D-sign), moderate-to-severe tricuspid regurgitation, reduced RV systolic function (TAPSE 12 mm), and plethoric IVC. Findings consistent with <strong>acute cor pulmonale from massive pulmonary embolism</strong>. Requires urgent reperfusion therapy.') },
       // POCUS
       { id:'pocus', cat:'imaging', triggers:[/\bpocus\b/,/\bbedside echo\b/,/\bbedside ultrasound\b/,/\bpoint.?of.?care\b/],
         card: () => {
@@ -2200,14 +2978,26 @@ function getCaseResultCatalog(caseId) {
       // PROCEDURES
       { id:'central-line', cat:'procedure', triggers:[/\bcentral line\b/,/\bcentral access\b/,/\bcvc\b/,/\bijv\b/,/\bsubclavian\b/,/\bfemoral line\b/,/\btripl?e lumen\b/],
         card: () => resultCard('procedure','Procedure','Central Line Insertion',[
-          {lbl:'Status',val:'Preparing',unit:'',ref:'',cls:'rv-ok'},
-          {lbl:'Team',val:'Setting up',unit:'',ref:'',cls:'rv-ok'},
-        ],'The team is helping prep and set up for this procedure.') },
+          {lbl:'Status',val:'Fellow setting up',unit:'',ref:'',cls:'rv-ok'},
+          {lbl:'Site',val:'Internal jugular or subclavian',unit:'',ref:'',cls:'rv-ok'},
+        ],'Central line ordered. Fellow is gathering supplies and prepping the patient. Triple-lumen catheter will provide central venous access for medications and monitoring. Will be placed at bedside using ultrasound guidance and sterile technique.') },
       { id:'arterial-line', cat:'procedure', triggers:[/\barterial line\b/,/\ba.?line\b/,/\bart line\b/,/\bradial art\b/,/\bfemoral art\b/],
         card: () => resultCard('procedure','Procedure','Arterial Line Insertion',[
-          {lbl:'Status',val:'Preparing',unit:'',ref:'',cls:'rv-ok'},
-          {lbl:'Team',val:'Setting up',unit:'',ref:'',cls:'rv-ok'},
-        ],'The team is helping prep and set up for this procedure.') },
+          {lbl:'Status',val:'Fellow setting up',unit:'',ref:'',cls:'rv-ok'},
+          {lbl:'Site',val:'Radial artery (preferred)',unit:'',ref:'',cls:'rv-ok'},
+        ],'Arterial line ordered. Fellow is gathering supplies and prepping the patient. A-line will provide continuous blood pressure monitoring and arterial blood gas access. Will be placed at bedside using ultrasound guidance.') },
+      // CONSULTATIONS
+      { id:'micu', cat:'consult', triggers:[/\bmicu\b/,/\bicu\b(?! )/,/\bcritical care\b/,/\bintensiv(e|ist)/],
+        card: () => resultCard('consult','Consultation','MICU Consultation',[
+          {lbl:'Status',val:'Consult placed',unit:'',ref:'',cls:'rv-ok'},
+          {lbl:'Team',val:'MICU attending paged',unit:'',ref:'',cls:'rv-ok'},
+        ],'MICU consult placed. Attending will evaluate for ICU admission criteria and assist with critical care management.') },
+      { id:'pert', cat:'consult', triggers:[/\bpert\b/,/\bpe.?team\b/,/\bpe.?response\b/,/\bpulmonary.?embolism.?team\b/],
+        card: () => resultCard('consult','Consultation','PERT Team Activation',[
+          {lbl:'Status',val:'PERT activated',unit:'',ref:'',cls:'rv-ok'},
+          {lbl:'Team',val:'Assembling now',unit:'',ref:'',cls:'rv-ok'},
+          {lbl:'ETA',val:'<10 minutes',unit:'',ref:'',cls:'rv-ok'},
+        ],'PERT (Pulmonary Embolism Response Team) activated. Multidisciplinary team includes interventional cardiology, pulmonology, ICU, and cardiothoracic surgery. Will evaluate for catheter-directed thrombolysis vs systemic thrombolysis vs surgical embolectomy.') },
       commonEKG,
     ],
 
@@ -2248,6 +3038,11 @@ function getCaseResultCatalog(caseId) {
           {lbl:'Influenza B',val:'Negative',unit:'',ref:'',cls:'rv-ok'},
           {lbl:'COVID-19',   val:'Negative',unit:'',ref:'',cls:'rv-ok'},
           {lbl:'RSV',        val:'Negative',unit:'',ref:'',cls:'rv-ok'},
+        ],'') },
+      { id:'cultures', cat:'lab', triggers:[/\bblood cultures?\b/,/\bbc\b(?![\w])/,/\bcultures?\b/],
+        card: () => resultCard('lab','Lab','Blood Cultures × 2',[
+          {lbl:'Status',val:'Pending',unit:'',ref:'',cls:'rv-a'},
+          {lbl:'Gram stain',val:'Pending',unit:'',ref:'',cls:'rv-a'},
         ],'') },
       { id:'ivfluid', cat:'fluid', triggers:[/\blr\b(?![\w])/,/\blactated ringer\b/,/\bnormal saline\b/,/\bns\b(?![\w])/,/\bcrystalloid\b/,/\bbolus\b/,/\biv fluid\b/],
         card: (raw) => resultCard('fluid','Fluid','IV Fluid Order',[
@@ -2357,14 +3152,20 @@ function getCaseResultCatalog(caseId) {
       // PROCEDURES
       { id:'central-line', cat:'procedure', triggers:[/\bcentral line\b/,/\bcentral access\b/,/\bcvc\b/,/\bijv\b/,/\bsubclavian\b/,/\bfemoral line\b/,/\btripl?e lumen\b/],
         card: () => resultCard('procedure','Procedure','Central Line Insertion',[
-          {lbl:'Status',val:'Preparing',unit:'',ref:'',cls:'rv-ok'},
-          {lbl:'Team',val:'Setting up',unit:'',ref:'',cls:'rv-ok'},
-        ],'The team is helping prep and set up for this procedure.') },
+          {lbl:'Status',val:'Fellow setting up',unit:'',ref:'',cls:'rv-ok'},
+          {lbl:'Site',val:'Internal jugular or subclavian',unit:'',ref:'',cls:'rv-ok'},
+        ],'Central line ordered. Fellow is gathering supplies and prepping the patient. Triple-lumen catheter will provide central venous access for medications and monitoring. Will be placed at bedside using ultrasound guidance and sterile technique.') },
       { id:'arterial-line', cat:'procedure', triggers:[/\barterial line\b/,/\ba.?line\b/,/\bart line\b/,/\bradial art\b/,/\bfemoral art\b/],
         card: () => resultCard('procedure','Procedure','Arterial Line Insertion',[
-          {lbl:'Status',val:'Preparing',unit:'',ref:'',cls:'rv-ok'},
-          {lbl:'Team',val:'Setting up',unit:'',ref:'',cls:'rv-ok'},
-        ],'The team is helping prep and set up for this procedure.') },
+          {lbl:'Status',val:'Fellow setting up',unit:'',ref:'',cls:'rv-ok'},
+          {lbl:'Site',val:'Radial artery (preferred)',unit:'',ref:'',cls:'rv-ok'},
+        ],'Arterial line ordered. Fellow is gathering supplies and prepping the patient. A-line will provide continuous blood pressure monitoring and arterial blood gas access. Will be placed at bedside using ultrasound guidance.') },
+      // CONSULTATIONS
+      { id:'micu', cat:'consult', triggers:[/\bmicu\b/,/\bicu\b(?! )/,/\bcritical care\b/,/\bintensiv(e|ist)/],
+        card: () => resultCard('consult','Consultation','MICU Consultation',[
+          {lbl:'Status',val:'Consult placed',unit:'',ref:'',cls:'rv-ok'},
+          {lbl:'Team',val:'MICU attending paged',unit:'',ref:'',cls:'rv-ok'},
+        ],'MICU consult placed. Attending will evaluate for ICU admission criteria and assist with critical care management.') },
       commonEKG,
     ]
   };
@@ -2402,16 +3203,25 @@ function extractFluidDetail(orderText) {
 }
 
 function extractFluidVolume(orderText) {
-  const m = orderText.match(/(\d+)\s*(?:ml|cc)/i);
+  const m = orderText.match(/(\d+(?:\.\d+)?)\s*(?:ml|cc)/i);
   if (m) return parseInt(m[1]);
-  const l = orderText.match(/(\d+)\s*(?:liter|l\b)/i);
-  if (l) return parseInt(l[1]) * 1000;
+  const l = orderText.match(/(\d+(?:\.\d+)?)\s*(?:liter|l\b)/i);
+  if (l) return parseFloat(l[1]) * 1000;
   return 500; // default assume 500mL
 }
 
 // ── SUBMIT ORDERS — show results with staggered delay ─────────
 // ── INTUBATION MEDICATION POPUP ──────────────────────────────────
 function showIntubationMedsPopup(onComplete) {
+  const caseId = State.caseData?.id;
+  const patientWeight = State.caseData?.patient?.weight || 'unknown';
+  
+  // Get ideal body weight (IBW) for dosing - case specific
+  let ibwInfo = '';
+  if (caseId === 'cc-3') {
+    ibwInfo = '<div style="padding:12px;background:var(--bg-3);border-left:3px solid var(--cyan);border-radius:4px;margin-bottom:16px;"><strong>Patient Weight Information:</strong><br/>• Actual Body Weight: 72 kg<br/>• <span style="color:var(--cyan)">Ideal Body Weight (IBW): 54.7 kg</span> (use for RSI dosing)<br/>• Height: 5\'4" (163 cm)</div>';
+  }
+  
   const modalHTML = `
     <div class="modal-overlay" id="intubation-meds-modal">
       <div class="modal-content" style="max-width:600px;">
@@ -2420,6 +3230,7 @@ function showIntubationMedsPopup(onComplete) {
         </div>
         <div class="modal-body">
           <p style="margin-bottom:16px;">You ordered intubation. Please specify your RSI medications and sedation plan:</p>
+          ${ibwInfo}
           <div style="margin-bottom:16px;">
             <label style="display:block;font-weight:600;margin-bottom:4px;">Induction Agent:</label>
             <textarea id="induction-med" rows="2" placeholder="e.g., Ketamine 2 mg/kg IV, Etomidate 0.3 mg/kg IV" style="width:100%;padding:8px;border:1px solid var(--border);border-radius:4px;font-family:inherit;"></textarea>
@@ -2688,6 +3499,13 @@ function processOrdersAndShowResults(orderText, decisionKey, onAllDone) {
     State.currentOxygenDevice = oxygenUpdate;
   }
 
+  // Track cumulative fluid volume (for Case 1 septic shock management)
+  if (/\b(fluid|bolus|saline|lactated|ringer|lr|ns|crystalloid)\b/.test(lower)) {
+    const fluidVolume = extractFluidVolume(orderText);
+    State.totalFluidGiven += fluidVolume;
+    console.log(`Fluid ordered: ${fluidVolume}mL. Total fluid given: ${State.totalFluidGiven}mL`);
+  }
+
   // Find which catalog items were triggered
   const triggered = catalog.filter(item => 
     item.triggers.some(re => re.test(lower))
@@ -2792,8 +3610,16 @@ function processOrdersAndShowResults(orderText, decisionKey, onAllDone) {
   // For Phase 4 decisions, just show acknowledgment - results will appear locked in bedside reassessment
   if (decisionKey) {
     feedCards.innerHTML = `<div class="processing-row"><div class="proc-dot"></div>Orders acknowledged. Processing ${unique.length} order${unique.length > 1 ? 's' : ''}...</div>`;
+    console.log('[DEBUG] About to set timeout for callback. decisionKey:', decisionKey);
     setTimeout(() => { 
-      if (onAllDone) onAllDone();
+      console.log('[DEBUG] Timeout fired! Calling onAllDone callback...');
+      if (onAllDone) {
+        console.log('[DEBUG] onAllDone exists, executing it now');
+        onAllDone();
+        console.log('[DEBUG] onAllDone executed successfully');
+      } else {
+        console.error('[ERROR] onAllDone callback is undefined!');
+      }
     }, 1000);
     return;
   }
@@ -2850,7 +3676,7 @@ function generateOrdersReview() {
     // Case 1: Septic Shock
     criticalOrders = {
       'Diagnostic': {
-        'culture': 'Blood cultures (before antibiotics)',
+        'cultures': 'Blood cultures (before antibiotics)',
         'lactate': 'Lactate level',
         'cbc': 'Complete Blood Count',
         'bmp': 'Basic Metabolic Panel'
@@ -2871,11 +3697,14 @@ function generateOrdersReview() {
     // Case 2: Massive PE
     criticalOrders = {
       'Diagnostic': {
-        'pocus': 'POCUS (assess RV function)',
         'ekg': '12-Lead EKG',
         'ddimer': 'D-Dimer',
         'troponin': 'Troponin',
         'bnp': 'BNP'
+      },
+      'Imaging': {
+        'ctpa': 'CT Pulmonary Angiogram',
+        'echo': 'Echocardiogram'
       },
       'Oxygen/Hemodynamic': {
         'norepi': 'Norepinephrine (avoid large fluid bolus)',
@@ -2918,8 +3747,8 @@ function generateOrdersReview() {
       
       // Handle aliases
       if (id === 'norepi') wasOrdered = wasOrdered || ordered.has('norepinephrine') || ordered.has('levophed') || ordered.has('levo');
-      if (id === 'micu') wasOrdered = wasOrdered || ordered.has('icu');
-      if (id === 'pert') wasOrdered = wasOrdered || ordered.has('pe-team');
+      if (id === 'micu') wasOrdered = wasOrdered || ordered.has('icu') || ordered.has('critical care') || ordered.has('intensive care') || ordered.has('intensivist');
+      if (id === 'pert') wasOrdered = wasOrdered || ordered.has('pe team') || ordered.has('pe-team') || ordered.has('pe response') || ordered.has('pulmonary embolism team');
       if (id === 'heparin') {
         // Check for heparin itself and common anticoagulation terms
         wasOrdered = wasOrdered || 
@@ -2932,14 +3761,19 @@ function generateOrdersReview() {
       }
       if (id === 'vancomycin') wasOrdered = wasOrdered || ordered.has('vanco') || ordered.has('vanc');
       if (id === 'piperacillin') wasOrdered = wasOrdered || ordered.has('ceftriaxone') || ordered.has('pip-tazo') || ordered.has('pip') || ordered.has('zosyn') || ordered.has('piptaz');
-      if (id === 'intubation') wasOrdered = wasOrdered || ordered.has('intubate') || ordered.has('rsi') || ordered.has('ett');
+      if (id === 'intubation') wasOrdered = wasOrdered || ordered.has('intubate') || ordered.has('rsi') || ordered.has('ett') || ordered.has('vent') || ordered.has('intubation');
       if (id === 'lung-protective') wasOrdered = wasOrdered || ordered.has('6 ml/kg') || ordered.has('pbw') || ordered.has('vent');
-      if (id === 'sedation') wasOrdered = wasOrdered || ordered.has('propofol') || ordered.has('fentanyl') || ordered.has('midazolam');
-      if (id === 'neuromuscular') wasOrdered = wasOrdered || ordered.has('rocuronium') || ordered.has('vecuronium') || ordered.has('cisatracurium');
+      if (id === 'sedation') wasOrdered = wasOrdered || ordered.has('propofol') || ordered.has('fentanyl') || ordered.has('midazolam') || ordered.has('versed') || ordered.has('sedation');
+      if (id === 'neuromuscular') wasOrdered = wasOrdered || ordered.has('rocuronium') || ordered.has('vecuronium') || ordered.has('cisatracurium') || ordered.has('paralytic') || ordered.has('neuromuscular');
       if (id === 'ivfluid') wasOrdered = wasOrdered || ordered.has('fluid') || ordered.has('bolus') || ordered.has('ns') || ordered.has('lr') || ordered.has('saline');
       
       if (wasOrdered) {
-        categoryOrders.push(`<li style="color:var(--green);">✓ ${name}</li>`);
+        // Special handling for MICU if it was prompted
+        if (id === 'micu' && State.micuPromptedNotOrdered) {
+          categoryOrders.push(`<li style="color:var(--amber);">⚠ ${name} <span style="font-size:0.9em;font-style:italic;">(ordered after nurse prompt)</span></li>`);
+        } else {
+          categoryOrders.push(`<li style="color:var(--green);">✓ ${name}</li>`);
+        }
         foundOrdered = true;
       }
     }
@@ -2957,8 +3791,8 @@ function generateOrdersReview() {
       
       // Handle aliases (same as above)
       if (id === 'norepi') wasOrdered = wasOrdered || ordered.has('norepinephrine') || ordered.has('levophed') || ordered.has('levo');
-      if (id === 'micu') wasOrdered = wasOrdered || ordered.has('icu');
-      if (id === 'pert') wasOrdered = wasOrdered || ordered.has('pe-team');
+      if (id === 'micu') wasOrdered = wasOrdered || ordered.has('icu') || ordered.has('critical care') || ordered.has('intensive care') || ordered.has('intensivist');
+      if (id === 'pert') wasOrdered = wasOrdered || ordered.has('pe team') || ordered.has('pe-team') || ordered.has('pe response') || ordered.has('pulmonary embolism team');
       if (id === 'heparin') {
         // Check for heparin itself and common anticoagulation terms
         wasOrdered = wasOrdered || 
@@ -2971,13 +3805,17 @@ function generateOrdersReview() {
       }
       if (id === 'vancomycin') wasOrdered = wasOrdered || ordered.has('vanco') || ordered.has('vanc');
       if (id === 'piperacillin') wasOrdered = wasOrdered || ordered.has('ceftriaxone') || ordered.has('pip-tazo') || ordered.has('pip') || ordered.has('zosyn') || ordered.has('piptaz');
-      if (id === 'intubation') wasOrdered = wasOrdered || ordered.has('intubate') || ordered.has('rsi') || ordered.has('ett');
+      if (id === 'intubation') wasOrdered = wasOrdered || ordered.has('intubate') || ordered.has('rsi') || ordered.has('ett') || ordered.has('vent') || ordered.has('intubation');
       if (id === 'lung-protective') wasOrdered = wasOrdered || ordered.has('6 ml/kg') || ordered.has('pbw') || ordered.has('vent');
-      if (id === 'sedation') wasOrdered = wasOrdered || ordered.has('propofol') || ordered.has('fentanyl') || ordered.has('midazolam');
-      if (id === 'neuromuscular') wasOrdered = wasOrdered || ordered.has('rocuronium') || ordered.has('vecuronium') || ordered.has('cisatracurium');
+      if (id === 'sedation') wasOrdered = wasOrdered || ordered.has('propofol') || ordered.has('fentanyl') || ordered.has('midazolam') || ordered.has('versed') || ordered.has('sedation');
+      if (id === 'neuromuscular') wasOrdered = wasOrdered || ordered.has('rocuronium') || ordered.has('vecuronium') || ordered.has('cisatracurium') || ordered.has('paralytic') || ordered.has('neuromuscular');
       if (id === 'ivfluid') wasOrdered = wasOrdered || ordered.has('fluid') || ordered.has('bolus') || ordered.has('ns') || ordered.has('lr') || ordered.has('saline');
       
-      if (!wasOrdered) {
+      // Show MICU as missed if it was prompted (even if eventually ordered)
+      if (id === 'micu' && State.micuPromptedNotOrdered) {
+        categoryMissed.push(`<li style="color:var(--amber);">⚠ ${name} <span style="font-size:0.9em;font-style:italic;">(initially missed, added after prompt)</span></li>`);
+        foundMissed = true;
+      } else if (!wasOrdered) {
         categoryMissed.push(`<li style="color:var(--red);">✗ ${name}</li>`);
         foundMissed = true;
       }
@@ -3050,6 +3888,8 @@ function renderPhase3_Data() {
   buildPhaseTrack(5, 3);
   const c = State.caseData;
   State.revealed = new Set();
+  // Set current exam systems for bindExamButtons
+  State.currentExamSystems = c.examSystems;
   $('sim-content').innerHTML = `
     ${patientStrip()}
     <div class="sim-card">
@@ -3167,10 +4007,22 @@ function renderPhase4_Decision(decisionKey) {
   const dec = c[decisionKey];
   if (!dec) { renderPhase3_Data(); return; }
   State.currentDecision = decisionKey;
+  
+  // If we're rendering decision1_7, it means MICU was prompted but not ordered initially
+  if (decisionKey === 'decision1_7') {
+    State.micuPromptedNotOrdered = true;
+  }
+
+  // Use updated exam if decision provides it, otherwise use case default
+  const examSystems = dec.updatedExam || c.examSystems;
+  
+  // Reset revealed exam systems for this decision
+  State.revealed = new Set();
 
   $('sim-content').innerHTML = `
     ${patientStrip()}
     ${dec.conditionAlert ? `<div class="sim-card"><div class="sim-card-head"><span class="phase-badge pb-alert">Condition Update</span><span class="sim-card-title">Patient Status Change</span></div><div class="sim-card-body">${conditionAlertBlock(dec)}${dec.vitals ? '<div class="mt-16"><div class="sec-lbl">Updated Vitals</div>' + vitalsTable(dec.vitals) + '</div>' : ''}</div></div>` : ''}
+    ${dec.updatedExam ? `<div class="sim-card"><div class="sim-card-head"><span class="phase-badge pb-data">Current Status</span><span class="sim-card-title">Physical Examination</span></div><div class="sim-card-body"><div class="sec-lbl">Physical Exam — Tap a system to examine</div>${examGrid(examSystems)}</div></div>` : ''}
     <div class="sim-card">
       <div class="sim-card-head"><span class="phase-badge pb-branch">Phase 4 · Clinical Decision</span><span class="sim-card-title">${dec.title}</span></div>
       <div class="sim-card-body">
@@ -3181,6 +4033,23 @@ function renderPhase4_Decision(decisionKey) {
   `;
   bindOrderPreview();
   bindDecisionSubmit(decisionKey);
+  
+  // Bind exam system clicks if updatedExam was shown
+  if (dec.updatedExam) {
+    examSystems.forEach(sys => {
+      const card = document.querySelector(`[data-exam-key="${sys.key}"]`);
+      if (card) {
+        card.addEventListener('click', () => {
+          if (!State.revealed.has(sys.key)) {
+            State.revealed.add(sys.key);
+            card.classList.add('revealed');
+            const textEl = card.querySelector('.exam-card-text');
+            if (textEl) textEl.textContent = sys.text;
+          }
+        });
+      }
+    });
+  }
 }
 
 function bindDecisionSubmit(decisionKey) {
@@ -3211,35 +4080,115 @@ function bindDecisionSubmit(decisionKey) {
 // ═══════════════════════════════════════════════════════════════
 
 function evaluateBranch(decisionKey, orderText) {
+  console.log('[DEBUG] evaluateBranch called with:', { decisionKey, orderText });
   const c = State.caseData;
+  console.log('[DEBUG] Case data:', c ? c.id : 'undefined');
   const dec = c[decisionKey];
+  console.log('[DEBUG] Decision object:', dec ? 'exists' : 'undefined');
   const lower = orderText.toLowerCase();
+  console.log('[DEBUG] Lowercase order text:', lower);
 
+  // Special handling for Case 1 decision1_5: check cumulative fluid
+  if (c.id === 'cc-1' && decisionKey === 'decision1_5') {
+    const hasFluidOrder = /\b(fluid|bolus|saline|lactated|ringer|lr|ns|crystalloid|ml|liter|l\b)\b/.test(lower);
+    const hasPressor = /\b(norepi|norepinephrine|levophed|pressor|vasopressor)\b/.test(lower);
+    const hasMICU = /\b(micu|icu|critical care|consult)\b/.test(lower);
+    
+    // Check if total fluid now >= 2400mL (approximately 30 mL/kg for 82kg patient)
+    const adequateFluidTotal = State.totalFluidGiven >= 2400;
+    
+    console.log(`Case 1 decision1_5 evaluation: Total fluid=${State.totalFluidGiven}mL, Adequate=${adequateFluidTotal}, HasPressor=${hasPressor}, HasMICU=${hasMICU}`);
+    
+    // If adequate total fluid AND has pressor/MICU → rescue-complete
+    if (adequateFluidTotal && (hasPressor || hasMICU)) {
+      const branch = dec.branches.find(b => b.id === 'rescue-complete');
+      if (branch) {
+        State.decisions.push({ decKey: decisionKey, branchId: branch.id, type: branch.type });
+        renderBranchResult(decisionKey, branch);
+        return;
+      }
+    }
+    
+    // If adequate total fluid but NO pressor → rescue-fluid-only
+    if (adequateFluidTotal && hasFluidOrder && !hasPressor) {
+      const branch = dec.branches.find(b => b.id === 'rescue-fluid-only');
+      if (branch) {
+        State.decisions.push({ decKey: decisionKey, branchId: branch.id, type: branch.type });
+        renderBranchResult(decisionKey, branch);
+        return;
+      }
+    }
+    
+    // If has pressor but not adequate fluid → rescue-pressor-only
+    if (hasPressor && !adequateFluidTotal) {
+      const branch = dec.branches.find(b => b.id === 'rescue-pressor-only');
+      if (branch) {
+        State.decisions.push({ decKey: decisionKey, branchId: branch.id, type: branch.type });
+        renderBranchResult(decisionKey, branch);
+        return;
+      }
+    }
+    
+    // If has MICU but not adequate fluid/pressor → rescue-micu-only
+    if (hasMICU && !adequateFluidTotal && !hasPressor) {
+      const branch = dec.branches.find(b => b.id === 'rescue-micu-only');
+      if (branch) {
+        State.decisions.push({ decKey: decisionKey, branchId: branch.id, type: branch.type });
+        renderBranchResult(decisionKey, branch);
+        return;
+      }
+    }
+    
+    // Otherwise fall through to rescue-incomplete
+    const branch = dec.branches.find(b => b.id === 'rescue-incomplete');
+    if (branch) {
+      State.decisions.push({ decKey: decisionKey, branchId: branch.id, type: branch.type });
+      renderBranchResult(decisionKey, branch);
+      return;
+    }
+  }
+
+  // Default branch matching logic for all other cases
   let matched = dec.branches.find(b => {
     if (b.triggers.length === 0 && b.requires === 0) return false; // skip default for now
     if (b.excludes && b.excludes.length > 0) {
       if (b.excludes.some(ex => lower.includes(ex))) return false;
     }
-    const hits = b.triggers.filter(t => lower.includes(t)).length;
+    // Handle both string and regex triggers
+    const hits = b.triggers.filter(t => {
+      if (t instanceof RegExp) {
+        return t.test(lower);
+      } else {
+        return lower.includes(t);
+      }
+    }).length;
     // count unique categories hit (simple: just count total matches ≥ requires)
     return hits >= b.requires;
   });
 
   if (!matched) {
+    console.log('[DEBUG] No specific branch matched, looking for default branch');
     matched = dec.branches.find(b => b.requires === 0); // fallback to default
+    console.log('[DEBUG] Default branch:', matched ? matched.id : 'not found');
+  } else {
+    console.log('[DEBUG] Branch matched:', matched.id);
   }
 
   State.decisions.push({ decKey: decisionKey, branchId: matched.id, type: matched.type });
+  console.log('[DEBUG] About to check for intubation and render branch result');
   
   // Check if intubation was ordered and show popups before rendering result
   const intubationOrdered = /\b(intubat(e|ed|ion|ing)?|rsi|secure airway|ett)\b/.test(lower);
   if (intubationOrdered) {
+    console.log('[DEBUG] Intubation detected, showing intubation popups');
     showIntubationMedsPopup(() => {
       showVentilatorSettingsPopup(() => {
+        console.log('[DEBUG] Calling renderBranchResult after vent settings');
         renderBranchResult(decisionKey, matched);
       });
     });
   } else {
+    console.log('[DEBUG] No intubation, calling renderBranchResult directly');
     renderBranchResult(decisionKey, matched);
   }
 }
@@ -3259,6 +4208,14 @@ function renderBranchResult(decisionKey, branch) {
   const old = document.getElementById('branch-result-block');
   if (old) old.remove();
 
+  // Special handling for rescue-fluid-only: inject actual fluid total
+  let narrative = branch.narrative;
+  if (c.id === 'cc-1' && branch.id === 'rescue-fluid-only') {
+    const totalLiters = ((State.totalFluidGiven || 2500) / 1000).toFixed(1);
+    narrative = `You've now given additional fluid. Combined with your initial order, the patient has received approximately <span class="hl">${totalLiters}L total</span> (target: 30 mL/kg = ~2.5L for this 82 kg patient).<br/><br/>
+    However, the patient remains hypotensive despite completing fluid resuscitation. MAP remains <65 mm Hg despite adequate volume. What's your next step?`;
+  }
+
   const block = CE('div');
   block.id = 'branch-result-block';
   block.innerHTML = `
@@ -3267,7 +4224,7 @@ function renderBranchResult(decisionKey, branch) {
       <div class="sim-card-body">
         <div class="branch-outcome ${branch.type}">
           <div class="bo-label">${branch.label}</div>
-          <div class="bo-text">${branch.narrative}</div>
+          <div class="bo-text">${narrative}</div>
         </div>
         ${renderNextActions(decisionKey, branch)}
       </div>
@@ -3276,6 +4233,45 @@ function renderBranchResult(decisionKey, branch) {
   content.appendChild(block);
   block.scrollIntoView({ behavior: 'smooth', block: 'start' });
   bindNextActions(decisionKey, branch);
+}
+
+function showCaseCompletionScreen() {
+  const content = $('sim-content');
+  content.innerHTML = `
+    <div class="phase4-container">
+      <div class="decision-card">
+        <div class="decision-header" style="background:linear-gradient(135deg, var(--green) 0%, var(--green-dk) 100%);">
+          <div class="decision-title">Case Management Complete</div>
+        </div>
+        <div class="decision-body">
+          <div style="text-align:center;padding:40px 20px;">
+            <div style="font-size:64px;margin-bottom:16px;">✓</div>
+            <div style="font-size:20px;font-weight:600;color:var(--green);margin-bottom:12px;">Ongoing MICU Management</div>
+            <div style="color:var(--tx-2);margin-bottom:32px;">
+              The patient requires continued critical care management in the MICU. You've made key initial decisions regarding airway management, ventilator settings, and ARDS adjunctive therapies.
+            </div>
+            ${generateOrdersReview()}
+            <div class="btn-row" style="justify-content:center;margin-top:32px;">
+              <button class="btn btn--primary" id="btn-restart">Restart Case</button>
+              <button class="btn btn--secondary" id="btn-cases">Select Another Case</button>
+              <button class="btn btn--secondary" id="btn-home">Return Home</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+  
+  // Bind buttons
+  const restartBtn = $('btn-restart');
+  if (restartBtn) restartBtn.addEventListener('click', () => { State.revealed = new Set(); State.decisions = []; renderPhase1_Vignette(); });
+  const casesBtn = $('btn-cases');
+  if (casesBtn) casesBtn.addEventListener('click', () => { State.reset(); showScreen('screen-cases'); });
+  const homeBtn = $('btn-home');
+  if (homeBtn) homeBtn.addEventListener('click', () => { State.reset(); showScreen('screen-home'); });
+  
+  // Scroll to top
+  content.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
 function renderNextActions(decisionKey, branch) {
@@ -3323,10 +4319,10 @@ function renderNextActions(decisionKey, branch) {
     `;
   }
 
-  // Fallback
+  // Fallback - case completion without specific next decision
   return `
     <div class="btn-row mt-20">
-      <button class="btn btn--secondary" id="btn-cases">Select Another Case</button>
+      <button class="btn btn--primary" id="btn-complete-case">Return to Bedside Management →</button>
     </div>
   `;
 }
@@ -3335,8 +4331,21 @@ function bindNextActions(decisionKey, branch) {
   const showVitalsBtn = $('btn-show-vitals');
   if (showVitalsBtn) {
     showVitalsBtn.addEventListener('click', () => {
+      // Check if we should show Code Blue modal first (Case 2)
+      if (branch.showCodeBlue) {
+        showCodeBlueModal(() => {
+          // After ROSC, check for MICU transfer or show vitals
+          if (branch.showMICUTransfer) {
+            showMICUTransferModal(() => {
+              showVitalsAndProceed(branch);
+            });
+          } else {
+            showVitalsAndProceed(branch);
+          }
+        });
+      } 
       // Check if we should show MICU transfer modal
-      if (branch.showMICUTransfer) {
+      else if (branch.showMICUTransfer) {
         showMICUTransferModal(() => {
           showVitalsAndProceed(branch);
         });
@@ -3353,6 +4362,15 @@ function bindNextActions(decisionKey, branch) {
       renderPhase4_Decision(nextKey);
     });
   }
+  
+  // Handle case completion button
+  const completeBtn = $('btn-complete-case');
+  if (completeBtn) {
+    completeBtn.addEventListener('click', () => {
+      showCaseCompletionScreen();
+    });
+  }
+  
   const restartBtn = $('btn-restart');
   if (restartBtn) restartBtn.addEventListener('click', () => { State.revealed = new Set(); State.decisions = []; renderPhase1_Vignette(); });
   const casesBtn = $('btn-cases');
@@ -3572,12 +4590,85 @@ function showVitalsAndProceed(branch) {
   // Use updated exam if branch provides it, otherwise use original
   const examSystems = branch.updatedExam || c.examSystems;
   
+  // Store current exam systems in State so bindExamButtons can use them
+  State.currentExamSystems = examSystems;
+  
   // Reset revealed exam systems for reassessment
   State.revealed = new Set();
+  
+  // Special handling for rescue-fluid-only: inject actual fluid total into vitalsMsg
+  let vitalsMsg = branch.vitalsMsg;
+  if (c.id === 'cc-1' && branch.id === 'rescue-fluid-only') {
+    const totalLiters = ((State.totalFluidGiven || 2500) / 1000).toFixed(1);
+    vitalsMsg = `After receiving ${totalLiters}L total fluid, BP has improved slightly to 84/48 mm Hg (MAP 60 mm Hg). However, MAP remains <65 mm Hg despite adequate fluid.<br/><br/>
+    RN: <em>"We've now given ${totalLiters} liters total. His pressure is a little better but still low. What do you want to do next?"</em>`;
+  }
   
   // Build objective labs/imaging section from recognized orders
   let objectiveSection = '';
   let treatmentSection = '';
+  
+  // For Case 3, extract ABG values from nextVitals and create an ABG card
+  const caseId = State.caseData?.id;
+  if (caseId === 'cc-3' && branch.nextVitals) {
+    const abgValues = {};
+    branch.nextVitals.forEach(v => {
+      if (v.lbl === 'pH') abgValues.pH = v.val;
+      if (v.lbl === 'PaCO2') abgValues.PaCO2 = v.val;
+      if (v.lbl === 'PaO2') abgValues.PaO2 = v.val;
+      if (v.lbl === 'HCO3') abgValues.HCO3 = v.val;
+      if (v.lbl === 'SaO2' || v.lbl === 'SaO₂') abgValues.SaO2 = v.val;
+    });
+    
+    // Only create ABG card if we have ABG values
+    if (Object.keys(abgValues).length > 0) {
+      // Get FiO2 from ventilator settings or vitals
+      const fio2Vital = branch.nextVitals.find(v => v.lbl === 'FiO2' || v.lbl === 'FiO₂');
+      const fio2Label = fio2Vital ? `Ventilator FiO₂ ${fio2Vital.val}` : 'Ventilator';
+      
+      const abgCard = `
+        <div class="objective-item unlocked">
+          <div class="objective-item-header">
+            <span class="objective-item-name">ABG (${fio2Label})</span>
+            <span class="objective-item-badge" style="color:var(--green)">✓ Result</span>
+          </div>
+          <div class="objective-item-result">
+            <div class="result-grid">
+              <div class="result-row">
+                <div class="rr-label">pH</div>
+                <div class="rr-value ${parseFloat(abgValues.pH) < 7.35 ? 'vc' : 'vn'}">${abgValues.pH || '—'}</div>
+                <div class="rr-ref">7.35-7.45</div>
+              </div>
+              <div class="result-row">
+                <div class="rr-label">PaCO₂</div>
+                <div class="rr-value ${parseFloat(abgValues.PaCO2) > 45 ? 'vc' : 'vn'}">${abgValues.PaCO2 || '—'}</div>
+                <div class="rr-ref">35-45 mm Hg</div>
+              </div>
+              <div class="result-row">
+                <div class="rr-label">PaO₂</div>
+                <div class="rr-value ${parseFloat(abgValues.PaO2) < 80 ? 'vw' : 'vn'}">${abgValues.PaO2 || '—'}</div>
+                <div class="rr-ref">80-100 mm Hg</div>
+              </div>
+              <div class="result-row">
+                <div class="rr-label">HCO₃⁻</div>
+                <div class="rr-value vn">${abgValues.HCO3 || '—'}</div>
+                <div class="rr-ref">22-26 mEq/L</div>
+              </div>
+              ${abgValues.SaO2 ? `
+                <div class="result-row">
+                  <div class="rr-label">SaO₂</div>
+                  <div class="rr-value vn">${abgValues.SaO2}</div>
+                  <div class="rr-ref">≥95%</div>
+                </div>
+              ` : ''}
+            </div>
+          </div>
+        </div>
+      `;
+      
+      objectiveSection = abgCard;
+    }
+  }
   
   if (State.recognizedOrders && State.recognizedOrders.length > 0) {
     // Separate medications from labs/imaging
@@ -3659,6 +4750,43 @@ function showVitalsAndProceed(branch) {
       treatmentSection = ventItem + (treatmentSection || '');
     }
     
+    // Add procedures (central line, arterial line) to treatment section
+    const procedures = State.recognizedOrders.filter(order => 
+      order.cat === 'procedure' && (order.id === 'central-line' || order.id === 'arterial-line')
+    );
+    
+    if (procedures.length > 0) {
+      const procedureItems = procedures.map(proc => {
+        const procDisplay = {
+          'central-line': {
+            emoji: '🔌',
+            name: 'Central Venous Catheter',
+            status: 'Placed and secured',
+            detail: 'Triple-lumen catheter inserted. All ports functional. Sterile dressing applied.'
+          },
+          'arterial-line': {
+            emoji: '📊',
+            name: 'Arterial Line',
+            status: 'Placed and transduced',
+            detail: 'Radial arterial catheter inserted. Continuous BP monitoring active. Waveform adequate.'
+          }
+        };
+        
+        const info = procDisplay[proc.id];
+        
+        return `
+          <div class="treatment-item" style="background:linear-gradient(135deg, var(--bg-2) 0%, var(--bg-3) 100%); border:2px solid var(--green); border-radius:8px; padding:16px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+            <div class="treatment-name" style="font-size:16px; font-weight:700; color:var(--green); margin-bottom:4px;">${info.emoji} ${info.name}</div>
+            <div class="treatment-status" style="color:var(--tx-2); font-size:13px; margin-bottom:8px;">${info.status}</div>
+            <div class="treatment-detail" style="color:var(--tx-3); font-size:12px;">${info.detail}</div>
+          </div>
+        `;
+      }).join('');
+      
+      // Add procedures after ventilator but before medications
+      treatmentSection = procedureItems + (treatmentSection || '');
+    }
+    
     // Build objective section for labs/imaging (with unlock)
     if (labsImaging.length > 0) {
       const labItems = labsImaging.map((order, idx) => {
@@ -3705,6 +4833,14 @@ function showVitalsAndProceed(branch) {
     displayVitals = displayVitals.filter(v => {
       const ventLabels = ['Mode', 'VT', 'RR', 'PEEP', 'FiO2', 'FiO₂', 'Pplat'];
       return !ventLabels.includes(v.lbl);
+    });
+  }
+  
+  // For Case 3, also remove ABG values from vitals (they'll show in labs section)
+  if (caseId === 'cc-3' && displayVitals) {
+    displayVitals = displayVitals.filter(v => {
+      const abgLabels = ['pH', 'PaCO2', 'PaO2', 'HCO3', 'SaO2', 'SaO₂'];
+      return !abgLabels.includes(v.lbl);
     });
   }
   
@@ -3778,7 +4914,7 @@ function showVitalsAndProceed(branch) {
         
         <div class="mt-20">
           <div class="vignette" style="padding:16px;background:var(--bg-3);border-left:3px solid var(--cyan);border-radius:var(--r-sm);">
-            ${branch.vitalsMsg}
+            ${vitalsMsg}
           </div>
         </div>
         
@@ -3814,6 +4950,9 @@ function showVitalsAndProceed(branch) {
         const nextKey = proceedBtn.dataset.next;
         if (nextKey) {
           renderPhase4_Decision(nextKey);
+        } else {
+          // No next decision - show completion screen
+          showCaseCompletionScreen();
         }
       });
     }
@@ -3851,6 +4990,82 @@ function bindUnlockButtons() {
     });
   });
 }
+
+// ═══════════════════════════════════════════════════════════════
+//  CODE BLUE MODAL (Case 2)
+// ═══════════════════════════════════════════════════════════════
+
+function showCodeBlueModal(onROSC) {
+  const modal = CE('div');
+  modal.className = 'modal-overlay';
+  modal.id = 'modal-code-blue';
+  modal.innerHTML = `
+    <div class="modal-box modal-sm">
+      <div class="modal-head" style="background:var(--red-bg);border-color:var(--red);">
+        <div>
+          <span class="modal-tag" style="background:var(--red);color:var(--bg);">CRITICAL EVENT</span>
+          <h3 class="modal-title" style="color:var(--red);">Code Blue Activation</h3>
+        </div>
+      </div>
+      <div class="modal-body">
+        <div style="text-align:center;margin-bottom:20px;">
+          <div style="width:80px;height:80px;margin:0 auto 16px;border-radius:50%;background:var(--red-bg);border:3px solid var(--red);display:flex;align-items:center;justify-content:center;font-size:36px;animation:pulse 1.5s ease-in-out infinite;">
+            ⚠️
+          </div>
+          <div style="font-family:var(--font-h);font-size:22px;font-weight:700;color:var(--red);margin-bottom:12px;">Patient in Cardiac Arrest</div>
+          <div style="font-size:15px;color:var(--tx-1);line-height:1.8;text-align:left;background:var(--bg-3);padding:16px;border-radius:8px;border-left:4px solid var(--red);">
+            <strong style="color:var(--red);">Overhead Page:</strong> <em>"Code Blue, ICU Bed 12. Code Blue, ICU Bed 12."</em><br/><br/>
+            The patient has lost pulse and is unresponsive. The code team is performing high-quality CPR. You are running the code.<br/><br/>
+            <strong style="color:var(--amber);">Follow ACLS Algorithm:</strong>
+            <ul style="margin:8px 0 0 20px;padding:0;">
+              <li>CPR: 30 compressions, 2 breaths</li>
+              <li>Assess rhythm every 2 minutes</li>
+              <li>Epinephrine 1mg IV q3-5min</li>
+              <li>Treat reversible causes (H's and T's)</li>
+              <li>Consider thrombolytics for massive PE</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="modal-foot">
+        <button class="btn btn--primary btn--full" id="code-blue-rosc" style="background:var(--green);border-color:var(--green);font-size:17px;padding:14px;">
+          ✓ ROSC Achieved (Return of Spontaneous Circulation) →
+        </button>
+      </div>
+    </div>
+  `;
+  
+  // Add pulse animation
+  const style = document.createElement('style');
+  style.textContent = `
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.1); opacity: 0.8; }
+    }
+  `;
+  document.head.appendChild(style);
+  
+  document.body.appendChild(modal);
+  modal.removeAttribute('hidden');
+  document.body.style.overflow = 'hidden';
+  
+  setTimeout(() => {
+    const roscBtn = $('code-blue-rosc');
+    if (roscBtn) {
+      roscBtn.addEventListener('click', () => {
+        modal.setAttribute('hidden', '');
+        document.body.style.overflow = '';
+        modal.remove();
+        style.remove();
+        if (onROSC) onROSC();
+      });
+    }
+  }, 100);
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  MICU TRANSFER MODAL
+// ═══════════════════════════════════════════════════════════════
 
 function showMICUTransferModal(onContinue) {
   const modal = CE('div');
