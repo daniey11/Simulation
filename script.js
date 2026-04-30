@@ -240,9 +240,34 @@ e.g.: Lactate, CBC, CMP, cultures, oxygen, etc.`,
           triggers: ['lactate','cbc','culture','antibiotic','oxygen'],
           requires: 1,
           excludes: ['fluid','bolus','saline','lactated','lr','ns','norepi','norepinephrine','pressor','vasopressor'],
-          headline: 'Critical interventions missing',
-          narrative: `You ordered diagnostic studies but did not address the immediate hemodynamic instability. The patient's condition is worsening.`,
+          headline: 'Critical interventions missing — patient deteriorating',
+          narrative: `You ordered diagnostic studies but did not address the immediate hemodynamic instability. In septic shock, <span class="hl">diagnostic workup cannot substitute for simultaneous resuscitation</span>.<br/><br/>MAP 45 mm Hg. HR 136. GCS 8 — the patient is unresponsive. Anuria has developed over the last hour. The RN calls overhead: <em>"Doctor — BP is 68/34. The patient is unresponsive. I'm calling the Code!"</em>`,
           showVitalsButton: true,
+          showCodeBlue: true,
+          codeBlueConfig: {
+            rhythm: 'Pulseless Electrical Activity (PEA)',
+            overhead: 'Code Blue, Tower 2 Bed 8. Code Blue, Tower 2 Bed 8.',
+            cause: 'Cardiovascular collapse from untreated septic shock — distributive physiology with vasoplegia, progressive end-organ failure, and lactic acidosis.',
+            monitor_phrase: 'Look at the monitor — no pulse. PEA on telemetry.',
+            hs_ts: [
+              'Hypovolemia ← most likely (distributive shock, third-spacing)',
+              'Hypoxia ← SpO₂ 87% on NRB before arrest',
+              'Hydrogen ion (severe lactic acidosis, pH <7.1)',
+              'Hypo/Hyperkalemia ← renal failure in shock',
+              'Tension pneumothorax (rule out)',
+              'Thrombosis — septic emboli or underlying PE',
+              'Tamponade (less likely)',
+              'Toxins / medications'
+            ],
+            acls_specifics: [
+              'Aggressive volume resuscitation — push NS/LR boluses during CPR',
+              'Norepinephrine via peripheral IV during resuscitation if MAP unresponsive',
+              'Broad-spectrum IV antibiotics if not yet given — source control is definitive',
+              'Sodium bicarbonate 1 mEq/kg if pH <7.1 (bridge to fix the cause)',
+              'Consider calcium gluconate if hyperkalemia from renal failure'
+            ],
+            rosc_label: '✓ ROSC Achieved — Continuing Sepsis Management →'
+          },
           nextVitals: [
             { lbl: 'HR',    val: '136',   unit: 'bpm',    st: 'vc' },
             { lbl: 'BP',    val: '68/34', unit: 'mm Hg',  st: 'vc' },
@@ -251,24 +276,21 @@ e.g.: Lactate, CBC, CMP, cultures, oxygen, etc.`,
             { lbl: 'GCS',   val: '8',     unit: '/15',    st: 'vc' },
             { lbl: 'UO',    val: '0 mL',  unit: 'last hr',st: 'vc' },
           ],
-          vitalsMsg: `The patient is rapidly deteriorating. MAP 45 mm Hg. HR 136. GCS 8 — unresponsive. Anuria developed.<br/><br/>RN calls overhead: <em>"Urgent! BP is crashing and patient is unresponsive. We need help NOW!"</em>`,
+          vitalsMsg: `After ROSC, the MICU team has been called to bedside. The patient is intubated and on norepinephrine. Broad-spectrum antibiotics are running.<br/><br/><strong>Key teaching:</strong> In septic shock, hemodynamic resuscitation and antibiotics must be initiated simultaneously with diagnostic workup — not after. Each hour of delay increases mortality by 7–10%.`,
           nextDecision: null,
-          endState: 'bad',
-          endMsg: `<strong>Critical Management Failure:</strong><br/>
-          • Patient presented with shock (MAP <65) but hemodynamic support was not initiated<br/>
-          • Diagnostic tests alone do not treat shock<br/>
-          • Immediate priorities: 30 mL/kg fluid bolus, norepinephrine if MAP remains <65, MICU consultation<br/>
-          • Delayed resuscitation leads to irreversible end-organ damage<br/><br/>
-          <strong>Remember:</strong> "Time is tissue" — hemodynamic stabilization cannot wait for lab results. Treat shock aggressively and immediately.`,
-          decisions: ['Failed to initiate hemodynamic support', 'Critical delay in resuscitation', 'Review shock management priorities'],
+          endState: 'concern',
+          endMsg: `<strong>Case Concluded — Critical Delay.</strong><br/><br/>A Code Blue occurred because hemodynamic resuscitation was not initiated. The sepsis bundle (fluids, antibiotics, vasopressor, lactate) must run in parallel with diagnostic workup, not after it. After ROSC, the patient is transferred to the MICU on norepinephrine and vasopressin.`,
+          decisions: [
+            'Failed to initiate simultaneous resuscitation with diagnostic workup',
+            'Sepsis bundle must be started within the first hour',
+            'PEA arrest from distributive shock — treated with volume + vasopressors during CPR',
+            'After ROSC: target MAP ≥65, repeat lactate, continue antibiotics'
+          ],
           updatedExam: [
-            { icon:'🧠', lbl:'Neuro',   key:'neuro',   text:'<span class="hl">Severely altered. GCS 8. Unresponsive to voice, responds only to painful stimuli.</span>' },
-            { icon:'👁️', lbl:'General', key:'gen',     text:'Critically ill-appearing. Cold, mottled skin. Cyanotic.' },
-            { icon:'👄', lbl:'HEENT',   key:'heent',   text:'Dry mucous membranes. Flat neck veins.' },
-            { icon:'❤️', lbl:'Cardiac', key:'cardiac', text:'Severe tachycardia (HR 136). Weak, thready pulses. Cold extremities.' },
-            { icon:'🫁', lbl:'Lungs',   key:'lungs',   text:'Crackles right lower lobe. Shallow, rapid breathing.' },
-            { icon:'🫃', lbl:'Abdomen', key:'abd',     text:'Distended, rigid (concerning for bowel ischemia in shock).' },
-            { icon:'🦵', lbl:'Extrem',  key:'ext',     text:'<span class="hl">Cold, mottled extremities. No palpable peripheral pulses. Cap refill >5 sec.</span>' }
+            { icon:'🧠', lbl:'Neuro',   key:'neuro',   text:'<span class="hl">Post-cardiac arrest. Sedated and intubated after ROSC. GCS not assessable.</span>' },
+            { icon:'❤️', lbl:'Cardiac', key:'cardiac', text:'ROSC achieved. Tachycardic (HR 118). On norepinephrine infusion. MAP targeting ≥65.' },
+            { icon:'🫁', lbl:'Lungs',   key:'lungs',   text:'Intubated, mechanically ventilated. Bilateral crackles.' },
+            { icon:'🦵', lbl:'Extrem',  key:'ext',     text:'Cool, mottled extremities. Gradual improvement expected with vasopressor support.' }
           ]
         },
         {
@@ -1007,6 +1029,28 @@ e.g.: Labs, imaging, oxygen, medications, consults, etc.`,
           After the bolus: HR → 148, BP paradoxically drops to <span class="hl">66/38 mm Hg</span>. The patient becomes less responsive. POCUS shows worsening RV dilation with interventricular septal shift bowing into the LV.`,
           showVitalsButton: true,
           showCodeBlue: true, // NEW: trigger code blue modal
+          codeBlueConfig: {
+            rhythm: 'Pulseless Electrical Activity (PEA — Obstructive)',
+            overhead: 'Code Blue, ICU Bed 12. Code Blue, ICU Bed 12. PERT Team to ICU Bed 12.',
+            cause: 'Obstructive PEA from worsened RV failure after large fluid bolus. In massive PE, the RV is already critically distended. Aggressive fluid loading → further RV dilation → interventricular septal shift → impaired LV filling → complete cardiovascular collapse.',
+            monitor_phrase: 'Look at the monitor — PEA. RV is maximally distended on POCUS. No pulse on check.',
+            hs_ts: [
+              'Thrombosis (PE) ← PRIMARY CAUSE — consider thrombolytics',
+              'Tension pneumothorax (rule out)',
+              'Tamponade (rule out — can mimic PE hemodynamics)',
+              'Hypovolemia (relative)',
+              'Hypoxia',
+              'Hydrogen ion (lactic acidosis)'
+            ],
+            acls_specifics: [
+              'Consider systemic thrombolytics during CPR — tPA 100mg IV over 2 hours',
+              'If thrombolytics given: CPR must continue × 60–90 min for drug to work',
+              'Do NOT give more fluid — RV overload is the mechanism',
+              'Epinephrine 1mg IV q3–5 min',
+              'Post-ROSC: emergent CTPA or echo, PERT consultation, consider catheter-directed therapy'
+            ],
+            rosc_label: '✓ ROSC Achieved — PERT Team Taking Over →'
+          },
           nextVitals: [
             { lbl: 'HR',    val: '148',   unit: 'bpm',    st: 'vc' },
             { lbl: 'BP',    val: '66/38', unit: 'mm Hg',  st: 'vc' },
@@ -1188,6 +1232,28 @@ e.g.: Labs, imaging, oxygen, medications, consults, etc.`,
           After the fluid bolus: HR → 152, BP drops to <span class="hl">58/32 mm Hg</span>. The patient becomes unresponsive. Monitor shows PEA arrest.`,
           showVitalsButton: true,
           showCodeBlue: true,
+          codeBlueConfig: {
+            rhythm: 'Pulseless Electrical Activity (PEA — Obstructive)',
+            overhead: 'Code Blue, ICU Bed 12. Code Blue, ICU Bed 12. PERT Team Stat.',
+            cause: 'Obstructive PEA from RV failure worsened by fluid loading in massive PE. The RV was already at maximum capacity. Bolus → acute RV dilation → bowing of interventricular septum (D-sign) → complete LV inflow obstruction → cardiovascular collapse.',
+            monitor_phrase: 'Look at the monitor — PEA. POCUS: D-sign, RV larger than LV, no effective output.',
+            hs_ts: [
+              'Thrombosis (massive PE) ← CAUSE — thrombolytics during CPR if confirmed',
+              'Tamponade (can mimic PE — rule out with POCUS)',
+              'Tension pneumothorax (rule out)',
+              'Hypoxia',
+              'Hypovolemia (relative — do NOT give more fluid)'
+            ],
+            acls_specifics: [
+              'tPA 100mg IV during CPR if massive PE is confirmed or strongly suspected',
+              'CPR must continue 60–90 minutes after thrombolytic for drug effect',
+              'Absolutely do NOT give more IV fluid — contraindicated in RV failure',
+              'Epinephrine 1mg IV q3–5 min',
+              'Emergent PERT consultation after ROSC',
+              'Consider mechanical circulatory support (VA-ECMO) if available'
+            ],
+            rosc_label: '✓ ROSC After Thrombolytics — PERT Team Assuming Care →'
+          },
           nextVitals: [
             { lbl: 'HR',    val: '152',   unit: 'bpm',    st: 'vc' },
             { lbl: 'BP',    val: '58/32', unit: 'mm Hg',  st: 'vc' },
@@ -1432,11 +1498,11 @@ e.g.: Airway, medications, ventilation, etc.`,
           Intubation successful on first attempt. ETT 7.5 at 21 cm at lip.`,
           showVitalsButton: true,
           nextVitals: [
-            { lbl: 'HR',    val: '105',       unit: 'bpm',      st: 'va' },
-            { lbl: 'BP',    val: '92/54',     unit: 'mm Hg',    st: 'va' },
+            { lbl: 'HR',    val: '105',       unit: 'bpm',      st: 'vw' },
+            { lbl: 'BP',    val: '92/54',     unit: 'mm Hg',    st: 'vw' },
             { lbl: 'SpO2',  val: '94%',       unit: '',         st: 'vw' },
-            { lbl: 'Temp',  val: '38.5',      unit: '°C',       st: 'va' },
-            { lbl: 'GCS',   val: '13/15',     unit: '',         st: 'va' },
+            { lbl: 'Temp',  val: '38.5',      unit: '°C',       st: 'vw' },
+            { lbl: 'GCS',   val: '13/15',     unit: '',         st: 'vw' },
             { lbl: 'Mode',  val: 'AC/VC',     unit: '',         st: 'vn' },
             { lbl: 'VT',    val: '330 mL',    unit: '6 mL/kg',  st: 'vn' },
             { lbl: 'RR',    val: '20',        unit: 'set',      st: 'vn' },
@@ -1457,37 +1523,51 @@ e.g.: Airway, medications, ventilation, etc.`,
         },
         {
           id: 'ards-high-tidal-volume',
-          label: '⚠ INAPPROPRIATE TIDAL VOLUME',
+          label: '⚠ INAPPROPRIATE TIDAL VOLUME — BAROTRAUMA ARREST',
           type: 'bad',
           triggers: ['intubat','rsi','8 ml/kg','430','450','500','high tidal'],
           requires: 2,
           excludes: ['6 ml/kg','328','330','pbw','lung protective'],
-          headline: 'High tidal volume ordered — volutrauma risk',
-          narrative: `You intubated but ordered <span class="hl">high tidal volume</span> based on actual body weight instead of PBW.<br/><br/>
-          You ordered VT 430 mL (6 mL/kg × 72 kg actual weight).<br/><br/>
-          <strong>Common error:</strong> Tidal volume must be based on <span class="hl">Predicted Body Weight (PBW)</span>.<br/>
-          For 5'4" female: PBW = 45.5 + 2.3 × (64 − 60) = <span class="hl">54.7 kg</span><br/>
-          Correct VT = 6 × 54.7 = <span class="hl">328 mL</span><br/><br/>
-          Post-intubation: Plateau pressure 34 cm H₂O (dangerously high). Ventilator alarming "high pressure."`,
+          headline: 'High tidal volume — volutrauma leading to arrest',
+          narrative: `You intubated but ordered <span class="hl">high tidal volume</span> based on actual body weight instead of Predicted Body Weight (PBW).<br/><br/>
+          VT 430 mL = 7.9 mL/kg actual weight. Post-intubation Pplat is 34 cm H₂O — dangerously high in ARDS.<br/><br/>
+          Over 12 minutes: the ventilator alarms escalate. Suddenly, SpO₂ drops to 60%, BP drops to 52/28. Trachea deviates right. The RT shouts: <em>"She has no breath sounds on the left — tension pneumo! And she's losing her pulse!"</em>`,
           showVitalsButton: true,
+          showCodeBlue: true,
+          codeBlueConfig: {
+            rhythm: 'PEA (Obstructive — Tension Pneumothorax)',
+            overhead: 'Code Blue, MICU Bed 4. Code Blue, MICU Bed 4. Bring the thoracostomy tray.',
+            cause: 'Tension pneumothorax from ventilator-induced barotrauma. High tidal volume → Pplat 34 cm H₂O → alveolar rupture → pneumothorax → mediastinal shift → obstructive shock → PEA arrest.',
+            monitor_phrase: 'Look at the monitor — PEA. Absent left-sided breath sounds. Tracheal deviation to right.',
+            hs_ts: [
+              'Tension pneumothorax ← PRIMARY CAUSE — needle decompress immediately',
+              'Hypoxia (secondary to lung collapse)',
+              'Hypovolemia (obstructive physiology)',
+              'Hydrogen ion (acute hypercapnia + hypoxic acidosis)',
+              'Other T\'s: tamponade, thrombosis (rule out)'
+            ],
+            acls_specifics: [
+              'IMMEDIATE: Needle decompression — 2nd intercostal space, midclavicular line',
+              'Follow with chest tube thoracostomy (4th-5th ICS, anterior axillary line)',
+              'Do NOT defibrillate — this is obstructive PEA, not a shockable rhythm',
+              'Reduce tidal volume to 6 mL/kg PBW immediately after ROSC (328 mL for this patient)',
+              'Target Pplat <30 cm H₂O — ventilator-induced lung injury kills',
+              'Post-ROSC: repeat CXR, confirm lung re-expansion, reassess ventilator settings'
+            ],
+            rosc_label: '✓ ROSC After Needle Decompression — Continuing ARDS Care →'
+          },
           nextVitals: [
             { lbl: 'VT',    val: '430 mL',    unit: '7.9 mL/kg',st: 'vc' },
             { lbl: 'Pplat', val: '34',        unit: 'cm H2O',   st: 'vc' },
             { lbl: 'SpO2',  val: '85%',       unit: 'FiO2 100%',st: 'vc' },
             { lbl: 'BP',    val: '82/48',     unit: 'mm Hg',    st: 'vc' },
           ],
-          vitalsMsg: `<strong>Key learning:</strong> ARDS requires lung-protective ventilation:<br/>
-          • VT 6 mL/kg PBW (NOT actual body weight)<br/>
-          • Pplat <30 cm H₂O<br/>
-          • Permissive hypercapnia acceptable (pH ≥7.20)<br/><br/>
-          RT: <em>"We need to reduce the tidal volume immediately to 328 mL."</em>`,
+          vitalsMsg: `After ROSC via needle decompression and chest tube, the tidal volume is corrected to 328 mL (6 mL/kg PBW).<br/><br/><strong>Key teaching:</strong> Tidal volume must be based on <span class="hl">Predicted Body Weight (PBW)</span>, not actual weight. For 5'4" female: PBW = 45.5 + 2.3 × (64−60) = 54.7 kg → VT = 328 mL. Pplat target is <30 cm H₂O. Barotrauma is a preventable, life-threatening complication of high-pressure ventilation.`,
           updatedExam: [
-            { icon:'😴', lbl:'General', key:'gen',     text:'Intubated and sedated. RASS -2. Ventilator alarming "high pressure". Patient appears uncomfortable.' },
-            { icon:'🧠', lbl:'Neuro',   key:'neuro',   text:'Sedated on propofol. RASS -2. Pupils equal and reactive. Moving all extremities.' },
-            { icon:'🫁', lbl:'Lungs',   key:'lungs',   text:'Intubated. Equal bilateral breath sounds. Diffuse crackles. High plateau pressure on ventilator (34 cm H₂O).' },
-            { icon:'❤️', lbl:'Cardiac', key:'cardiac', text:'Tachycardic, hypotensive. Likely from high intrathoracic pressure reducing venous return.' },
-            { icon:'🫃', lbl:'Abdomen', key:'abd',     text:'Soft, mildly distended from high airway pressures. OG tube in place.' },
-            { icon:'🦵', lbl:'Extrem',  key:'ext',     text:'Warm. No edema. Pulses present but weak.' }
+            { icon:'😴', lbl:'General', key:'gen',     text:'Post-arrest. Intubated and sedated after ROSC. Chest tube in place on left side.' },
+            { icon:'🧠', lbl:'Neuro',   key:'neuro',   text:'Post-cardiac arrest. Sedated. Neurological outcome depends on arrest duration.' },
+            { icon:'🫁', lbl:'Lungs',   key:'lungs',   text:'Left lung re-expanding after chest tube. Tidal volume corrected to 328 mL. Pplat now 24 cm H₂O.' },
+            { icon:'❤️', lbl:'Cardiac', key:'cardiac', text:'ROSC achieved. Tachycardic. Vasopressor support initiated.' },
           ],
           nextDecision: 'decision2'
         },
@@ -1516,19 +1596,42 @@ e.g.: Airway, medications, ventilation, etc.`,
         },
         {
           id: 'ards-no-intubation',
-          label: '⚠ NO AIRWAY INTERVENTION',
+          label: '⚠ NO AIRWAY INTERVENTION — HYPOXIC ARREST',
           type: 'bad',
           triggers: ['increase oxygen','nrb','more oxygen','continue'],
           requires: 1,
           excludes: ['intubat','rsi','bipap','cpap','niv'],
-          headline: 'Airway management not addressed',
-          narrative: `You escalated oxygen without securing the airway. This patient has:<br/>
-          • Severe hypoxemic respiratory failure<br/>
-          • HFNC failure (SpO₂ 84% on max flow)<br/>
-          • Work of breathing with accessory muscles<br/>
-          • Tiring and unable to sustain effort<br/><br/>
-          <span class="hl">This is a clear intubation indication.</span> Delaying leads to crash intubation with worse outcomes.`,
+          headline: 'Airway not secured — hypoxic cardiac arrest',
+          narrative: `You escalated oxygen without securing the airway. This patient has failed HFNC with SpO₂ 84% and is visibly tiring — she cannot sustain this work of breathing much longer.<br/><br/>
+          <span class="hl">This is a clear intubation indication.</span> Within 4 minutes, she becomes bradypneic, then apneic.<br/><br/>
+          The monitor alarmed: HR 40, then asystole. The RN shouts: <em>"She doesn't have a pulse — I'm calling the Code!"</em>`,
           showVitalsButton: true,
+          showCodeBlue: true,
+          codeBlueConfig: {
+            rhythm: 'PEA → Asystole (Hypoxic Arrest)',
+            overhead: 'Code Blue, MICU Bed 4. Airway Team to MICU Bed 4.',
+            cause: 'Hypoxic cardiac arrest from untreated respiratory failure. SpO₂ 72% sustained → profound cellular hypoxia → myocardial depression → cardiac arrest.',
+            monitor_phrase: 'Look at the monitor — HR 40 then flat line. No pulse on check.',
+            hs_ts: [
+              'Hypoxia ← PRIMARY CAUSE — address first',
+              'Hypoventilation → respiratory acidosis',
+              'Hydrogen ion (severe hypoxic acidosis)',
+              'Tension pneumothorax (rule out during arrest)',
+              'Hypovolemia (distributive component from sepsis)',
+              'Tamponade (rule out)',
+              'Thrombosis',
+              'Toxins'
+            ],
+            acls_specifics: [
+              'Immediate endotracheal intubation — airway is the arrest cause',
+              'Bag-mask ventilation during CPR at 100% FiO₂',
+              'Once intubated: confirm placement, set RR 10, FiO₂ 100%',
+              'Epinephrine 1mg IV q3–5 min (PEA/Asystole)',
+              'Target ETCO₂ >10 mm Hg to confirm adequate CPR quality',
+              'Hypoxic arrest — neurological outcomes depend on time to oxygenation'
+            ],
+            rosc_label: '✓ ROSC Achieved — Airway Secured, Continuing ARDS Management →'
+          },
           nextVitals: [
             { lbl: 'HR',   val: '152',    unit: 'bpm',      st: 'vc' },
             { lbl: 'BP',   val: '68/40',  unit: 'mm Hg',    st: 'vc' },
@@ -1536,7 +1639,7 @@ e.g.: Airway, medications, ventilation, etc.`,
             { lbl: 'GCS',  val: '6',      unit: '/15',      st: 'vc' },
             { lbl: 'RR',   val: '6',      unit: 'gasping',  st: 'vc' },
           ],
-          vitalsMsg: `Patient is now bradypneic and unresponsive. Code blue is called within the MICU.<br/><br/><strong>Urgent airway management required.</strong><br/><br/>Early controlled intubation when HFNC failure was evident would have prevented this deterioration.`,
+          vitalsMsg: `After ROSC, the patient is intubated on lung-protective ventilation. SpO₂ recovering to 88% on FiO₂ 100%.<br/><br/><strong>Key teaching:</strong> Hypoxic cardiac arrest from delayed intubation carries a significantly worse neurological prognosis than a controlled RSI. HFNC failure is an intubation indication — do not wait for arrest.`,
           nextDecision: 'decision1_5'
         },
         {
@@ -1555,11 +1658,11 @@ e.g.: Airway, medications, ventilation, etc.`,
           • Post-intubation sedation plan`,
           showVitalsButton: true,
           nextVitals: [
-            { lbl: 'HR',    val: '105',       unit: 'bpm',      st: 'va' },
-            { lbl: 'BP',    val: '92/54',     unit: 'mm Hg',    st: 'va' },
+            { lbl: 'HR',    val: '105',       unit: 'bpm',      st: 'vw' },
+            { lbl: 'BP',    val: '92/54',     unit: 'mm Hg',    st: 'vw' },
             { lbl: 'SpO2',  val: '94%',       unit: '',         st: 'vw' },
-            { lbl: 'Temp',  val: '38.5',      unit: '°C',       st: 'va' },
-            { lbl: 'GCS',   val: '13/15',     unit: '',         st: 'va' },
+            { lbl: 'Temp',  val: '38.5',      unit: '°C',       st: 'vw' },
+            { lbl: 'GCS',   val: '13/15',     unit: '',         st: 'vw' },
             { lbl: 'Mode',  val: 'AC/VC',     unit: '',         st: 'vn' },
             { lbl: 'VT',    val: '330 mL',    unit: '6 mL/kg',  st: 'vn' },
             { lbl: 'RR',    val: '20',        unit: 'set',      st: 'vn' },
@@ -1714,10 +1817,10 @@ You must specify EXACT numbers:
           <strong>RT:</strong> <em>"Perfect adjustments. Let me make those changes now. We'll reassess vitals and ABG in 30 minutes."</em>`,
           showVitalsButton: true,
           nextVitals: [
-            { lbl: 'HR',    val: '108',       unit: 'bpm',      st: 'va' },
-            { lbl: 'BP',    val: '118/72',    unit: 'mm Hg',    st: 'va' },
+            { lbl: 'HR',    val: '108',       unit: 'bpm',      st: 'vw' },
+            { lbl: 'BP',    val: '118/72',    unit: 'mm Hg',    st: 'vw' },
             { lbl: 'SpO2',  val: '92%',       unit: '',         st: 'vw' },
-            { lbl: 'Temp',  val: '38.5',      unit: '°C',       st: 'va' },
+            { lbl: 'Temp',  val: '38.5',      unit: '°C',       st: 'vw' },
             { lbl: 'Mode',  val: 'AC/VC',     unit: '',         st: 'vn' },
             { lbl: 'VT',    val: '330 mL',    unit: '6 mL/kg',  st: 'vn' },
             { lbl: 'RR',    val: '28',        unit: 'set',      st: 'vn' },
@@ -1769,8 +1872,8 @@ You must specify EXACT numbers:
           RT: <em>"The P/F ratio is still only 78 (62/0.8). Per ARDSnet table, at FiO₂ 80%, we should increase PEEP to 14-16 for recruitment."</em>`,
           showVitalsButton: true,
           nextVitals: [
-            { lbl: 'HR',    val: '110',       unit: 'bpm',      st: 'va' },
-            { lbl: 'BP',    val: '115/70',    unit: 'mm Hg',    st: 'va' },
+            { lbl: 'HR',    val: '110',       unit: 'bpm',      st: 'vw' },
+            { lbl: 'BP',    val: '115/70',    unit: 'mm Hg',    st: 'vw' },
             { lbl: 'SpO2',  val: '90%',       unit: '',         st: 'vw' },
             { lbl: 'Mode',  val: 'AC/VC',     unit: '',         st: 'vn' },
             { lbl: 'VT',    val: '330 mL',    unit: '6 mL/kg',  st: 'vn' },
@@ -1817,8 +1920,8 @@ You must specify EXACT numbers:
           RT: <em>"The oxygenation is better, but the patient's pH is still 7.18 with PaCO₂ 68. We need to increase respiratory rate to improve ventilation and get the pH above 7.20."</em>`,
           showVitalsButton: true,
           nextVitals: [
-            { lbl: 'HR',    val: '112',       unit: 'bpm',      st: 'va' },
-            { lbl: 'BP',    val: '116/74',    unit: 'mm Hg',    st: 'va' },
+            { lbl: 'HR',    val: '112',       unit: 'bpm',      st: 'vw' },
+            { lbl: 'BP',    val: '116/74',    unit: 'mm Hg',    st: 'vw' },
             { lbl: 'SpO2',  val: '91%',       unit: '',         st: 'vw' },
             { lbl: 'Mode',  val: 'AC/VC',     unit: '',         st: 'vn' },
             { lbl: 'VT',    val: '330 mL',    unit: '6 mL/kg',  st: 'vn' },
@@ -1918,7 +2021,7 @@ Review the updated vital signs, ABG results, and physical exam. What are your ne
         { lbl: 'HR',    val: '108',       unit: 'bpm',      st: 'vn' },
         { lbl: 'BP',    val: '118/72',    unit: 'mm Hg',    st: 'vn' },
         { lbl: 'SpO₂',  val: '92%',       unit: '',         st: 'vw' },
-        { lbl: 'Temp',  val: '38.3°C',    unit: '',         st: 'va' },
+        { lbl: 'Temp',  val: '38.3°C',    unit: '',         st: 'vw' },
         { lbl: 'Mode',  val: 'AC/VC',     unit: '',         st: 'vn' },
         { lbl: 'VT',    val: '330 mL',    unit: '6 mL/kg',  st: 'vn' },
         { lbl: 'RR',    val: '28',        unit: 'set',      st: 'vn' },
@@ -2032,6 +2135,14 @@ Key considerations:
           
           Patient continues on current settings. Oxygenation remains marginal with high FiO₂.`,
           nextDecision: null,
+          endState: 'good',
+          endMsg: `<strong>Case Concluded — Acceptable Management.</strong><br/><br/>Ventilator settings were appropriate and the patient stabilized. However, a key opportunity was missed: with a P/F ratio of 97 and FiO₂ ≥60%, prone positioning was indicated per the PROSEVA trial (2013). Early prone positioning in severe ARDS (P/F <150) reduces 28-day mortality by 16% in absolute terms. Consider this intervention in future severe ARDS cases.`,
+          decisions: [
+            'Applied lung-protective ventilation (6 mL/kg PBW) ✓',
+            'Optimized PEEP per ARDSnet protocol ✓',
+            'Maintained permissive hypercapnia (pH 7.24 — acceptable) ✓',
+            'Missed: prone positioning indication (P/F <150 + FiO₂ ≥60% = PROSEVA criteria)'
+          ]
         },
         {
           id: 'wean-fio2-premature',
@@ -2058,6 +2169,14 @@ Key considerations:
           
           <strong>RT:</strong> <em>"We're able to wean FiO₂ a bit, but we're still at 65% with borderline oxygenation. With severe ARDS and this degree of hypoxemia, should we consider prone positioning? The literature shows significant mortality benefit."</em>`,
           nextDecision: null,
+          endState: 'concern',
+          endMsg: `<strong>Case Concluded — Suboptimal Sequence.</strong><br/><br/>FiO₂ weaning is correct in principle — oxygen toxicity is a real concern. However, the preferred sequence in severe ARDS is: (1) optimize PEEP, (2) initiate prone positioning if P/F <150 + FiO₂ ≥60%, then (3) wean FiO₂ once oxygenation improves with proning. Weaning FiO₂ without first addressing the V/Q mismatch leaves the patient at the margin with limited reserve.`,
+          decisions: [
+            'Applied lung-protective ventilation (6 mL/kg PBW) ✓',
+            'Optimized PEEP per ARDSnet protocol ✓',
+            'Attempted FiO₂ reduction — correct goal, incorrect sequence',
+            'Missed: prone positioning before FiO₂ weaning in severe ARDS (P/F <150)'
+          ]
         },
         {
           id: 'further-increase-rr',
@@ -2082,6 +2201,15 @@ Key considerations:
           
           <strong>RT:</strong> <em>"The pH looks better, but we're creating auto-PEEP. Remember, we don't need to normalize pH in ARDS - 7.24 was perfectly acceptable."</em>`,
           nextDecision: null,
+          endState: 'concern',
+          endMsg: `<strong>Case Concluded — Over-correction.</strong><br/><br/>pH 7.24 was already within the acceptable range for permissive hypercapnia in ARDS (target ≥7.20). Increasing RR to 30–32 improved the pH but generated auto-PEEP (intrinsic PEEP), increasing mean airway pressure and risk of barotrauma. In ARDS, resist the reflex to normalize pH — accept mild respiratory acidosis and focus on oxygenation and lung protection.`,
+          decisions: [
+            'Applied lung-protective ventilation (6 mL/kg PBW) ✓',
+            'Optimized PEEP per ARDSnet protocol ✓',
+            'Over-corrected pH 7.24 — already within acceptable permissive hypercapnia range',
+            'Auto-PEEP developed from high RR — increased barotrauma risk',
+            'Target pH ≥7.20, not normal pH, in ARDS'
+          ]
         },
         {
           id: 'decrease-peep-wrong',
@@ -2106,6 +2234,15 @@ Key considerations:
           
           <strong>RT:</strong> <em>"We're losing our recruitment! PEEP needs to go back to 15. In ARDS, we wean oxygen first, then PEEP much later."</em>`,
           nextDecision: null,
+          endState: 'concern',
+          endMsg: `<strong>Case Concluded — Critical De-recruitment Error.</strong><br/><br/>Reducing PEEP from 15 to 12 in severe ARDS (P/F ratio 97) caused immediate alveolar de-recruitment. PaO₂ dropped from 78 to 56 mm Hg within minutes. The correct weaning sequence is: (1) wean FiO₂ to 40–50% first, then (2) reduce PEEP in stepwise fashion only once oxygenation is stable on low FiO₂. PEEP should not be reduced when P/F ratio remains <200.`,
+          decisions: [
+            'Applied lung-protective ventilation (6 mL/kg PBW) ✓',
+            'PEEP optimized to 15 cm H₂O ✓',
+            'Critical error: decreased PEEP before weaning FiO₂',
+            'De-recruitment caused PaO₂ to drop from 78 to 56 mm Hg',
+            'ARDSnet weaning: FiO₂ first → then PEEP, never the reverse'
+          ]
         },
         {
           id: 'increase-fio2-wrong',
@@ -2132,6 +2269,15 @@ Key considerations:
           
           <strong>RT:</strong> <em>"The patient's oxygenation is better now. We should be thinking about weaning oxygen, not increasing it. Let's avoid oxygen toxicity."</em>`,
           nextDecision: null,
+          endState: 'concern',
+          endMsg: `<strong>Case Concluded — Incorrect Direction.</strong><br/><br/>With PaO₂ 78 and SpO₂ 94% already at goal, increasing FiO₂ to 90–100% adds oxygen toxicity risk without clinical benefit. Prolonged FiO₂ >60% causes absorptive atelectasis, reactive oxygen species formation, and direct pulmonary parenchymal injury. Once PEEP is optimized and oxygenation is adequate, the next step is always to wean FiO₂, not escalate it.`,
+          decisions: [
+            'Applied lung-protective ventilation (6 mL/kg PBW) ✓',
+            'Optimized PEEP per ARDSnet protocol ✓',
+            'Error: escalated FiO₂ when oxygenation was already at goal',
+            'With SpO₂ 94% and PEEP optimized, next step is FiO₂ reduction',
+            'Prolonged FiO₂ >60% → oxygen toxicity risk'
+          ]
         },
         {
           id: 'decision3-default',
@@ -2184,6 +2330,1642 @@ Key considerations:
 ];
 
 // ═══════════════════════════════════════════════════════════════
+//  SEPSIS SIMULATION CASES — 3 cases for PGY-1 training
+// ═══════════════════════════════════════════════════════════════
+
+const SEPSIS_CASES = [
+
+  // ─────────────────────────────────────────────────────────────
+  // SEPSIS CASE 1 — Mr. Arthur Hayes · Floor Sepsis
+  // ─────────────────────────────────────────────────────────────
+  {
+    id: 'ss-1',
+    title: 'Case #1',
+    blurb: 'Elderly patient on the floor with subtle vital sign changes and an infectious source.',
+    artType: 'sepsis1',
+    patient: { name: 'Arthur Hayes', initials: 'AH', age: '85M', weight: '82 kg', allergies: 'NKDA' },
+
+    vignette: `<p>An 85-year-old man with <span class="hl">prostate cancer</span> was admitted to the medical-surgical floor for 2 days of profuse, watery diarrhea. He is <span class="hl">3 days post-sigmoidoscopy</span> and has been having <span class="hl">10–15 episodes of liquid, foul-smelling bowel movements per day</span> with associated crampy abdominal pain and chills. He received 1L NS in the ED and was admitted for workup. He has just arrived to your floor.</p><div class="pager-box"><div class="pager-header"><div class="pager-icon">📟</div><div class="pager-meta"><div class="pager-from">Tower 3 · Bed 14</div><div class="pager-time">19:32</div></div></div><div class="pager-msg">"Mr. Hayes just arrived. He's been having a lot of loose watery stools all day — the family says he's barely made it out of the bathroom. He looks really pale and tired. Can you come evaluate him?"</div></div>`,
+
+    rnReport: `"He's barely comfortable — keeps getting up for the bathroom. He's had so many loose, watery bowel movements today the family lost count. His blood pressure just cycled — it's 101/44, MAP is 63. He's a little pale and seems more confused than when he came in from the ED. He's also really tender in the abdomen when I pressed on it. I'm worried about him."`,
+    rnCues: [
+      'Review the vital signs carefully — note the MAP.',
+      'Does this patient meet criteria for sepsis despite the absence of fever?'
+    ],
+
+    vitals: [
+      { lbl: 'HR',   val: '88',      unit: 'bpm',      st: 'vn' },
+      { lbl: 'BP',   val: '101/44',  unit: 'mm Hg',    st: 'vc' },
+      { lbl: 'MAP',  val: '63',      unit: 'mm Hg',    st: 'vw' },
+      { lbl: 'RR',   val: '24',      unit: '/min',      st: 'vw' },
+      { lbl: 'Temp', val: '97.7°F',  unit: '36.5°C',   st: 'vn' },
+      { lbl: 'SpO₂', val: '94%',     unit: 'RA',        st: 'vw' },
+      { lbl: 'GCS',  val: '14',      unit: '/15',       st: 'vw' }
+    ],
+
+    labs: [
+      { lbl: 'WBC',    val: '10.2 (11% bands)', unit: 'K/µL',   st: 'lv-a' },
+      { lbl: 'Hgb',    val: '11.4',             unit: 'g/dL',   st: 'lv-a' },
+      { lbl: 'Plt',    val: '138',               unit: 'K/µL',   st: 'lv-n' },
+      { lbl: 'Na',     val: '132',               unit: 'mEq/L',  st: 'lv-a' },
+      { lbl: 'Creat',  val: '1.9',               unit: '(bl 1.1)',st:'lv-c' },
+      { lbl: 'HCO₃',  val: '19',                unit: 'mEq/L',  st: 'lv-a' },
+      { lbl: 'Lactate',val: '5.9',               unit: 'mmol/L', st: 'lv-a' },
+      { lbl: 'Procal', val: '1.8',               unit: 'ng/mL',  st: 'lv-a' },
+    ],
+
+    examSystems: [
+      { icon: '🧠', lbl: 'Neuro',   key: 'neuro',   text: 'Slightly slow to respond. Oriented to person and place, not time. GCS 14.' },
+      { icon: '👁️', lbl: 'General', key: 'gen',     text: 'Ill-appearing elderly male. Pale. Fatigued affect.' },
+      { icon: '👄', lbl: 'HEENT',   key: 'heent',   text: 'Dry mucous membranes. No JVD.' },
+      { icon: '❤️', lbl: 'Cardiac', key: 'cardiac', text: 'Regular rate and rhythm. Cool extremities. Capillary refill ~3 seconds.' },
+      { icon: '🫁', lbl: 'Lungs',   key: 'lungs',   text: 'Mildly tachypneic. Clear to auscultation bilaterally.' },
+      { icon: '🫃', lbl: 'Abdomen', key: 'abd',     text: 'Distended and tympanitic. Diffuse tenderness throughout, worse in the left lower quadrant and transverse colon. No voluntary guarding, no rebound. Hyperactive then hypoactive bowel sounds. Visibly distended abdomen noted.' },
+      { icon: '🦵', lbl: 'Extrem',  key: 'ext',     text: 'Cool bilateral extremities. No edema. Cap refill 3 seconds.' }
+    ],
+
+    decision1: {
+      title: 'Sepsis Recognition & Initial Bundle',
+      prompt: 'Mr. Hayes has just arrived to your floor. What are your initial orders?',
+      placeholder: `Enter your initial orders...\ne.g.: lactate, blood cultures, IV fluids, antibiotics, etc.`,
+      branches: [
+        {
+          id: 'complete-sepsis-bundle',
+          label: '✓ COMPLETE SEPSIS BUNDLE',
+          type: 'good',
+          triggers: ['lactate','blood culture','bcx','liter','normal saline','lactated ringer','lr','fluid','antibiotic','ceftriaxone','pip-tazo','piperacillin','zosyn','broad spectrum','meropenem'],
+          requires: 3,
+          excludes: ['4l','4000','5l','5000','6l','6000'],
+          headline: 'Sepsis bundle initiated — early recognition',
+          narrative: `You recognize that Mr. Hayes has vital sign abnormalities consistent with sepsis despite the absence of fever — <span class="hl">MAP 63 and RR 24 indicate organ dysfunction</span> regardless of the underlying infectious source.\n\n{{BCX_LINE}}{{LACTATE_LINE}}{{FLUID_LINE}}{{ABX_LINE}}{{ABX_REMINDER}}\n\n<strong>2026 SSC Update — Fluid Type:</strong> Balanced crystalloids (Lactated Ringer's) are now <span class="hl">suggested over 0.9% normal saline</span> — an upgraded recommendation in 2026. NS causes hyperchloremic metabolic acidosis with prolonged use.\n\n<strong>2026 SSC Update — Screening:</strong> NEWS, NEWS2, MEWS, or SIRS are now <span class="hl">recommended over qSOFA</span> as single screening tools for sepsis identification in hospitalized patients.\n\n{{ATTENDING_QUOTE}}`,
+          showVitalsButton: true,
+          nextVitals: [
+            { lbl: 'HR',   val: '84',    unit: 'bpm',    st: 'vn' },
+            { lbl: 'BP',   val: '108/64',unit: 'mm Hg',  st: 'vn' },
+            { lbl: 'MAP',  val: '79',    unit: 'mm Hg',  st: 'vn' },
+            { lbl: 'RR',   val: '20',    unit: '/min',    st: 'vn' },
+            { lbl: 'SpO₂', val: '95%',   unit: 'RA',      st: 'vn' },
+          ],
+          vitalsMsg: `MAP improved to 79 mm Hg after your initial resuscitation. RN: <em>"He seems a bit more with it now. Should we continue monitoring up here?"</em>`,
+          nextDecision: 'decision_toxic',
+          updatedExam: [
+            { icon: '🧠', lbl: 'Neuro',   key: 'neuro',   text: 'More responsive after fluids. Oriented to person and place. Answering questions appropriately.' },
+            { icon: '❤️', lbl: 'Cardiac', key: 'cardiac', text: 'Extremities slightly warmer. Capillary refill ~2.5 sec.' }
+          ]
+        },
+        {
+          id: 'fluids-abx-no-lactate',
+          type: 'warning',
+          triggers: ['liter','normal saline','lr','fluid','antibiotic','ceftriaxone','pip-tazo','piperacillin','zosyn'],
+          requires: 2,
+          excludes: ['lactate'],
+          headline: 'Fluids and antibiotics started — lactate not ordered',
+          narrative: `Fluids and broad-spectrum antibiotics — good instincts. However, <span class="hl">lactate was not ordered</span>.\n\nLactate is a CMS core measure for the sepsis bundle. It serves two critical purposes: (1) confirms organ hypoperfusion and meets severe sepsis criteria, and (2) serial lactate every 2 hours gauges resuscitation response.\n\n<strong>2026 SSC Update:</strong> The guidelines now <span class="hl">suggest using serial lactate measurements to guide resuscitation</span> — with fluid administration individualized after initial bolus and monitoring of lactate decrement, rather than continuing fluids until lactate normalization is achieved.\n\nThe RN sends the lactate reflexively through the order set. It returns at 5.9 mmol/L. The attending: <em>"Don't forget — we need to repeat that in 2 hours."</em>`,
+          showVitalsButton: true,
+          nextVitals: [
+            { lbl: 'HR',   val: '86',    unit: 'bpm',   st: 'vn' },
+            { lbl: 'BP',   val: '105/60',unit: 'mm Hg', st: 'vn' },
+            { lbl: 'MAP',  val: '75',    unit: 'mm Hg', st: 'vn' },
+            { lbl: 'RR',   val: '22',    unit: '/min',   st: 'vw' },
+          ],
+          vitalsMsg: `MAP marginally improved after your initial orders. RN: <em>"He's slightly better. Should we send him to the unit?"</em>`,
+          nextDecision: 'decision_toxic',
+          updatedExam: [
+            { icon: '🧠', lbl: 'Neuro',   key: 'neuro',   text: 'Slightly more responsive. Still mildly confused.' },
+            { icon: '❤️', lbl: 'Cardiac', key: 'cardiac', text: 'Marginal improvement. Cap refill still 3 sec.' }
+          ]
+        },
+        {
+          id: 'cdiff-treatment-only',
+          label: '⚠ ANCHORED ON C. DIFF — SEPSIS UNTREATED',
+          type: 'warning',
+          triggers: ['flagyl','metronidazole oral','oral vancomycin','oral vanco','fidaxomicin','c diff','cdiff'],
+          requires: 1,
+          excludes: ['liter','normal saline','fluid','blood culture','bcx','lactate','pip-tazo','piperacillin','zosyn','ceftriaxone','meropenem'],
+          headline: 'C. diff treated — systemic sepsis missed',
+          narrative: `You order C. diff-targeted treatment but miss the larger emergency. The CT abdomen results show <span class="hl">toxic megacolon</span> — this is no longer just a C. diff infection, this is a surgical emergency.\n\nSepsis-3 criteria are met — and the underlying toxic megacolon requires: (1) IV fluid resuscitation, (2) systemic IV antibiotics for sepsis, (3) IV metronidazole + PO vancomycin for C. diff, and (4) emergency general surgery consult. PO vancomycin alone is not sufficient in this context.\n\nYou have 15 minutes before the RN calls back: <em>"His pressure is 74/38. He won't wake up. I'm calling a Code Blue."</em>`,
+          showVitalsButton: true,
+          showCodeBlue: true,
+          codeBlueConfig: {
+            rhythm: 'Pulseless Electrical Activity (PEA)',
+            overhead: 'Code Blue, Tower 3 Bed 14. Code Blue, Tower 3 Bed 14.',
+            cause: 'PEA arrest from untreated septic shock in the setting of toxic megacolon. Ordering only C. diff treatment without systemic resuscitation (IV fluids, IV antibiotics, vasopressor support) allowed hemodynamic collapse to progress unchecked.',
+            monitor_phrase: 'Look at the monitor — organized rhythm, no pulse. PEA. Start CPR now.',
+            hs_ts: [
+              'Hypovolemia ← distributive shock, no IV fluids given',
+              'Hydrogen ion (severe lactic acidosis from untreated sepsis)',
+              'Hypoxia ← no oxygen support ordered',
+              'Hypo/Hyperkalemia ← AKI (Cr 1.9 from 1.1)',
+              'Tension pneumothorax (rule out)',
+              'Thrombosis / Tamponade (rule out)'
+            ],
+            acls_specifics: [
+              'Epinephrine 1mg IV q3–5 min — start immediately',
+              'IV broad-spectrum antibiotics DURING resuscitation — this is the definitive fix',
+              'Push IV fluid boluses during CPR (no fluid had been given)',
+              'After ROSC: norepinephrine, MICU transfer, continue full sepsis bundle',
+              'The C. diff treatment was not wrong — the omission of systemic management was'
+            ],
+            rosc_label: '✓ ROSC Achieved — Initiating Systemic Sepsis Management →'
+          },
+          noROSCMsg: `Despite prolonged resuscitation, Mr. Hayes did not achieve ROSC. The team called the code.\n\nRoot cause: C. diff-targeted treatment was started but systemic sepsis management was omitted. The CT later confirmed toxic megacolon — a condition requiring simultaneous management of (1) hemodynamic sepsis, (2) C. diff infection (IV metronidazole + PO vancomycin), AND (3) emergency surgical consultation. Treating only one component of this complex emergency was not sufficient.`,
+          nextVitals: [
+            { lbl: 'HR',   val: '104',  unit: 'bpm',    st: 'vw' },
+            { lbl: 'BP',   val: '74/38',unit: 'mm Hg',  st: 'vc' },
+            { lbl: 'MAP',  val: '50',   unit: 'mm Hg',  st: 'vc' },
+            { lbl: 'RR',   val: '26',   unit: '/min',    st: 'vc' },
+            { lbl: 'SpO₂', val: '88%',  unit: 'RA',      st: 'vc' },
+          ],
+          vitalsMsg: `ROSC achieved after resuscitation. Mr. Hayes has been intubated and is being transferred to the MICU for ongoing critical care management.<br/><br/><strong>Key teaching:</strong> Diagnostic anchoring is one of the most common and dangerous cognitive errors in sepsis. A positive C. diff PCR identifies a source — it does not replace the obligation to treat the septic state simultaneously with IV antibiotics and hemodynamic resuscitation.`,
+          nextDecision: 'decision2_postcode',
+          updatedExam: [
+            { icon: '🧠', lbl: 'Neuro',   key: 'neuro',   text: 'Post-cardiac arrest. Sedated and intubated after ROSC.' },
+            { icon: '❤️', lbl: 'Cardiac', key: 'cardiac', text: 'ROSC achieved. On norepinephrine. MAP targeting ≥65.' },
+            { icon: '🦵', lbl: 'Extrem',  key: 'ext',     text: 'Cold, mottled. Gradual improvement expected with resuscitation.' }
+          ]
+        },
+        {
+          id: 'labs-only-no-treatment',
+          label: '✗ WORKUP WITHOUT TREATMENT — SEPTIC ARREST',
+          type: 'bad',
+          triggers: ['lactate','blood culture','bcx','cbc','bmp','ct'],
+          requires: 2,
+          excludes: ['liter','fluid','saline','antibiotic','ceftriaxone','pip-tazo','piperacillin','zosyn','vasopressor','norepi'],
+          headline: 'Labs ordered — no resuscitation or antibiotics',
+          narrative: `You order workup but don't initiate resuscitation or antibiotics. In sepsis, <span class="hl">every hour of antibiotic delay increases mortality by ~7–10%</span>.\n\nMr. Hayes cannot wait. He has active organ dysfunction with MAP 63 and rising lactate.\n\n20 minutes later, the RN calls: <em>"His pressure dropped to 74/38. He's unresponsive to my voice."</em> Two minutes after that: <em>"No pulse! I'm calling a Code Blue!"</em>`,
+          showVitalsButton: true,
+          showCodeBlue: true,
+          codeBlueConfig: {
+            rhythm: 'Pulseless Electrical Activity (PEA)',
+            overhead: 'Code Blue, Tower 3 Bed 14 — Medical-Surgical Unit. Rapid Response to Tower 3 Bed 14.',
+            cause: 'PEA cardiac arrest from untreated septic shock. Progressive vasoplegia, end-organ hypoperfusion, and severe lactic acidosis (pH <7.1) led to myocardial depression and pulseless arrest.',
+            monitor_phrase: 'Look at the monitor — organized rhythm but no pulse on check. PEA arrest.',
+            hs_ts: [
+              'Hypovolemia ← untreated distributive shock',
+              'Hydrogen ion (severe lactic acidosis from sepsis)',
+              'Hypoxia ← SpO₂ declining without oxygen support',
+              'Hypo/Hyperkalemia ← AKI in setting of sepsis',
+              'Tension pneumothorax (rule out)',
+              'Thrombosis / Tamponade (rule out)',
+              'Toxins (medications, source of infection)'
+            ],
+            acls_specifics: [
+              'Epinephrine 1mg IV q3–5 min — start immediately',
+              'Push IV fluids during CPR — hypovolemic component of PEA',
+              'Broad-spectrum antibiotics DURING resuscitation if not already given',
+              'Treat the septic source — antibiotics are the definitive intervention',
+              'Consider sodium bicarbonate if pH <7.1 (bridge, not a fix)',
+              'After ROSC: norepinephrine, ICU transfer, continue sepsis bundle'
+            ],
+            rosc_label: '✓ ROSC Achieved — Initiating Full Sepsis Bundle →'
+          },
+          nextVitals: [
+            { lbl: 'HR',   val: '116',  unit: 'bpm',    st: 'vc' },
+            { lbl: 'BP',   val: '74/38',unit: 'mm Hg',  st: 'vc' },
+            { lbl: 'MAP',  val: '50',   unit: 'mm Hg',  st: 'vc' },
+            { lbl: 'RR',   val: '28',   unit: '/min',    st: 'vc' },
+          ],
+          vitalsMsg: `ROSC achieved after resuscitation. Mr. Hayes has been intubated and is being transferred to the MICU for ongoing critical care management.<br/><br/><strong>Key teaching:</strong> In sepsis, the workup and treatment run simultaneously. Delaying antibiotics and fluids while waiting for lab results or a confirmed diagnosis costs lives. Time to treatment is the most modifiable mortality predictor.`,
+          nextDecision: 'decision2_postcode',
+          updatedExam: [
+            { icon: '🧠', lbl: 'Neuro',   key: 'neuro',   text: 'Post-cardiac arrest. Sedated and intubated after ROSC. GCS not assessable.' },
+            { icon: '❤️', lbl: 'Cardiac', key: 'cardiac', text: 'ROSC achieved. On norepinephrine. MAP targeting ≥65.' },
+            { icon: '🦵', lbl: 'Extrem',  key: 'ext',     text: 'Cold, mottled. Gradual improvement expected with vasopressor and fluid resuscitation.' }
+          ]
+        },
+        {
+          id: 'default-ss1-d1',
+          label: 'INCOMPLETE ORDERS — PATIENT DETERIORATING',
+          type: 'neutral',
+          triggers: [],
+          requires: 0,
+          excludes: [],
+          headline: 'Orders incomplete — patient is crashing',
+          narrative: `Your orders don't address the hemodynamic emergency in front of you. Mr. Hayes is in sepsis with MAP 63, AKI, and rising lactic acidosis.\n\nFluids and antibiotics are the two most time-sensitive interventions. Without them, septic shock progresses rapidly.\n\n20 minutes pass. The RN calls urgently: <em>"His pressure is 68/32. He's unresponsive. No pulse on check — calling Code Blue now."</em>`,
+          showVitalsButton: true,
+          showCodeBlue: true,
+          codeBlueConfig: {
+            rhythm: 'Pulseless Electrical Activity (PEA)',
+            overhead: 'Code Blue, Tower 3 Bed 14. Code Blue, Tower 3 Bed 14.',
+            cause: 'PEA cardiac arrest from untreated septic shock. No IV fluids, no antibiotics — distributive shock progressed unchecked to cardiovascular collapse.',
+            monitor_phrase: 'Look at the monitor — PEA. No pulse on check. Begin high-quality CPR immediately.',
+            hs_ts: [
+              'Hypovolemia ← distributive shock, no IV resuscitation given',
+              'Hydrogen ion (severe lactic acidosis)',
+              'Hypoxia ← no oxygen support ordered',
+              'Hypo/Hyperkalemia ← AKI from sepsis',
+              'Tension pneumothorax (rule out)',
+              'Thrombosis / Tamponade (rule out)'
+            ],
+            acls_specifics: [
+              'Epinephrine 1mg IV q3–5 min — start immediately',
+              'IV fluid boluses during CPR — no resuscitation had been given',
+              'IV broad-spectrum antibiotics during resuscitation — the definitive treatment',
+              'After ROSC: norepinephrine, MICU transfer, full sepsis bundle',
+              'Time to treatment is the most modifiable mortality factor in sepsis'
+            ],
+            rosc_label: '✓ ROSC Achieved — Beginning Sepsis Bundle Now →'
+          },
+          noROSCMsg: `Despite resuscitation efforts, Mr. Hayes did not achieve ROSC. The team called the code.\n\nNo fluids, no antibiotics, and no vasopressor support were initiated before cardiac arrest. In septic shock, these three interventions must begin within the first hour. The delay was fatal.\n\nCore teaching: In sepsis with organ dysfunction, the treatment begins at recognition — not after workup is complete.`,
+          nextVitals: [
+            { lbl: 'HR',   val: '68',   unit: 'bpm',    st: 'vc' },
+            { lbl: 'BP',   val: '68/32',unit: 'mm Hg',  st: 'vc' },
+            { lbl: 'MAP',  val: '44',   unit: 'mm Hg',  st: 'vc' },
+            { lbl: 'SpO₂', val: '84%',  unit: 'RA',      st: 'vc' },
+            { lbl: 'GCS',  val: '3',    unit: '/15',     st: 'vc' },
+          ],
+          vitalsMsg: `ROSC achieved after resuscitation. Mr. Hayes has been intubated and is being transferred to the MICU for ongoing critical care management.<br/><br/><strong>Key teaching:</strong> Sepsis management does not wait for a confirmed diagnosis. Organ dysfunction requires immediate action — fluids, antibiotics, and vasopressor support must begin at recognition, not after workup is complete.`,
+          nextDecision: 'decision2_postcode',
+          updatedExam: [
+            { icon: '🧠', lbl: 'Neuro',   key: 'neuro',   text: 'Post-cardiac arrest. Sedated and intubated after ROSC. Neurological prognosis guarded.' },
+            { icon: '❤️', lbl: 'Cardiac', key: 'cardiac', text: 'ROSC achieved. Norepinephrine initiated. MAP targeting ≥65 mm Hg.' },
+            { icon: '🦵', lbl: 'Extrem',  key: 'ext',     text: 'Cold, mottled extremities. Gradual improvement expected with resuscitation.' }
+          ]
+        }
+      ]
+    },
+
+    // Post-arrest decision point: reached only via Code Blue ROSC path
+    decision2_postcode: {
+      title: 'Post-Arrest MICU Management',
+      prompt: 'Mr. Hayes achieved ROSC and has been intubated. He is now in the MICU. His current MAP is 52 mm Hg. The MICU nurse notes: "His abdomen looks really distended — it was bad before but it looks even worse now." What are your orders?',
+      placeholder: `Enter your vasopressor and post-arrest orders...\ne.g.: norepinephrine, repeat lactate, 12-lead EKG, etc.`,
+      branches: [
+        {
+          id: 'norepi-post-arrest',
+          label: '✓ NOREPINEPHRINE ORDERED — CORRECT FIRST-LINE AGENT',
+          type: 'good',
+          triggers: ['norepinephrine','norepi','levophed'],
+          requires: 1,
+          excludes: [],
+          headline: 'Norepinephrine initiated — appropriate post-arrest vasopressor',
+          narrative: `Norepinephrine is the correct first-line vasopressor in septic shock, including the post-arrest setting. It provides alpha-1 mediated vasoconstriction to restore SVR with minimal chronotropic effect — critical in a post-arrest patient where arrhythmias are a concern.\n\n<strong>Post-ROSC targets:</strong><br/>• MAP ≥65 mm Hg<br/>• SpO₂ 92–98% (avoid hyperoxia — worsens post-arrest brain injury)<br/>• Normoglycemia (target 140–180 mg/dL)<br/>• Consider targeted temperature management if he remains comatose\n\nThe MICU attending: <em>"Good. Start at 0.1 mcg/kg/min and titrate up. Let's get a 12-lead EKG, repeat lactate, and post-intubation chest X-ray."</em>`,
+          showVitalsButton: false,
+          nextDecision: 'decision_toxic',
+          decisions: [
+            'Inadequate initial management led to PEA cardiac arrest',
+            'ROSC achieved with CPR, epinephrine, IV fluids, and antibiotics during resuscitation',
+            'Correctly selected norepinephrine as post-arrest vasopressor (first-line, SSC guidelines)',
+            'Post-ROSC targets: MAP ≥65, SpO₂ 92–98%, normoglycemia, TTM if comatose'
+          ]
+        },
+        {
+          id: 'vasopressin-post-arrest',
+          label: '⚠ VASOPRESSIN — ACCEPTABLE ADJUNCT, NOT FIRST-LINE',
+          type: 'warning',
+          triggers: ['vasopressin','pitressin'],
+          requires: 1,
+          excludes: ['norepinephrine','norepi','levophed'],
+          headline: 'Vasopressin ordered — acceptable adjunct, not first-line',
+          narrative: `Vasopressin can be used as an adjunct vasopressor in refractory shock, but norepinephrine is the preferred first-line agent in septic shock and post-arrest hypotension.\n\nVasopressin replaces the relative vasopressin deficiency seen in distributive shock but lacks the titratable alpha-adrenergic potency of norepinephrine. It is typically added as a second agent to reduce norepinephrine requirements — not used as monotherapy.\n\nThe MICU fellow adds norepinephrine alongside the vasopressin.`,
+          showVitalsButton: false,
+          nextDecision: 'decision_toxic',
+          decisions: [
+            'Vasopressin ordered — acceptable adjunct, not first-line monotherapy',
+            'SSC guidelines: norepinephrine first → add vasopressin to reduce norepinephrine dose',
+            'MICU team added norepinephrine as primary agent'
+          ]
+        },
+        {
+          id: 'dopamine-post-arrest',
+          label: '⚠ DOPAMINE — NOT PREFERRED POST-ARREST',
+          type: 'warning',
+          triggers: ['dopamine'],
+          requires: 1,
+          excludes: ['norepinephrine','norepi','levophed'],
+          headline: 'Dopamine ordered — higher arrhythmia risk in post-arrest patient',
+          narrative: `Dopamine is not preferred in the post-arrest patient. The SOAP-II trial showed dopamine causes significantly more arrhythmias than norepinephrine — particularly atrial fibrillation. Post-arrest myocardium is electrically vulnerable and should not be exposed to dopamine's unpredictable dose-dependent beta-1 effects.\n\nThe MICU attending switches to norepinephrine.`,
+          showVitalsButton: false,
+          nextDecision: 'decision_toxic',
+          decisions: [
+            'Dopamine selected in post-arrest septic patient — not preferred',
+            'SOAP-II trial: norepinephrine associated with significantly less arrhythmia than dopamine',
+            'Post-arrest myocardium is electrically vulnerable — avoid arrhythmogenic agents',
+            'MICU team transitioned to norepinephrine'
+          ]
+        },
+        {
+          id: 'fluids-no-pressor-post-arrest',
+          label: '✗ MORE FLUIDS — VASOPRESSOR NOT ORDERED',
+          type: 'bad',
+          triggers: ['fluid','liter','saline','bolus','lr','ns'],
+          requires: 1,
+          excludes: ['norepinephrine','norepi','levophed','vasopressor','pressor','dopamine','vasopressin'],
+          headline: 'Fluids without vasopressor — distributive shock persists',
+          narrative: `Mr. Hayes is in distributive septic shock post-arrest. His hypotension is from vasoplegia — not volume depletion. He already received IV fluids during CPR. Additional crystalloid will not raise SVR and risks worsening pulmonary edema in a freshly intubated, post-arrest patient.\n\nMAP drops further to 44 mm Hg. The MICU attending: <em>"We need a vasopressor now. Start norepinephrine."</em>`,
+          showVitalsButton: false,
+          nextDecision: null,
+          endState: 'concern',
+          endMsg: `<strong>Case Concluded.</strong><br/><br/>Additional fluid loading did not address the vasoplegia. The MICU team started norepinephrine emergently as MAP dropped further. When MAP <65 in post-arrest distributive shock, vasopressor initiation — not more fluid — is the correct next step.`,
+          decisions: [
+            'Post-arrest MICU patient in distributive shock',
+            'Fluid ordered instead of vasopressor — vasoplegia requires vasopressor, not volume',
+            'Additional fluids in intubated post-arrest patient risks pulmonary edema',
+            'MICU team started norepinephrine emergently'
+          ]
+        },
+        {
+          id: 'default-ss1-d2pc',
+          label: 'VASOPRESSOR NEEDED',
+          type: 'neutral',
+          triggers: [],
+          requires: 0,
+          excludes: [],
+          headline: 'Post-arrest management — vasopressor required now',
+          narrative: `Mr. Hayes is post-arrest in the MICU with MAP 52 mm Hg. The immediate priority is vasopressor support.\n\nOrder <strong>norepinephrine</strong> — start at 0.1 mcg/kg/min, titrate to MAP ≥65 mm Hg. Also consider: repeat lactate, 12-lead EKG (rule out STEMI as arrest precipitant), post-intubation CXR, and targeted temperature management if he remains comatose.`,
+          showVitalsButton: false,
+          nextDecision: null,
+          endState: 'concern',
+          endMsg: `<strong>Case Concluded.</strong><br/><br/>Vasopressor was not initiated. The MICU team started norepinephrine. In post-arrest distributive shock, norepinephrine should be the first order written in the MICU.`,
+          decisions: [
+            'Post-arrest MICU transfer achieved',
+            'Vasopressor not ordered — MICU team intervened',
+            'First-line post-arrest vasopressor: norepinephrine (SSC guidelines)'
+          ]
+        }
+      ]
+    },
+
+    decision_toxic: {
+      title: 'Toxic Megacolon Management',
+      prompt: 'The CT abdomen results are back. The radiologist calls you: "On Mr. Hayes\' CT we\'re seeing marked dilation of the transverse colon measuring 9.2 centimeters, thinning of the colonic wall, focal intramural air, and extensive pericolonic fat stranding. No free air at this time." Mr. Hayes\' abdomen is markedly distended and tympanitic. What are your next orders?',
+      placeholder: `Enter your orders...\ne.g.: general surgery consult, IV metronidazole, PO vancomycin, NPO, bowel rest, etc.`,
+      branches: [
+        {
+          id: 'full-toxic-mgmt',
+          label: '✓ COMPLETE TOXIC MEGACOLON MANAGEMENT',
+          type: 'good',
+          triggers: ['surgery','surgical','gen surg','general surgery','egs','emergency general surgery','metronidazole','flagyl','vancomycin','vanco','npo','bowel rest','colectomy'],
+          requires: 3,
+          excludes: [],
+          headline: 'Complete management of toxic megacolon',
+          narrative: `You address all components simultaneously:\n\n<strong>Surgery consult:</strong> Emergency general surgery paged and evaluating at bedside. The surgical team immediately begins planning for OR.\n\n<strong>C. diff treatment:</strong> IV metronidazole 500 mg q8h + PO vancomycin 125–500 mg q6h via NG tube initiated. Both routes required for complicated C. diff.\n\n<strong>NPO + bowel decompression:</strong> NG tube placed. Strict bowel rest. Serial abdominal exams ordered every 4–6 hours.\n\nThe surgery attending: <em>"Good — let's get him prepped for the OR."</em>`,
+          showVitalsButton: false,
+          nextDecision: 'decision2_volassess'
+        },
+        {
+          id: 'surgery-no-cdiff-tx',
+          label: '✗ SURGERY ONLY — C. DIFF TREATMENT NOT ORDERED',
+          type: 'bad',
+          triggers: ['surgery','surgical','gen surg','general surgery','egs'],
+          requires: 1,
+          excludes: ['metronidazole','flagyl','vancomycin','vanco'],
+          headline: 'Surgery consulted — C. diff treatment missing — patient decompensates',
+          narrative: `Surgery is on the way. But the underlying C. diff infection has not been treated medically — the bacterial toxin continues to destroy the colonic wall unchecked.\n\n45 minutes later the colon perforates. The RN calls urgently: <em>"His abdomen is completely rigid. He's diaphoretic and moaning. BP just dropped to 58/28 — I don't have a pulse. CODE BLUE!"</em>`,
+          showVitalsButton: true,
+          showCodeBlue: true,
+          codeBlueConfig: {
+            rhythm: 'Pulseless Electrical Activity (PEA — Septic)',
+            overhead: 'Code Blue, Tower 3 Bed 14. Surgery to Tower 3 Bed 14 STAT.',
+            cause: '',
+            monitor_phrase: 'Look at the monitor — PEA. Rigid abdomen. No pulse on check. Begin CPR.',
+            hs_ts: [
+              'Hypovolemia ← fecal peritonitis, massive third-spacing',
+              'Hydrogen ion (severe lactic acidosis from peritonitis)',
+              'Hypoxia ← respiratory compromise from abdominal distension',
+              'Septic source uncontrolled — ongoing C. diff infection + perforation'
+            ],
+            acls_specifics: [
+              'Epinephrine 1mg IV q3–5 min',
+              'IV metronidazole + PO vancomycin via NG — must be started NOW',
+              'Aggressive IV resuscitation during CPR',
+              'Emergency surgery activation for emergent laparotomy',
+              'After ROSC: emergent OR for subtotal colectomy'
+            ],
+            rosc_label: '✓ ROSC Achieved — Completing Management →'
+          },
+          noROSCMsg: `Despite resuscitation efforts, Mr. Hayes did not achieve ROSC.\n\nThe surgery consult was placed but C. diff medical treatment was not initiated. Toxic megacolon requires simultaneous surgical consultation AND medical treatment — IV metronidazole + PO vancomycin must be started immediately, not deferred.`,
+          nextVitals: [
+            { lbl: 'HR',  val: '148',  unit: 'bpm',   st: 'vc' },
+            { lbl: 'BP',  val: '58/28',unit: 'mm Hg', st: 'vc' },
+            { lbl: 'MAP', val: '38',   unit: 'mm Hg', st: 'vc' },
+          ],
+          vitalsMsg: `Colonic perforation — fecal peritonitis. Patient unresponsive. Code Blue called.`,
+          nextDecision: 'decision_toxic_postrosc'
+        },
+        {
+          id: 'cdiff-tx-no-surgery',
+          label: '✗ C. DIFF TREATED — SURGERY NOT CONSULTED',
+          type: 'bad',
+          triggers: ['metronidazole','flagyl','vancomycin','vanco'],
+          requires: 1,
+          excludes: ['surgery','surgical','gen surg','general surgery','egs'],
+          headline: 'Antibiotics started — no surgical consult — colon perforates',
+          narrative: `IV metronidazole and PO vancomycin are running. But the transverse colon is 9.2 cm with pneumatosis coli — this is a pre-perforation emergency. Antibiotics alone cannot decompress a massively dilated colon at imminent risk.\n\n30 minutes later the RN calls: <em>"Something is really wrong. His abdomen went completely rigid. He stopped responding to me. I don't have a pulse — calling Code Blue!"</em>`,
+          showVitalsButton: true,
+          showCodeBlue: true,
+          codeBlueConfig: {
+            rhythm: 'Pulseless Electrical Activity (PEA — Obstructive)',
+            overhead: 'Code Blue, Tower 3 Bed 14. Code Blue, Tower 3 Bed 14. General Surgery to Tower 3 STAT.',
+            cause: '',
+            monitor_phrase: 'Look at the monitor — PEA. Silent, rigid abdomen. No pulse. Begin CPR.',
+            hs_ts: [
+              'Hypovolemia ← massive third-spacing from peritonitis',
+              'Hydrogen ion (severe metabolic acidosis)',
+              'Hypoxia ← respiratory compromise, abdominal splinting',
+              'Tension from abdominal compartment syndrome',
+              'Septic source uncontrolled — perforated colon'
+            ],
+            acls_specifics: [
+              'Epinephrine 1mg IV q3–5 min',
+              'Emergency surgery activation immediately — emergent laparotomy required',
+              'Antibiotics already running — continue during CPR',
+              'Aggressive volume resuscitation',
+              'After ROSC: emergent OR'
+            ],
+            rosc_label: '✓ ROSC Achieved — Emergency Surgery Now →'
+          },
+          noROSCMsg: `Despite resuscitation efforts, Mr. Hayes did not achieve ROSC.\n\nC. diff antibiotics were started but emergency surgical consultation was not placed. Toxic megacolon with pneumatosis coli required immediate surgical involvement — antibiotics alone cannot prevent perforation of a 9.2 cm colon with thinned wall and intramural air.`,
+          nextVitals: [
+            { lbl: 'HR',  val: '152',  unit: 'bpm',   st: 'vc' },
+            { lbl: 'BP',  val: '60/30',unit: 'mm Hg', st: 'vc' },
+            { lbl: 'MAP', val: '40',   unit: 'mm Hg', st: 'vc' },
+          ],
+          vitalsMsg: `Colonic perforation — peritonitis. Patient unresponsive. Code Blue called.`,
+          nextDecision: 'decision_toxic_postrosc'
+        },
+        {
+          id: 'toxic-no-management',
+          label: '✗ NO TOXIC MEGACOLON MANAGEMENT',
+          type: 'bad',
+          triggers: ['icu','micu','transfer','norepinephrine','norepi','fluid','liter','saline','pocus','ultrasound'],
+          requires: 1,
+          excludes: ['surgery','surgical','gen surg','general surgery','egs','metronidazole','flagyl','vancomycin','vanco'],
+          headline: 'Toxic megacolon not addressed — perforation',
+          narrative: `You address hemodynamics but not the surgical emergency. 9.2 cm colon with pneumatosis coli — perforation is minutes away.\n\n20 minutes later: The RN shouts — <em>"His abdomen is rigid. He's gone limp — no pulse! CODE BLUE!"</em>`,
+          showVitalsButton: true,
+          showCodeBlue: true,
+          codeBlueConfig: {
+            rhythm: 'Pulseless Electrical Activity (PEA — Septic + Obstructive)',
+            overhead: 'Code Blue, Tower 3 Bed 14. Surgery to Tower 3 Bed 14 STAT.',
+            cause: '',
+            monitor_phrase: 'Look at the monitor — PEA. Rigid abdomen. No pulse. Begin CPR immediately.',
+            hs_ts: [
+              'Hypovolemia ← massive third-spacing from fecal peritonitis',
+              'Hydrogen ion (severe metabolic acidosis from peritonitis)',
+              'Hypoxia ← respiratory compromise',
+              'Septic source uncontrolled — perforated bowel, fecal contamination'
+            ],
+            acls_specifics: [
+              'Epinephrine 1mg IV q3–5 min',
+              'Broad-spectrum IV antibiotics covering gram-negatives and anaerobes',
+              'Aggressive volume resuscitation during CPR',
+              'Emergency surgery activation during CPR — emergent laparotomy required',
+              'After ROSC: emergent OR for subtotal colectomy'
+            ],
+            rosc_label: '✓ ROSC Achieved — Emergent OR Activation →'
+          },
+          noROSCMsg: `Despite resuscitation efforts, Mr. Hayes did not achieve ROSC.\n\nToxic megacolon was identified on CT but neither surgical consultation nor C. diff treatment was initiated. The colon perforated causing fecal peritonitis and cardiovascular collapse. Toxic megacolon is a surgical emergency — hemodynamic management alone is insufficient.`,
+          nextVitals: [
+            { lbl: 'HR',      val: '142',          unit: 'bpm',   st: 'vc' },
+            { lbl: 'BP',      val: '66/34',         unit: 'mm Hg', st: 'vc' },
+            { lbl: 'MAP',     val: '44',            unit: 'mm Hg', st: 'vc' },
+            { lbl: 'Abdomen', val: 'RIGID, silent', unit: '',      st: 'vc' },
+          ],
+          vitalsMsg: `Colonic perforation — fecal peritonitis. Patient unresponsive. Code Blue called.`,
+          nextDecision: 'decision_toxic_postrosc'
+        },
+        {
+          id: 'default-toxic',
+          label: 'INCOMPLETE TOXIC MEGACOLON MANAGEMENT',
+          type: 'neutral',
+          triggers: [],
+          requires: 0,
+          excludes: [],
+          headline: 'Incomplete response — patient decompensates',
+          narrative: `The CT findings require immediate action and your orders did not fully address the emergency. The colon continues to dilate and the wall continues to thin.\n\nThe RN calls: <em>"His abdomen is worse. He just went unresponsive — no pulse. CODE BLUE!"</em>`,
+          showVitalsButton: true,
+          showCodeBlue: true,
+          codeBlueConfig: {
+            rhythm: 'Pulseless Electrical Activity (PEA)',
+            overhead: 'Code Blue, Tower 3 Bed 14. Code Blue, Tower 3 Bed 14.',
+            cause: '',
+            monitor_phrase: 'Look at the monitor — PEA. No pulse on check. Begin CPR.',
+            hs_ts: [
+              'Hypovolemia ← distributive + third-spacing from peritonitis',
+              'Hydrogen ion (lactic acidosis)',
+              'Hypoxia',
+              'Septic source uncontrolled — untreated C. diff + toxic megacolon'
+            ],
+            acls_specifics: [
+              'Epinephrine 1mg IV q3–5 min',
+              'Broad-spectrum IV antibiotics + IV metronidazole NOW',
+              'Emergency surgery activation during CPR',
+              'After ROSC: emergent OR'
+            ],
+            rosc_label: '✓ ROSC Achieved — Completing Management Now →'
+          },
+          noROSCMsg: `Despite resuscitation efforts, Mr. Hayes did not achieve ROSC.\n\nThe CT findings were not acted upon adequately. Toxic megacolon requires immediate simultaneous management: (1) emergency surgery consultation, (2) IV metronidazole + PO vancomycin, and (3) NPO with bowel decompression.`,
+          nextVitals: [
+            { lbl: 'HR',  val: '140',  unit: 'bpm',   st: 'vc' },
+            { lbl: 'BP',  val: '64/32',unit: 'mm Hg', st: 'vc' },
+          ],
+          vitalsMsg: `Patient unresponsive. Code Blue called.`,
+          nextDecision: 'decision_toxic_postrosc'
+        }
+      ]
+    },
+
+    decision_toxic_postrosc: {
+      title: 'Post-Arrest Management — Perforated Colon',
+      prompt: 'ROSC achieved. Mr. Hayes is intubated, hemodynamically unstable, and has a rigid abdomen. What are your immediate post-arrest orders?',
+      placeholder: `Enter your orders...\ne.g.: norepinephrine, central line, IV metronidazole, PO vancomycin, surgery consult, etc.`,
+      branches: [
+        {
+          id: 'full-postrosc-mgmt',
+          label: '✓ COMPLETE POST-ARREST MANAGEMENT',
+          type: 'good',
+          triggers: ['norepinephrine','norepi','levophed','central line','cvl','central venous','metronidazole','flagyl','vancomycin','vanco','surgery','surgical','gen surg','general surgery','egs'],
+          requires: 4,
+          excludes: [],
+          headline: 'Complete post-arrest management — emergent OR activation',
+          narrative: `You address all critical components simultaneously:\n\n<strong>Vasopressor:</strong> Norepinephrine started for MAP support in distributive + hemorrhagic shock physiology from peritonitis.\n\n<strong>Central access:</strong> Central line placed — required for reliable vasopressor delivery and hemodynamic monitoring in a patient going emergently to the OR.\n\n<strong>C. diff treatment:</strong> IV metronidazole + PO vancomycin via NG tube — both routes required for complicated C. diff with toxic megacolon.\n\n<strong>Surgery:</strong> Emergency general surgery activated. The team is at bedside — subtotal colectomy with end ileostomy is planned.\n\nThe surgery attending: <em>"We're taking him to the OR now. Get anesthesia on the phone."</em>`,
+          showVitalsButton: false,
+          nextDecision: null,
+          endState: 'concern',
+          endMsg: `<strong>Case Concluded — Emergent OR.</strong><br/><br/>Mr. Hayes was taken emergently to the operating room for subtotal colectomy with end ileostomy. Intraoperative findings confirmed perforated toxic megacolon with fecal peritonitis.<br/><br/>Post-operative course is prolonged with an expected extended ICU stay. Prognosis is guarded — perforated toxic megacolon carries 40–80% mortality.<br/><br/><strong>Key teaching:</strong> Abdominal imaging in a septic patient with profuse diarrhea and distension is not optional. The CT abdomen was the critical missed order that led to this sequence of events.`,
+          decisions: [
+            'CT abdomen was not ordered — toxic megacolon was not diagnosed',
+            'Colonic perforation led to fecal peritonitis and cardiac arrest',
+            'Post-ROSC: norepinephrine, central line, IV metronidazole + PO vancomycin, surgery consult',
+            'Emergent subtotal colectomy required — OR activation appropriate',
+            'Core teaching: abdominal imaging is essential in septic patients with GI symptoms and distension'
+          ]
+        },
+        {
+          id: 'postrosc-no-surgery',
+          label: '⚠ PRESSORS + ANTIBIOTICS — NO SURGERY CONSULT',
+          type: 'warning',
+          triggers: ['norepinephrine','norepi','levophed','metronidazole','flagyl','vancomycin','vanco'],
+          requires: 2,
+          excludes: ['surgery','surgical','gen surg','general surgery','egs','emergency general surgery'],
+          headline: 'Medical management started — surgery not consulted',
+          narrative: `Vasopressors and antibiotics — the right instincts. But a perforated bowel cannot be managed with antibiotics alone. <span class="hl">This patient needs emergent surgery.</span>\n\nThe MICU fellow calls: <em>"We can stabilize his hemodynamics temporarily but we can't fix a perforation. General surgery needs to be here now."</em>\n\nThe attending places the surgery consult emergently.`,
+          showVitalsButton: false,
+          nextDecision: null,
+          endState: 'concern',
+          endMsg: `<strong>Case Concluded.</strong><br/><br/>The attending placed an emergency surgery consult. Mr. Hayes was taken to the OR for subtotal colectomy. The surgical delay worsened his prognosis. In perforated toxic megacolon, surgery must be activated simultaneously with medical stabilization — not after.`,
+          decisions: [
+            'Vasopressors and antibiotics ordered — correct medical management',
+            'Emergency surgery not consulted — critical omission for a perforated bowel',
+            'Surgery activation must be simultaneous with medical stabilization, not sequential'
+          ]
+        },
+        {
+          id: 'postrosc-no-abx',
+          label: '⚠ PRESSORS + SURGERY — NO C. DIFF ANTIBIOTICS',
+          type: 'warning',
+          triggers: ['norepinephrine','norepi','levophed','surgery','surgical','gen surg','general surgery','egs'],
+          requires: 2,
+          excludes: ['metronidazole','flagyl','vancomycin','vanco'],
+          headline: 'Surgery and pressors — C. diff antibiotics missing',
+          narrative: `Surgery is activated and vasopressors are running. But the underlying C. diff infection is not being treated medically.\n\nFor complicated C. diff (toxic megacolon = complicated), surgery is required — but IV metronidazole + PO vancomycin should run simultaneously. PO vancomycin can be delivered via NG tube even in intubated patients.\n\nThe surgery team preps for the OR while the pharmacist adds IV metronidazole and PO vancomycin via NG.`,
+          showVitalsButton: false,
+          nextDecision: null,
+          endState: 'concern',
+          endMsg: `<strong>Case Concluded.</strong><br/><br/>Mr. Hayes went to the OR with surgery and pressors running but no C. diff antibiotics. The pharmacist added them perioperatively. Complete management requires both surgical and medical treatment simultaneously.`,
+          decisions: [
+            'Surgery consulted and vasopressors initiated — correct',
+            'Missing: IV metronidazole + PO vancomycin for C. diff treatment',
+            'Both surgical and medical management must run simultaneously in complicated C. diff'
+          ]
+        },
+        {
+          id: 'postrosc-pressors-only',
+          label: '✗ PRESSORS ONLY — INCOMPLETE POST-ARREST MANAGEMENT',
+          type: 'bad',
+          triggers: ['norepinephrine','norepi','levophed','vasopressor','pressor','fluid','liter','saline'],
+          requires: 1,
+          excludes: ['surgery','surgical','gen surg','general surgery','egs','metronidazole','flagyl','vancomycin','vanco','central line','cvl'],
+          headline: 'Vasopressor started — critical interventions missing',
+          narrative: `Hemodynamic support is started but the underlying cause — a perforated bowel with fecal peritonitis — remains unaddressed.\n\nMAP briefly improves then drops again. The surgery fellow passes by the room and looks in: <em>"Is that a rigid abdomen? Why isn't surgery involved? This patient needs the OR immediately."</em>\n\nThe attending urgently places consults for surgery and adds IV antibiotics.`,
+          showVitalsButton: false,
+          nextDecision: null,
+          endState: 'concern',
+          endMsg: `<strong>Case Concluded — Incomplete Post-Arrest Management.</strong><br/><br/>Hemodynamic support was initiated but the perforated bowel, C. diff treatment, and central line were all omitted. Post-ROSC management of perforated toxic megacolon requires simultaneous activation of all four components: vasopressor, central access, IV + PO antibiotics, and emergency surgery.`,
+          decisions: [
+            'Vasopressor initiated — correct but incomplete',
+            'Missing: central line, IV metronidazole + PO vancomycin, surgery consult',
+            'Post-cardiac arrest from peritonitis requires all four interventions simultaneously'
+          ]
+        },
+        {
+          id: 'default-postrosc',
+          label: 'POST-ARREST ORDERS NEEDED',
+          type: 'neutral',
+          triggers: [],
+          requires: 0,
+          excludes: [],
+          headline: 'Post-arrest management required',
+          narrative: `Mr. Hayes is post-cardiac arrest with a perforated colon and fecal peritonitis. Four things must happen immediately and simultaneously:\n\n<strong>(1) Norepinephrine</strong> — vasopressor support for MAP ≥65<br/><strong>(2) Central line (CVL)</strong> — reliable access for vasopressors and monitoring<br/><strong>(3) IV metronidazole + PO vancomycin via NG tube</strong> — treat the C. diff<br/><strong>(4) Emergency general surgery consult</strong> — emergent laparotomy required\n\nWhat are your orders?`,
+          showVitalsButton: false,
+          nextDecision: null,
+          endState: 'concern',
+          endMsg: `<strong>Case Concluded.</strong><br/><br/>The MICU team and surgery intervened. Mr. Hayes was taken to the OR emergently.`,
+          decisions: [
+            'Post-ROSC management incomplete — MICU and surgery team intervened'
+          ]
+        }
+      ]
+    },
+
+    decision2_volassess: {
+      title: 'Volume Status Assessment',
+      prompt: 'Mr. Hayes is being prepared for the OR. Hemodynamically he remains borderline — MAP 62. Before the surgical team takes him, you want to assess his volume status. What would you like to do?',
+      placeholder: `Enter your assessment orders...\ne.g.: POCUS, bedside ultrasound, passive leg raise, proceed, etc.`,
+      branches: [
+        {
+          id: 'pocus-vol',
+          label: '✓ BEDSIDE POCUS ORDERED',
+          type: 'good',
+          triggers: ['pocus','bedside echo','bedside ultrasound','point of care ultrasound','point-of-care ultrasound','ivc ultrasound','cardiac echo','echo'],
+          requires: 1,
+          excludes: [],
+          headline: 'POCUS performed — volume status assessed',
+          narrative: `You perform a bedside point-of-care ultrasound to assess IVC collapsibility and cardiac function.\n\n{{POCUS_VOL_RESULT}}\n\n<strong>2026 SSC Update (Rec 49):</strong> Dynamic measures — including POCUS assessment of IVC collapsibility — are now <span class="hl">suggested over physical examination or static measures alone</span> to guide initial fluid resuscitation. This is an upgraded recommendation from 2021.`,
+          showVitalsButton: true,
+          showPocusModal: true,
+          nextVitals: [
+            { lbl: 'HR',   val: '88',     unit: 'bpm',   st: 'vn' },
+            { lbl: 'BP',   val: '101/44', unit: 'mm Hg', st: 'vc' },
+            { lbl: 'MAP',  val: '62',     unit: 'mm Hg', st: 'vw' },
+            { lbl: 'RR',   val: '24',     unit: '/min',   st: 'vw' },
+            { lbl: 'SpO₂', val: '94%',    unit: 'RA',     st: 'vw' },
+          ],
+          vitalsMsg: `{{POCUS_VOL_MSG}}`,
+          nextDecision: 'decision2'
+        },
+        {
+          id: 'plr-vol',
+          label: '✓ PASSIVE LEG RAISE PERFORMED',
+          type: 'good',
+          triggers: ['passive leg raise','plr','leg raise','fluid challenge'],
+          requires: 1,
+          excludes: [],
+          headline: 'Passive leg raise performed — fluid responsiveness assessed',
+          narrative: `You perform a passive leg raise — a reversible ~500 mL autotransfusion that assesses preload responsiveness without committing additional IV fluid.\n\n{{PLR_VOL_RESULT}}\n\n<strong>2026 SSC Update (Rec 49):</strong> Dynamic measures including PLR are now <span class="hl">suggested over static measures alone</span> to guide fluid resuscitation decisions.`,
+          showVitalsButton: true,
+          nextVitals: [
+            { lbl: 'HR',   val: '88',     unit: 'bpm',   st: 'vn' },
+            { lbl: 'BP',   val: '101/44', unit: 'mm Hg', st: 'vc' },
+            { lbl: 'MAP',  val: '62',     unit: 'mm Hg', st: 'vw' },
+            { lbl: 'RR',   val: '24',     unit: '/min',   st: 'vw' },
+          ],
+          vitalsMsg: `{{PLR_VOL_MSG}}`,
+          nextDecision: 'decision2'
+        },
+        {
+          id: 'skip-vol-assessment',
+          label: 'PROCEED TO MANAGEMENT',
+          type: 'neutral',
+          triggers: [],
+          requires: 0,
+          excludes: [],
+          headline: 'Proceeding without formal volume assessment',
+          narrative: `You proceed without formal volume status assessment. Mr. Hayes remains hypotensive with MAP 62.\n\nFor future reference: the 2026 SSC guidelines suggest using dynamic measures (POCUS, passive leg raise, pulse pressure variation) over static measures or physical exam alone to guide fluid resuscitation decisions.`,
+          showVitalsButton: false,
+          nextDecision: 'decision2'
+        }
+      ]
+    },
+
+    decision2: {
+      title: 'Pre-Operative Stabilization',
+      prompt: 'Mr. Hayes is heading to the OR. MAP is 62. {{LACTATE_D2}}He received {{FLUID_L}}L LR and {{ANTIBIOTIC}}. The surgical team is at bedside. What are your final pre-operative orders?',
+      placeholder: `Enter your next orders...\ne.g.: norepinephrine, MICU transfer, vasopressin, etc.`,
+      branches: [
+        {
+          id: 'norepi-and-icu',
+          label: '✓ FIRST-LINE VASOPRESSOR + ICU ESCALATION',
+          type: 'good',
+          triggers: ['norepinephrine','norepi','levophed','icu','micu','intensive care','transfer'],
+          requires: 2,
+          excludes: [],
+          headline: 'Norepinephrine + ICU transfer — correct escalation',
+          narrative: `Norepinephrine is the correct pre-operative vasopressor choice. MAP needs to be ≥65 before the anesthesia team will safely proceed.\n\n<strong>2026 SSC Update:</strong> Norepinephrine remains the <span class="hl">suggested first-line vasopressor</span> in septic shock. Peripheral vasopressor initiation is acceptable while central access is obtained — do not delay for a central line.\n\n<strong>Age-adjusted MAP:</strong> For adults ≥65 years, MAP 60–65 mm Hg is acceptable (2026 rec 14). Mr. Hayes is 85 years old — do not over-target MAP.\n\nThe anesthesia attending: <em>"Good — get norepi running peripherally. We'll place an art line in the OR. Let's move."</em>`,
+          showVitalsButton: false,
+          nextDecision: null,
+          endState: 'good',
+          endMsg: `<strong>Case Complete — Emergent OR.</strong><br/><br/>Mr. Hayes is taken emergently to the operating room on norepinephrine. Subtotal colectomy with end ileostomy is performed. Intraoperative findings confirm fecal peritonitis from toxic megacolon. The C. diff PCR returned positive.<br/><br/>Post-operative ICU course is prolonged. Prognosis is guarded — perforated toxic megacolon carries significant mortality — but early recognition and complete management gave him the best possible chance.`,
+          decisions: [
+            'Recognized sepsis despite atypical presentation — no fever, subtle vitals',
+            'Initiated complete early sepsis bundle: cultures, lactate, IV fluids, IV antibiotics',
+            'Identified persistent hypotension after fluid resuscitation = septic shock',
+            '2026 SSC: norepinephrine "suggested" as first-line vasopressor (SOAP-II trial)',
+            'Peripheral vasopressor initiation acceptable while central access obtained (2026 rec 12)',
+            'Age-adjusted MAP target: 60–65 mm Hg acceptable for adults ≥65 years (2026 rec 14)',
+            'Appropriately escalated to ICU-level monitoring within 6 hours (2026 rec 15)'
+          ]
+        },
+        {
+          id: 'norepi-no-icu',
+          label: '⚠ PRESSOR WITHOUT ICU TRANSFER',
+          type: 'warning',
+          triggers: ['norepinephrine','norepi','levophed','vasopressor','pressor'],
+          requires: 1,
+          excludes: ['icu','micu','transfer','intensive care'],
+          headline: 'Vasopressor started — ICU transfer not ordered',
+          narrative: `You start norepinephrine — the correct choice. However, any patient requiring IV vasopressor support <span class="hl">requires ICU-level monitoring</span>. Floor nurses cannot safely titrate vasopressors or respond to the hemodynamic changes that follow.\n\nThe charge nurse calls: <em>"We can start this drip, but we're not staffed for vasopressor management up here. He really needs the unit."</em>\n\nMr. Hayes is ultimately transferred. Vasopressor initiation and ICU transfer are inseparable decisions.`,
+          showVitalsButton: false,
+          nextDecision: null,
+          endState: 'good',
+          endMsg: `<strong>Case Complete.</strong><br/><br/>Mr. Hayes is taken to the OR. The vasopressor was the right call — MAP must be ≥65 for safe anesthesia. Next time: vasopressor initiation and ICU/OR transfer are inseparable decisions in a hemodynamically unstable surgical patient.`,
+          decisions: [
+            'Recognized need for vasopressor support',
+            'Correctly chose norepinephrine as first-line agent',
+            'Missed: explicit ICU transfer order — floor is not appropriate for vasopressor management'
+          ]
+        },
+        {
+          id: 'dopamine-choice',
+          label: '⚠ DOPAMINE — NOT PREFERRED AGENT',
+          type: 'warning',
+          triggers: ['dopamine'],
+          requires: 1,
+          excludes: ['norepinephrine','norepi','levophed'],
+          headline: 'Dopamine chosen — not the preferred vasopressor',
+          narrative: `Dopamine was historically used in septic shock and remains a reasonable choice in select settings — however, <span class="hl">the 2026 SSC guidelines suggest norepinephrine as the first-line vasopressor</span> (note: "suggest," not "recommend" — the evidence strength was actually downgraded in 2026 from the 2021 version, but norepinephrine remains the preferred agent based on the SOAP-II trial).\n\nThe SOAP-II trial (De Backer et al., 2010) demonstrated that dopamine was associated with significantly higher rates of arrhythmia — particularly atrial fibrillation — compared to norepinephrine. Its unpredictable dose-dependent receptor effects make it less favorable in distributive shock.\n\nThe ICU attending switches to norepinephrine on Mr. Hayes' arrival to the unit.`,
+          showVitalsButton: false,
+          nextDecision: null,
+          endState: 'concern',
+          endMsg: `<strong>Case Complete.</strong><br/><br/>Dopamine was transitioned to norepinephrine before the OR. Norepinephrine is the evidence-based first-line vasopressor in septic shock — less arrhythmia risk (SOAP-II trial), especially important in a pre-operative patient.`,
+          decisions: [
+            'Recognized need for vasopressor support',
+            'Selected dopamine — not first-line per current SSC guidelines',
+            'SOAP-II trial: norepinephrine associated with less arrhythmia than dopamine'
+          ]
+        },
+        {
+          id: 'more-fluid-no-pressor',
+          label: '✗ MORE FLUID — NO VASOPRESSOR — ARREST',
+          type: 'bad',
+          triggers: ['fluid','saline','liter','bolus','more fluid','another liter'],
+          requires: 1,
+          excludes: ['norepinephrine','norepi','levophed','vasopressor','pressor','dopamine','vasopressin'],
+          headline: 'Fluid loading without vasopressor — septic arrest',
+          narrative: `You continue fluid loading despite a rising lactate and persistent MAP <65. Distributive shock at this stage cannot be resolved with volume alone — the problem is vasoplegia, not hypovolemia.\n\nSpO₂ drops to 87% as bilateral crackles develop from fluid overload. Then: HR climbs to 140, BP drops to 60/30. The monitor alarms. Mr. Hayes becomes unresponsive. No pulse on check.\n\nThe RN activates the Code Blue.`,
+          showVitalsButton: true,
+          showCodeBlue: true,
+          codeBlueConfig: {
+            rhythm: 'Pulseless Electrical Activity (PEA)',
+            overhead: 'Code Blue, Tower 3 Bed 14. Code Blue, Tower 3 Bed 14.',
+            cause: 'PEA arrest from refractory distributive shock. Fluid overload impaired respiratory function (bilateral crackles, SpO₂ 87%) while untreated vasoplegia drove progressive hemodynamic collapse.',
+            monitor_phrase: 'Look at the monitor — organized electrical activity, no pulse. PEA arrest.',
+            hs_ts: [
+              'Hypovolemia (relative — distributive, not absolute)',
+              'Hydrogen ion (lactic acidosis from ongoing shock)',
+              'Hypoxia ← fluid overload → pulmonary edema',
+              'Tension pneumothorax (rule out — bilateral crackles may mimic)',
+              'Hypo/Hyperkalemia ← AKI from sepsis',
+              'Thrombosis / Tamponade (rule out)'
+            ],
+            acls_specifics: [
+              'Epinephrine 1mg IV q3–5 min — start immediately',
+              'Do NOT give more fluid during resuscitation — volume overload already present',
+              'Norepinephrine should have been started before this point',
+              'After ROSC: norepinephrine titrated to MAP ≥65, consider furosemide for pulmonary edema',
+              'Rising lactate + MAP <65 after {{FLUID_L}}L = vasopressor indication — do not delay further'
+            ],
+            rosc_label: '✓ ROSC Achieved — Initiating Vasopressor Support →'
+          },
+          nextVitals: [
+            { lbl: 'HR',   val: '140',  unit: 'bpm',   st: 'vc' },
+            { lbl: 'BP',   val: '60/30',unit: 'mm Hg', st: 'vc' },
+            { lbl: 'MAP',  val: '40',   unit: 'mm Hg', st: 'vc' },
+            { lbl: 'SpO₂', val: '87%',  unit: 'on NRB',st: 'vc' },
+          ],
+          vitalsMsg: `After ROSC, Mr. Hayes is intubated and transferred to the MICU on norepinephrine. Furosemide is given for pulmonary edema from excessive fluid loading.<br/><br/><strong>Key teaching:</strong> In septic shock with rising lactate and MAP <65 after initial resuscitation, the next step is a vasopressor — not more fluid. Norepinephrine should not require 4+ liters to trigger.`,
+          nextDecision: null,
+          endState: 'concern',
+          endMsg: `<strong>Case Concluded — Preventable Arrest.</strong><br/><br/>Mr. Hayes coded because vasopressor initiation was delayed in favour of continued fluid loading. After ROSC, he is in the MICU on norepinephrine + furosemide for fluid overload. The lesson: rising lactate + MAP <65 after {{FLUID_L}}L = septic shock = start norepinephrine.`,
+          decisions: [
+            'Identified persistent septic shock but chose more fluid over vasopressor',
+            'Fluid loading worsened pulmonary edema and did not resolve vasoplegia',
+            'PEA arrest from refractory distributive shock + hypoxia',
+            'Post-ROSC: norepinephrine + diuresis for fluid overload'
+          ]
+        },
+        {
+          id: 'default-ss1-d2',
+          label: 'MANAGEMENT DIRECTION NEEDED',
+          type: 'neutral',
+          triggers: [],
+          requires: 0,
+          excludes: [],
+          headline: 'Next steps needed',
+          narrative: `Mr. Hayes is in septic shock — MAP <65 despite {{FLUID_L}}L resuscitation with a rising lactate. Next steps: <strong>(1)</strong> initiate norepinephrine 0.1–0.3 mcg/kg/min titrating to MAP ≥65, and <strong>(2)</strong> transfer to the MICU. The floor cannot safely manage a vasopressor-dependent patient.`,
+          showVitalsButton: false,
+          nextDecision: null,
+          endState: 'concern',
+          endMsg: `<strong>Case ended.</strong><br/><br/>The Rapid Response team was called and escalated care.`,
+          decisions: ['Septic shock recognized but vasopressor initiation delayed']
+        }
+      ]
+    }
+  },
+
+  // ─────────────────────────────────────────────────────────────
+  // SEPSIS CASE 2 — Ms. Valentina Reyes · Septic Shock & Adrenal Crisis
+  // ─────────────────────────────────────────────────────────────
+  {
+    id: 'ss-2',
+    title: 'Case #2',
+    blurb: 'Young woman on chronic immunosuppression presenting with septic shock.',
+    artType: 'sepsis2',
+    patient: { name: 'Valentina Reyes', initials: 'VR', age: '20F', weight: '58 kg', allergies: 'NKDA' },
+
+    vignette: `<p>A 20-year-old woman with <span class="hl">systemic lupus erythematosus (SLE)</span> on cyclophosphamide and <span class="hl">prednisone 20 mg daily × 3 months</span> presented to the ED with abdominal pain, back pain, nausea, and lethargy. She was admitted for sepsis workup.</p><p>On the telemetry unit, she has been declining since midnight.</p><div class="pager-box"><div class="pager-header"><div class="pager-icon">📟</div><div class="pager-meta"><div class="pager-from">Tower 4 · Bed 8</div><div class="pager-time">02:14</div></div></div><div class="pager-msg">"Ms. Reyes is going downhill fast. BP dropped to 85/55 and I can barely wake her up. She was okay two hours ago. Please come now."</div></div>`,
+
+    rnReport: `"She's barely staying awake. Temp is 38.8. BP cycled at 85/55, HR 120. She's been on prednisone 20 mg for about 3 months for her lupus flare. I already gave her a small bolus. She looks really sick — skin was warm before but now it's cooling."`,
+    rnCues: [
+      'What is the significance of chronic prednisone use in a patient in septic shock?',
+      'Does POCUS change your management?'
+    ],
+
+    vitals: [
+      { lbl: 'HR',   val: '120',    unit: 'bpm',      st: 'vc' },
+      { lbl: 'BP',   val: '85/55',  unit: 'mm Hg',    st: 'vc' },
+      { lbl: 'MAP',  val: '65',     unit: 'mm Hg',    st: 'vw' },
+      { lbl: 'RR',   val: '22',     unit: '/min',      st: 'vw' },
+      { lbl: 'Temp', val: '38.8°C', unit: '101.8°F',  st: 'vw' },
+      { lbl: 'SpO₂', val: '92%',   unit: '4L NC',     st: 'vw' },
+      { lbl: 'GCS',  val: '12',     unit: '/15',       st: 'vw' }
+    ],
+
+    labs: [
+      { lbl: 'WBC',     val: '2.1',   unit: 'K/µL',    st: 'lv-c' },
+      { lbl: 'Hgb',     val: '10.8',  unit: 'g/dL',    st: 'lv-a' },
+      { lbl: 'Plt',     val: '95',    unit: 'K/µL',    st: 'lv-c' },
+      { lbl: 'Na',      val: '128',   unit: 'mEq/L',   st: 'lv-c' },
+      { lbl: 'Creat',   val: '2.3',   unit: 'mg/dL',   st: 'lv-c' },
+      { lbl: 'HCO₃',   val: '17',    unit: 'mEq/L',   st: 'lv-c' },
+      { lbl: 'Lactate', val: '5.2',   unit: 'mmol/L',  st: 'lv-c' },
+      { lbl: 'Cortisol',val: '8.2',   unit: 'mcg/dL ↓',st: 'lv-c' },
+      { lbl: 'pH',      val: '7.29',  unit: 'ABG',     st: 'lv-c' },
+      { lbl: 'PaO₂',   val: '68',    unit: 'mm Hg',   st: 'lv-a' },
+    ],
+
+    examSystems: [
+      { icon: '🧠', lbl: 'Neuro',   key: 'neuro',   text: 'Lethargic. Oriented to person only. Slow to respond. GCS 12.' },
+      { icon: '👁️', lbl: 'General', key: 'gen',     text: 'Young female, acutely ill. Diaphoretic. Skin warm initially, now cooling. Mild cushingoid features from steroid use.' },
+      { icon: '👄', lbl: 'HEENT',   key: 'heent',   text: 'Dry mucous membranes. No JVD.' },
+      { icon: '❤️', lbl: 'Cardiac', key: 'cardiac', text: 'Tachycardic. Regular rhythm. Extremities cooling.' },
+      { icon: '🫁', lbl: 'Lungs',   key: 'lungs',   text: 'Tachypneic. Scattered bibasilar rales.' },
+      { icon: '🫃', lbl: 'Abdomen', key: 'abd',     text: 'Mild diffuse tenderness. Non-distended. No peritoneal signs.' },
+      { icon: '🔬', lbl: 'POCUS',   key: 'pocus',   text: 'Hyperdynamic LV. Small, collapsible IVC (>50% collapse) — volume responsive. Bilateral B-lines. No pericardial effusion. Distributive shock physiology.' }
+    ],
+
+    decision1: {
+      title: 'Septic Shock — Resuscitation, Vasopressor & Steroid Decision',
+      prompt: 'Ms. Reyes: MAP 65, lactate 5.2, on prednisone 20 mg/day × 3 months. POCUS: hyperdynamic LV, collapsible IVC. CXR: bilateral interstitial opacities. What are your initial orders?',
+      placeholder: `Enter your orders...\ne.g.: fluids, norepinephrine, hydrocortisone, antibiotics, etc.`,
+      branches: [
+        {
+          id: 'complete-bundle-with-steroids',
+          label: '✓ COMPLETE BUNDLE + STRESS DOSE STEROIDS',
+          type: 'good',
+          triggers: ['fluid','liter','saline','blood culture','bcx','antibiotic','zosyn','pip','meropenem','norepinephrine','norepi','levophed','hydrocortisone','steroid','stress dose','solu-cortef'],
+          requires: 4,
+          excludes: [],
+          headline: 'Complete septic shock bundle with adrenal recognition',
+          narrative: `Outstanding — all critical components addressed:\n\n<strong>Cultures + antibiotics:</strong> Broad-spectrum IV coverage for immunosuppressed host<br/><strong>Fluids:</strong> 30 mL/kg balanced crystalloid (LR preferred over NS — 2026 SSC rec 44), titrated with POCUS<br/><strong>Vasopressor:</strong> Norepinephrine targeting MAP ≥65<br/><strong>Steroids:</strong> Hydrocortisone — <span class="hl">critical given 3 months of chronic prednisone</span>\n\n<strong>2026 SSC Corticosteroid Update (Rec 79):</strong> The 2026 guidelines now suggest IV corticosteroids for <span class="hl">any patient with septic shock</span> — no longer restricted to refractory shock only. This was downgraded from a "for vasopressor-dependent patients" indication to a broader "for patients with septic shock" recommendation, with IV administration emphasized over oral.\n\nMs. Reyes additionally has HPA axis suppression risk from chronic prednisone — her cortisol of 8.2 mcg/dL is inappropriately low for a critically ill patient. Do NOT wait for stimulation testing in shock.\n\nHydrocortisone: <strong>50 mg IV q6h</strong> (or 200 mg/day continuous infusion).`,
+          showVitalsButton: true,
+          nextVitals: [
+            { lbl: 'HR',   val: '104',   unit: 'bpm',   st: 'vw' },
+            { lbl: 'BP',   val: '93/59', unit: 'mm Hg', st: 'vw' },
+            { lbl: 'MAP',  val: '70',    unit: 'mm Hg', st: 'vn' },
+            { lbl: 'RR',   val: '20',    unit: '/min',   st: 'vn' },
+            { lbl: 'SpO₂', val: '94%',   unit: '4L NC', st: 'vn' },
+          ],
+          vitalsMsg: `45 min after norepinephrine, 2L LR, hydrocortisone 50 mg IV, and broad-spectrum antibiotics. MAP at goal.`,
+          nextDecision: 'decision2',
+          updatedExam: [
+            { icon: '🧠', lbl: 'Neuro',   key: 'neuro',   text: 'Somewhat more responsive. Oriented to person and place. Clearly improving.' },
+            { icon: '❤️', lbl: 'Cardiac', key: 'cardiac', text: 'HR improving. Extremities marginally warmer with vasopressor support.' }
+          ]
+        },
+        {
+          id: 'bundle-no-steroids',
+          label: '⚠ MISSED STRESS DOSE STEROIDS',
+          type: 'warning',
+          triggers: ['fluid','liter','saline','antibiotic','zosyn','pip','meropenem','norepinephrine','norepi','levophed'],
+          requires: 3,
+          excludes: ['hydrocortisone','steroid','stress dose','solu-cortef','cortisol'],
+          headline: 'Septic shock bundle initiated — steroids missed',
+          narrative: `Fluids, antibiotics, and norepinephrine — correct. But you miss a key update.\n\n<strong>2026 SSC Update (Rec 79):</strong> The 2026 guidelines now suggest IV corticosteroids for <span class="hl">any patient with septic shock</span> — the indication has broadened beyond just refractory shock. Combined with Ms. Reyes' chronic prednisone use (HIGH HPA axis suppression risk), hydrocortisone should be given early, not only if shock worsens.\n\nHydrocortisone 50 mg IV q6h (or 200 mg/day continuous infusion) is indicated here.\n\nThe pharmacist calls: <em>"Did you want corticosteroids? The 2026 SSC guidelines now suggest steroids broadly for septic shock — and she's on chronic prednisone, so her adrenal reserve is limited."</em>`,
+          showVitalsButton: true,
+          nextVitals: [
+            { lbl: 'HR',   val: '114',   unit: 'bpm',   st: 'vc' },
+            { lbl: 'BP',   val: '86/52', unit: 'mm Hg', st: 'vc' },
+            { lbl: 'MAP',  val: '63',    unit: 'mm Hg', st: 'vw' },
+            { lbl: 'SpO₂', val: '91%',   unit: '4L NC', st: 'vw' },
+          ],
+          vitalsMsg: `45 min later — MAP still borderline despite norepinephrine. Without steroid support the response is blunted.`,
+          nextDecision: 'decision2',
+          updatedExam: [
+            { icon: '🧠', lbl: 'Neuro', key: 'neuro', text: 'Persistent confusion. Minimal improvement. Consistent with ongoing septic encephalopathy.' },
+            { icon: '❤️', lbl: 'Cardiac', key: 'cardiac', text: 'Tachycardia persists. Vasopressor-dependent with MAP at goal only transiently.' }
+          ]
+        },
+        {
+          id: 'fluids-only-no-pressor',
+          label: '✗ NO VASOPRESSOR IN SEPTIC SHOCK — CARDIAC ARREST',
+          type: 'bad',
+          triggers: ['fluid','liter','saline','bolus','blood culture','antibiotic'],
+          requires: 2,
+          excludes: ['norepinephrine','norepi','levophed','vasopressor','pressor','dopamine'],
+          headline: 'Fluids without vasopressor — cardiovascular collapse',
+          narrative: `Fluids and antibiotics are started — but in septic shock with lactate 5.2, waiting for fluids to fix MAP is not acceptable. Ms. Reyes has a hyperdynamic LV and distributive physiology — vasopressors must run in parallel from the start.\n\n30 minutes later: BP 70/40 → 55/28. GCS drops to 6. The RN shouts: <em>"She's unresponsive — no pulse! CODE BLUE!"</em>`,
+          showVitalsButton: true,
+          showCodeBlue: true,
+          codeBlueConfig: {
+            rhythm: 'Ventricular Fibrillation (VFib)',
+            overhead: 'Code Blue, Tower 4 Bed 8. Code Blue, Tower 4 Bed 8. Crash cart to Tower 4 STAT.',
+            cause: '',
+            monitor_phrase: 'Look at the monitor — coarse VFib. No pulse. Charge the defibrillator immediately.',
+            hs_ts: [
+              'Hydrogen ion (metabolic acidosis — pH 7.29, HCO₃ 17) ← lowers VFib threshold',
+              'Hypo/Hyperkalemia ← AKI (Cr 2.3) in septic shock',
+              'Hypoxia ← SpO₂ declining without vasopressor support',
+              'Hypomagnesemia ← common in sepsis + SLE',
+              'Toxins — septic mediators, myocardial depression',
+              'Thrombosis — SLE hypercoagulable state (rule out PE)'
+            ],
+            acls_specifics: [
+              'IMMEDIATE: Defibrillate 200J biphasic — do NOT delay',
+              'Resume CPR × 2 min immediately after each shock',
+              'Epinephrine 1mg IV after 2nd shock, then q3–5 min',
+              'Amiodarone 300mg IV if refractory after 3rd shock',
+              'Magnesium 2g IV — SLE + sepsis → likely low Mg²⁺',
+              'Norepinephrine must be started immediately after ROSC',
+              'Stress dose hydrocortisone — adrenal suppression from chronic prednisone'
+            ],
+            rosc_label: '✓ ROSC After Defibrillation — Initiating Vasopressor Now →'
+          },
+          noROSCMsg: `Despite resuscitation efforts, Ms. Reyes did not achieve ROSC.\n\nDistributive septic shock requires simultaneous vasopressor initiation alongside fluid resuscitation — not sequential. At a lactate of 5.2 with a hyperdynamic LV, fluids alone are insufficient. The VFib was precipitated by refractory hypotension, metabolic acidosis (pH 7.29), and hyperkalemia from AKI — all consequences of untreated shock.`,
+          nextVitals: [
+            { lbl: 'HR',   val: '134',  unit: 'bpm',   st: 'vc' },
+            { lbl: 'BP',   val: '55/28',unit: 'mm Hg', st: 'vc' },
+            { lbl: 'MAP',  val: '37',   unit: 'mm Hg', st: 'vc' },
+            { lbl: 'SpO₂', val: '84%',  unit: '4L NC', st: 'vc' },
+          ],
+          vitalsMsg: `ROSC achieved after defibrillation. Ms. Reyes is intubated. Norepinephrine and hydrocortisone started immediately post-ROSC.`,
+          nextDecision: 'decision2_postcode'
+        },
+        {
+          id: 'pressor-no-abx',
+          label: '✗ VASOPRESSOR WITHOUT ANTIBIOTICS — WORSENING SEPSIS',
+          type: 'bad',
+          triggers: ['norepinephrine','norepi','levophed','vasopressor','pressor'],
+          requires: 1,
+          excludes: ['blood culture','bcx','antibiotic','zosyn','pip','meropenem','ceftriaxone','vancomycin'],
+          headline: 'MAP transiently supported — uncontrolled infection progresses',
+          narrative: `You raise the blood pressure without treating the underlying infection. The vasopressor stabilizes MAP for a short window, but the infection continues unchecked.\n\nMs. Reyes is immunosuppressed on cyclophosphamide — without antibiotics, her bacterial load doubles every 20 minutes. 35 minutes after the pressor starts: temperature spikes to 40.1°C, HR climbs to 160, and the monitor alarms — VFib.\n\nThe RN shouts: <em>"She's in VFib! No pulse! Calling Code Blue NOW!"</em>`,
+          showVitalsButton: true,
+          showCodeBlue: true,
+          codeBlueConfig: {
+            rhythm: 'Ventricular Fibrillation (VFib)',
+            overhead: 'Code Blue, Tower 4 Bed 8. Code Blue, Tower 4 Bed 8. Crash cart to Tower 4.',
+            cause: 'VFib from sepsis-induced myocardial injury and electrolyte instability. In young patients with SLE, sepsis-induced cardiomyopathy and electrolyte disturbances (K⁺ 5.2, HCO₃⁻ 17) can precipitate malignant ventricular arrhythmias. Antibiotics are the definitive treatment — vasopressors without source control only delay inevitable deterioration.',
+            monitor_phrase: 'Look at the monitor — coarse VFib. No pulse on check. Charge the defibrillator.',
+            hs_ts: [
+              'Hydrogen ion (metabolic acidosis lowers VFib threshold) ← active',
+              'Hypo/Hyperkalemia (K⁺ 5.2 — borderline hyperkalemia) ← active',
+              'Hypoxia (contributing factor)',
+              'Hypomagnesemia (often concurrent with sepsis)',
+              'Toxins — septic mediators causing myocardial depression',
+              'Thrombosis (SLE hypercoagulable state)',
+              'Tension pneumothorax (rule out)'
+            ],
+            acls_specifics: [
+              'IMMEDIATE: Defibrillate 200J biphasic — DO NOT delay for IV access',
+              'Resume CPR immediately × 2 min after each shock',
+              'Epinephrine 1mg IV after 2nd shock, then q3–5 min',
+              'Amiodarone 300mg IV if refractory after 3rd shock',
+              'Magnesium 2g IV (SLE + sepsis → likely low Mg²⁺)',
+              'Broad-spectrum IV antibiotics DURING resuscitation — this is the definitive fix',
+              'After ROSC: 12-lead ECG, serial troponins, echocardiogram (sepsis cardiomyopathy)'
+            ],
+            rosc_label: '✓ ROSC After Defibrillation — Initiating Full Sepsis Bundle →'
+          },
+          nextVitals: [
+            { lbl: 'HR',   val: '160',   unit: 'bpm',   st: 'vc' },
+            { lbl: 'BP',   val: '70/38', unit: 'mm Hg', st: 'vc' },
+            { lbl: 'MAP',  val: '49',    unit: 'mm Hg', st: 'vc' },
+            { lbl: 'Temp', val: '40.1°C',unit: '104.2°F',st:'vc' },
+            { lbl: 'SpO₂', val: '86%',   unit: '4L NC', st: 'vc' },
+          ],
+          vitalsMsg: `After ROSC via defibrillation, Ms. Reyes is now intubated with broad-spectrum antibiotics running. Stress dose hydrocortisone is given for her adrenal insufficiency risk.<br/><br/><strong>Key teaching:</strong> Vasopressors address the hemodynamic consequence of sepsis — antibiotics treat the cause. In immunosuppressed patients, untreated infection progresses rapidly and precipitates lethal arrhythmias.`,
+          nextDecision: 'decision2_postcode',
+          updatedExam: [
+            { icon: '🧠', lbl: 'Neuro', key: 'neuro', text: 'Post-cardiac arrest. Sedated and intubated after ROSC. GCS not assessable.' },
+            { icon: '❤️', lbl: 'Cardiac', key: 'cardiac', text: 'ROSC achieved after defibrillation × 2. Sinus tachycardia. Troponin pending — rule out sepsis-induced cardiomyopathy.' },
+            { icon: '🫁', lbl: 'Lungs', key: 'lungs', text: 'Intubated, mechanically ventilated on FiO₂ 80%. Bilateral B-lines on POCUS.' }
+          ]
+        },
+        {
+          id: 'default-ss2-d1',
+          label: 'INCOMPLETE ORDERS — SEPTIC SHOCK DETERIORATION',
+          type: 'neutral',
+          triggers: [],
+          requires: 0,
+          excludes: [],
+          headline: 'Incomplete orders — patient deteriorates',
+          narrative: `Ms. Reyes is in septic shock — MAP 65, lactate 5.2, on chronic prednisone with HPA axis suppression. Without a complete bundle, her hemodynamics deteriorate rapidly.\n\nThe RN calls: <em>"Her pressure is down to 62/34. She's not responding. I don't have a pulse — calling Code Blue!"</em>`,
+          showVitalsButton: true,
+          showCodeBlue: true,
+          codeBlueConfig: {
+            rhythm: 'Ventricular Fibrillation (VFib)',
+            overhead: 'Code Blue, Tower 4 Bed 8. Code Blue, Tower 4 Bed 8.',
+            cause: '',
+            monitor_phrase: 'Look at the monitor — coarse VFib. No pulse. Charge the defibrillator.',
+            hs_ts: [
+              'Hydrogen ion (metabolic acidosis pH 7.29 → lowers VFib threshold)',
+              'Hypo/Hyperkalemia ← AKI (Cr 2.3)',
+              'Hypoxia ← untreated respiratory compromise',
+              'Hypomagnesemia ← sepsis + SLE',
+              'Toxins — septic myocardial depression',
+              'Thrombosis (SLE hypercoagulable — rule out PE)'
+            ],
+            acls_specifics: [
+              'IMMEDIATE: Defibrillate 200J biphasic',
+              'CPR × 2 min after each shock',
+              'Epinephrine 1mg IV after 2nd shock, then q3–5 min',
+              'Amiodarone 300mg IV if refractory',
+              'Magnesium 2g IV (SLE + sepsis = low Mg²⁺)',
+              'After ROSC: norepinephrine + hydrocortisone + broad-spectrum antibiotics immediately'
+            ],
+            rosc_label: '✓ ROSC Achieved — Initiating Full Septic Shock Bundle →'
+          },
+          noROSCMsg: `Despite resuscitation efforts, Ms. Reyes did not achieve ROSC.\n\nThe complete septic shock bundle was not initiated: blood cultures, IV antibiotics, 30 mL/kg balanced crystalloid, norepinephrine, and stress dose hydrocortisone must all start simultaneously. In a 20-year-old on chronic prednisone with SLE, untreated septic shock and adrenal insufficiency are rapidly fatal.`,
+          nextVitals: [
+            { lbl: 'HR',   val: '145',  unit: 'bpm',   st: 'vc' },
+            { lbl: 'BP',   val: '62/34',unit: 'mm Hg', st: 'vc' },
+            { lbl: 'MAP',  val: '43',   unit: 'mm Hg', st: 'vc' },
+          ],
+          vitalsMsg: `ROSC achieved. Ms. Reyes is intubated and the full septic shock bundle is started immediately post-arrest.`,
+          nextDecision: 'decision2_postcode'
+        }
+      ]
+    },
+
+    decision2_postcode: {
+      title: 'Post-Arrest MICU Management',
+      prompt: 'Ms. Reyes achieved ROSC and has been intubated. She is now in the MICU. Her current MAP is 48 mm Hg. She is on chronic prednisone 20 mg/day and is critically ill. What are your orders?',
+      placeholder: `Enter your post-arrest orders...\ne.g.: norepinephrine, antibiotics, hydrocortisone, cultures, etc.`,
+      branches: [
+        {
+          id: 'full-postcode-ss2',
+          label: '✓ COMPLETE POST-ARREST BUNDLE',
+          type: 'good',
+          triggers: ['norepinephrine','norepi','levophed','hydrocortisone','steroid','solu-cortef','antibiotic','zosyn','pip','meropenem','ceftriaxone','vancomycin','blood culture','bcx'],
+          requires: 3,
+          excludes: [],
+          headline: 'Complete post-arrest septic shock management',
+          narrative: `Full bundle initiated post-ROSC:\n\n<strong>Norepinephrine:</strong> First-line vasopressor — titrate to MAP ≥65\n<strong>Hydrocortisone 50 mg IV q6h:</strong> Critical — chronic prednisone = HPA suppression. Cortisol 8.2 mcg/dL is inappropriately low for a critically ill patient.\n<strong>IV antibiotics:</strong> Source control is the definitive treatment for sepsis\n<strong>Cultures × 2:</strong> Before antibiotics if not already drawn\n\n<strong>2026 SSC:</strong> Corticosteroids now suggested for any septic shock — not just refractory.`,
+          showVitalsButton: false,
+          nextDecision: 'decision2'
+        },
+        {
+          id: 'pressors-no-steroids-ss2',
+          label: '⚠ PRESSORS + ANTIBIOTICS — NO HYDROCORTISONE',
+          type: 'warning',
+          triggers: ['norepinephrine','norepi','levophed','antibiotic','zosyn','meropenem','vancomycin'],
+          requires: 2,
+          excludes: ['hydrocortisone','steroid','solu-cortef','stress dose'],
+          headline: 'Vasopressor and antibiotics — steroids still missing',
+          narrative: `Norepinephrine and antibiotics are correct. But cortisol 8.2 mcg/dL + 3 months of prednisone = relative adrenal insufficiency.\n\nWithout hydrocortisone, vasopressor requirements will be higher and MAP will be harder to maintain. The 2026 SSC guidelines now suggest corticosteroids broadly for septic shock.\n\nThe ICU attending: <em>"Her cortisol was 8.2 — she needs stress dose steroids now. HPA axis suppression from chronic prednisone."</em>`,
+          showVitalsButton: false,
+          nextDecision: 'decision2'
+        },
+        {
+          id: 'default-ss2-postcode',
+          label: 'POST-ARREST ORDERS NEEDED',
+          type: 'neutral',
+          triggers: [],
+          requires: 0,
+          excludes: [],
+          headline: 'Complete post-arrest bundle required',
+          narrative: `Ms. Reyes is post-arrest in the MICU. Immediate priorities: <strong>(1)</strong> Norepinephrine to MAP ≥65, <strong>(2)</strong> Hydrocortisone 50 mg IV q6h (HPA suppression from chronic prednisone), <strong>(3)</strong> Blood cultures × 2 if not drawn, <strong>(4)</strong> Broad-spectrum IV antibiotics. What are your orders?`,
+          showVitalsButton: false,
+          nextDecision: 'decision2'
+        }
+      ]
+    },
+
+    decision2: {
+      title: 'Volume Reassessment & Vasopressor Escalation',
+      prompt: '45 minutes later: 2L LR given, norepinephrine at 0.15 mcg/kg/min. MAP is 66. Repeat lactate 4.1 mmol/L — improving from 5.2. Repeat POCUS: IVC now appears fuller, less collapsible. RN asks: "Her MAP is barely at goal. Should we give more fluid or add another pressor?"',
+      placeholder: `Enter your next orders...\ne.g.: vasopressin, hold fluid, reassess, etc.`,
+      branches: [
+        {
+          id: 'vasopressin-add',
+          label: '✓ SECOND VASOPRESSOR — VASOPRESSIN',
+          type: 'good',
+          triggers: ['vasopressin','second pressor','add pressor','escalate','pitressin'],
+          requires: 1,
+          excludes: [],
+          headline: 'Vasopressin added — appropriate escalation',
+          narrative: `You recognize that MAP is borderline on moderate norepinephrine and that the <span class="hl">IVC is now fuller and non-collapsible</span> — Ms. Reyes is no longer volume-responsive. The correct next step is vasopressor escalation, not more fluid.\n\n<strong>Vasopressin 0.03–0.04 U/min</strong> as a second vasopressor is evidence-based. The VASST trial showed vasopressin may reduce norepinephrine requirements.\n\n<strong>2026 SSC Update (Rec 55):</strong> Norepinephrine remains the suggested first-line agent over vasopressin. Vasopressin should be added when norepinephrine is insufficient, not used as monotherapy.\n\n<strong>De-escalation principle (DOVSS trial):</strong> When weaning later, wean norepinephrine <em>before</em> vasopressin — removing vasopressin first leads to greater hemodynamic instability.\n\n<strong>2026 Update — Active Fluid Removal (Rec 89):</strong> After the initial resuscitation phase, if persistent hypoperfusion is present, consider active fluid removal (diuretics or ultrafiltration) rather than continuing fluid accumulation.`,
+          showVitalsButton: false,
+          nextDecision: null,
+          endState: 'good',
+          endMsg: `<strong>Case Complete.</strong><br/><br/>Ms. Reyes is stabilized in the MICU on norepinephrine + vasopressin with stress dose steroids. Lactate is trending down. Key teaching: chronic prednisone → HPA suppression → stress dose steroids in shock. POCUS-guided resuscitation prevented fluid overload.`,
+          decisions: [
+            'Recognized septic shock with relative adrenal insufficiency from chronic prednisone',
+            'Initiated complete bundle including stress dose hydrocortisone',
+            'Used POCUS to assess volume status dynamically',
+            'Identified IVC change — no longer volume-responsive',
+            'Appropriately escalated to second vasopressor (vasopressin) rather than more fluid'
+          ]
+        },
+        {
+          id: 'more-fluid-ivc-full',
+          label: '⚠ MORE FLUID DESPITE NON-RESPONSIVE IVC',
+          type: 'warning',
+          triggers: ['fluid','liter','saline','bolus','more fluid','another liter'],
+          requires: 1,
+          excludes: ['vasopressin','second pressor','dopamine','epinephrine'],
+          headline: 'More fluid — IVC no longer collapsible',
+          narrative: `You give another fluid bolus, but the repeat POCUS shows a <span class="hl">fuller, less collapsible IVC</span>. Ms. Reyes is no longer meaningfully volume-responsive. Additional fluid risks worsening the bilateral B-lines seen on her initial POCUS.\n\nSpO₂ drops from 94% to 89% as lung water accumulates.\n\nThe attending: <em>"The IVC is full — we're past the volume-responsive phase. We need vasopressin here, not more fluid."</em>`,
+          showVitalsButton: false,
+          nextDecision: null,
+          endState: 'concern',
+          endMsg: `<strong>Case Complete — suboptimal.</strong><br/><br/>A third liter was given without MAP benefit. SpO₂ dropped transiently. Vasopressin was eventually added. Key: use serial POCUS to guide resuscitation endpoints.`,
+          decisions: [
+            'Missed: POCUS showing IVC no longer collapsible',
+            'Continued fluid loading when no longer volume-responsive',
+            'Should have escalated to second vasopressor (vasopressin)',
+            'Fluid overload worsened oxygenation transiently'
+          ]
+        },
+        {
+          id: 'premature-wean',
+          label: '⚠ PREMATURE DE-ESCALATION',
+          type: 'warning',
+          triggers: ['wean','reduce norepi','turn down','decrease pressor','less pressor'],
+          requires: 1,
+          excludes: [],
+          headline: 'Vasopressor wean attempted prematurely',
+          narrative: `With MAP 66 and lactate still 4.1, this is premature.\n\nDe-escalation criteria: MAP consistently >65 without upward titration, lactate trending toward normal (<2 mmol/L), and clinical markers of end-organ recovery.\n\nThe RN calls: <em>"Her MAP dropped to 55 when I turned it down. I turned it back up."</em> Vasopressin is added and the wean is deferred.`,
+          showVitalsButton: false,
+          nextDecision: null,
+          endState: 'concern',
+          endMsg: `<strong>Case Complete.</strong><br/><br/>Premature wean resulted in MAP dropping to 55. Vasopressin was added; de-escalation deferred 12 hours when lactate had cleared. Remember (DOVSS trial): wean norepinephrine first, vasopressin last.`,
+          decisions: [
+            'Vasopressor wean attempted before stable MAP and lactate normalization',
+            'De-escalation criteria: stable MAP >65, lactate <2, clinical improvement',
+            'DOVSS trial: wean norepinephrine before vasopressin'
+          ]
+        },
+        {
+          id: 'default-ss2-d2',
+          label: 'MANAGEMENT DIRECTION NEEDED',
+          type: 'neutral',
+          triggers: [],
+          requires: 0,
+          excludes: [],
+          headline: 'Next steps needed',
+          narrative: `Ms. Reyes is on norepinephrine with MAP at 66 — borderline. The POCUS now shows a fuller IVC — she is no longer volume-responsive. Next step: add <strong>vasopressin 0.03–0.04 U/min</strong> as a second vasopressor. Continue stress dose steroids and reassess lactate every 2 hours.`,
+          showVitalsButton: false,
+          nextDecision: null,
+          endState: 'concern',
+          endMsg: `<strong>Case ended.</strong><br/><br/>The ICU attending intervened.`,
+          decisions: ['Vasopressor escalation not performed — ICU attending intervened']
+        }
+      ]
+    }
+  },
+
+  // ─────────────────────────────────────────────────────────────
+  // SEPSIS CASE 3 — Ms. Gloria Chen · Neutropenic Fever & Septic Shock
+  // ─────────────────────────────────────────────────────────────
+  {
+    id: 'ss-3',
+    title: 'Case #3',
+    blurb: 'Oncology patient with neutropenic fever and rapid hemodynamic deterioration.',
+    artType: 'sepsis3',
+    patient: { name: 'Gloria Chen', initials: 'GC', age: '60F', weight: '65 kg', allergies: 'NKDA' },
+
+    vignette: `<p>A 60-year-old woman with <span class="hl">acute lymphoblastic leukemia (ALL)</span> completed induction chemotherapy and is preparing for allogeneic stem cell transplant. A <span class="hl">PICC line</span> was placed in her right arm for chemotherapy access.</p><p>She felt well until this afternoon. Now she has fever, chills, right arm pain at the PICC site, and new confusion.</p><div class="pager-box"><div class="pager-header"><div class="pager-icon">📟</div><div class="pager-meta"><div class="pager-from">Tower 6 · Bed 22</div><div class="pager-time">14:45</div></div></div><div class="pager-msg">"Her BP just dropped from 132/92 to 75/35. ANC is 200. She doesn't look right. I'm scared."</div></div>`,
+
+    rnReport: `"She went from okay to terrible in 30 minutes. She's shaking with rigors, confused, asking where she is. Her right arm has erythema around the PICC site. ANC was 200 this morning — she's severely neutropenic. BP is 75/35, HR 130."`,
+    rnCues: [
+      'ANC 200 = severe neutropenia. How does this change your antibiotic approach?',
+      'What is the time-to-antibiotic target in neutropenic fever?'
+    ],
+
+    vitals: [
+      { lbl: 'HR',   val: '130',    unit: 'bpm',      st: 'vc' },
+      { lbl: 'BP',   val: '75/35',  unit: 'mm Hg',    st: 'vc' },
+      { lbl: 'MAP',  val: '48',     unit: 'mm Hg',    st: 'vc' },
+      { lbl: 'RR',   val: '26',     unit: '/min',      st: 'vc' },
+      { lbl: 'Temp', val: '38.9°C', unit: '102.0°F',  st: 'vw' },
+      { lbl: 'SpO₂', val: '92%',   unit: '4L NC',     st: 'vw' },
+      { lbl: 'ANC',  val: '200',    unit: '/µL ↓↓',   st: 'vc' }
+    ],
+
+    labs: [
+      { lbl: 'WBC',    val: '0.6',    unit: 'K/µL',    st: 'lv-c' },
+      { lbl: 'ANC',    val: '200',    unit: '/µL',      st: 'lv-c' },
+      { lbl: 'Hgb',    val: '9.1',    unit: 'g/dL',    st: 'lv-c' },
+      { lbl: 'Plt',    val: '42',     unit: 'K/µL',    st: 'lv-c' },
+      { lbl: 'INR',    val: '1.6',    unit: '',         st: 'lv-a' },
+      { lbl: 'Creat',  val: '1.8',    unit: 'mg/dL',   st: 'lv-a' },
+      { lbl: 'Lactate',val: '3.6',    unit: 'mmol/L',  st: 'lv-c' },
+      { lbl: 'Procal', val: '9.4',    unit: 'ng/mL',   st: 'lv-c' },
+    ],
+
+    examSystems: [
+      { icon: '🧠', lbl: 'Neuro',   key: 'neuro',   text: 'Disoriented to time and place. Confused, answers questions but gives incorrect responses. GCS 12.' },
+      { icon: '👁️', lbl: 'General', key: 'gen',     text: 'Acutely ill. Diaphoretic. Shivering with rigors.' },
+      { icon: '👄', lbl: 'HEENT',   key: 'heent',   text: 'Dry mucous membranes. Oropharynx clear — no mucositis.' },
+      { icon: '❤️', lbl: 'Cardiac', key: 'cardiac', text: 'Tachycardic. Regular rhythm. Extremities cooling.' },
+      { icon: '🫁', lbl: 'Lungs',   key: 'lungs',   text: 'Tachypneic. Crackles at right lung base.' },
+      { icon: '🫃', lbl: 'Abdomen', key: 'abd',     text: 'Soft. Non-distended. Mild diffuse tenderness. No focal rebound.' },
+      { icon: '💉', lbl: 'PICC',    key: 'picc',    text: 'Right basilic PICC: erythema ~2 cm around insertion site. Tender to palpation. No purulence. US: PICC-associated thrombus, right basilic vein.' }
+    ],
+
+    decision1: {
+      title: 'Neutropenic Fever — Antibiotic Selection & Resuscitation',
+      prompt: 'Ms. Chen: ANC 200, MAP 48, lactate 3.6, temp 38.9°C, PICC site erythema, RLL infiltrate on CXR. She is in septic shock. What are your orders?',
+      placeholder: `Enter your orders...\ne.g.: cefepime, vancomycin, blood cultures, fluids, norepinephrine, etc.`,
+      branches: [
+        {
+          id: 'optimal-neutropenic-bundle',
+          label: '✓ CEFEPIME + VANCOMYCIN + RESUSCITATION',
+          type: 'good',
+          triggers: ['cefepime','meropenem','vancomycin','vanco','blood culture','bcx','fluid','liter','norepinephrine','norepi','levophed'],
+          requires: 4,
+          excludes: [],
+          headline: 'Complete neutropenic fever bundle',
+          narrative: `Outstanding management:\n\n<strong>Anti-pseudomonal coverage:</strong> Cefepime — first-line for neutropenic fever<br/><strong>Gram-positive coverage:</strong> Vancomycin — indicated for PICC site infection, hemodynamic instability, and pneumonia<br/><strong>Cultures:</strong> Blood cultures from BOTH PICC and peripheral stick — essential for diagnosing CRBSI<br/><strong>Fluids + vasopressor:</strong> 30 mL/kg balanced crystalloid (LR preferred — 2026 SSC rec 44) + norepinephrine for MAP ≥65\n\n<span class="hl">Drawing paired cultures allows differential time-to-positivity analysis</span> — if PICC cultures turn positive >2 hours before peripheral cultures, CRBSI is confirmed.\n\n<strong>2026 SSC Update — Prolonged Beta-Lactam Infusion (Rec 33 — Upgraded to Strong Recommendation):</strong> For adults with sepsis or septic shock, the 2026 guidelines now <span class="hl">recommend prolonged infusion of beta-lactams for maintenance</span> after an initial loading dose over conventional bolus administration. This improves pharmacodynamic target attainment (time above MIC). Order cefepime as: loading dose IV over 30 min, then maintenance doses as extended infusion (e.g., 2g over 4 hours q8h).\n\n<strong>2026 SSC Update — De-escalation (Rec 36 — Upgraded to Strong Recommendation):</strong> When culture results and susceptibilities are available, the guidelines now <span class="hl">recommend de-escalation of antimicrobial therapy</span> — this is an upgrade from "suggest" in 2021.\n\nThe oncology attending: <em>"Good — and if cultures grow Staph aureus, that PICC is coming out. Also let's write cefepime as extended infusion — 2026 SSC now strongly recommends that."</em>`,
+          showVitalsButton: true,
+          nextVitals: [
+            { lbl: 'HR',   val: '116',   unit: 'bpm',    st: 'vw' },
+            { lbl: 'BP',   val: '88/56', unit: 'mm Hg',  st: 'vw' },
+            { lbl: 'MAP',  val: '67',    unit: 'mm Hg',  st: 'vn' },
+            { lbl: 'RR',   val: '24',    unit: '/min',    st: 'vw' },
+            { lbl: 'SpO₂', val: '94%',   unit: '4L NC',  st: 'vn' },
+          ],
+          vitalsMsg: `45 min after cefepime, vancomycin, 2L NS, and norepinephrine. MAP at goal.`,
+          nextDecision: 'decision2',
+          updatedExam: [
+            { icon: '🧠', lbl: 'Neuro',   key: 'neuro',   text: 'Marginally more alert. Still confused but less agitated. Responds to name.' },
+            { icon: '❤️', lbl: 'Cardiac', key: 'cardiac', text: 'HR trending slightly down. MAP at goal on vasopressor.' },
+            { icon: '🫁', lbl: 'Lungs',   key: 'lungs',   text: 'SpO₂ 94% on 4L NC. Crackles persist at right base.' }
+          ]
+        },
+        {
+          id: 'cefepime-no-vanco',
+          label: '⚠ NO VANCOMYCIN — GRAM-POSITIVE GAP',
+          type: 'warning',
+          triggers: ['cefepime','meropenem','zosyn','pip-tazo','piperacillin'],
+          requires: 1,
+          excludes: ['vancomycin','vanco'],
+          headline: 'Anti-pseudomonal coverage — vancomycin missing',
+          narrative: `Cefepime — excellent first-line choice. But <span class="hl">vancomycin is missing</span>.\n\nVancomycin is indicated alongside anti-pseudomonal therapy when:\n• PICC site erythema ✓\n• Hemodynamic instability (MAP 48) ✓\n• Pneumonia (RLL infiltrate) ✓\n\nPICC-associated infections are overwhelmingly gram-positive: S. aureus, coagulase-negative Staph, Enterococcus — none covered by cefepime alone.\n\nThe pharmacist calls: <em>"She has a PICC site infection and is in shock — I strongly recommend adding vancomycin now."</em>`,
+          showVitalsButton: true,
+          nextVitals: [
+            { lbl: 'HR',   val: '126',   unit: 'bpm',   st: 'vc' },
+            { lbl: 'BP',   val: '80/48', unit: 'mm Hg', st: 'vc' },
+            { lbl: 'MAP',  val: '59',    unit: 'mm Hg', st: 'vw' },
+            { lbl: 'SpO₂', val: '90%',   unit: '4L NC', st: 'vw' },
+          ],
+          vitalsMsg: `45 min after cefepime + fluids + norepi (no vancomycin). BP inadequate — gram-positive source untreated.`,
+          nextDecision: 'decision2',
+          updatedExam: [
+            { icon: '🧠', lbl: 'Neuro', key: 'neuro', text: 'Persistent confusion. No meaningful improvement.' },
+            { icon: '💉', lbl: 'PICC',  key: 'picc',  text: 'Erythema slightly more extensive around insertion site.' }
+          ]
+        },
+        {
+          id: 'wrong-antibiotic',
+          label: '✗ NO ANTI-PSEUDOMONAL COVERAGE — GRAM-NEGATIVE ARREST',
+          type: 'bad',
+          triggers: ['ceftriaxone','azithromycin','doxycycline','levofloxacin','amoxicillin','augmentin'],
+          requires: 1,
+          excludes: ['cefepime','meropenem','zosyn','pip-tazo','piperacillin'],
+          headline: 'Inadequate coverage — gram-negative septic arrest',
+          narrative: `The antibiotic lacks anti-pseudomonal coverage — a critical gap in a patient with ANC 200.\n\nMs. Chen has no neutrophils to compensate for incomplete antibiotic coverage. Gram-negative bacteremia, potentially Pseudomonas, progresses unchecked. Endotoxin release triggers a massive inflammatory cascade.\n\n20 minutes after the inadequate antibiotic: BP 52/28, HR 156, then the monitor alarms — flat line. The RN shouts: <em>"No pulse! Code Blue!"</em>`,
+          showVitalsButton: true,
+          showCodeBlue: true,
+          codeBlueConfig: {
+            rhythm: 'Pulseless Electrical Activity (PEA)',
+            overhead: 'Code Blue, Tower 6 Oncology Bed 22. Code Blue, Tower 6 Bed 22. Bring crash cart.',
+            cause: 'PEA arrest from gram-negative septic shock in a profoundly immunocompromised host (ANC 200). Inadequate antibiotic coverage allowed unchecked bacteremia — likely Pseudomonas or gram-negative rod — leading to endotoxin-mediated cardiovascular collapse. There were no neutrophils to mount any containment response.',
+            monitor_phrase: 'Look at the monitor — organized rhythm but no pulse. PEA. Start CPR immediately.',
+            hs_ts: [
+              'Hypovolemia ← distributive septic shock, untreated',
+              'Hydrogen ion (severe lactic acidosis, pH <7.0)',
+              'Hypoxia ← SpO₂ declining without airway management',
+              'Hypo/Hyperkalemia ← acute kidney injury from shock',
+              'Tension pneumothorax (rule out — patient has PICC, CXR infiltrate)',
+              'Thrombosis ← PICC-associated thrombus already identified',
+              'Tamponade (rule out in oncology patients)'
+            ],
+            acls_specifics: [
+              'Epinephrine 1mg IV q3–5 min — start immediately',
+              'Switch to cefepime + vancomycin DURING resuscitation — this is the definitive fix',
+              'Bag-mask ventilation then secure airway — hypoxia is contributing',
+              'Push IV fluids during CPR for hypovolemic component',
+              'Post-ROSC: initiate anti-pseudomonal coverage immediately if not done',
+              'Discuss PICC removal with hematology-oncology (potential source)',
+              'Platelet transfusion threshold: <10K spontaneous, <50K for procedures'
+            ],
+            rosc_label: '✓ ROSC Achieved — Switching to Cefepime + Vancomycin →'
+          },
+          nextVitals: [
+            { lbl: 'HR',   val: '140',  unit: 'bpm',   st: 'vc' },
+            { lbl: 'BP',   val: '62/30',unit: 'mm Hg', st: 'vc' },
+            { lbl: 'MAP',  val: '41',   unit: 'mm Hg', st: 'vc' },
+            { lbl: 'SpO₂', val: '87%',  unit: '4L NC', st: 'vc' },
+          ],
+          vitalsMsg: `After ROSC, cefepime + vancomycin are immediately started. Ms. Chen is intubated. The oncology attending: <em>"In neutropenic fever, we cannot afford the luxury of narrow-spectrum coverage. Pseudomonas coverage is non-negotiable."</em>`,
+          nextDecision: 'decision2_postcode',
+          updatedExam: [
+            { icon: '🧠', lbl: 'Neuro',   key: 'neuro',   text: 'Post-cardiac arrest. Sedated and intubated after ROSC.' },
+            { icon: '❤️', lbl: 'Cardiac', key: 'cardiac', text: 'ROSC achieved. On norepinephrine. Tachycardic.' },
+            { icon: '🫁', lbl: 'Lungs',   key: 'lungs',   text: 'Intubated on FiO₂ 100%. Right lower lobe consolidation on CXR.' }
+          ]
+        },
+        {
+          id: 'wait-for-cultures',
+          label: '✗ ANTIBIOTICS WITHHELD — NEUTROPENIC ARREST',
+          type: 'bad',
+          triggers: ['culture','pan culture','blood culture','bcx','wait','pending','urine culture'],
+          requires: 1,
+          excludes: ['cefepime','meropenem','zosyn','pip-tazo','antibiotic','vanco','vancomycin'],
+          headline: 'Cultures ordered — antibiotics withheld in neutropenic shock',
+          narrative: `You order cultures but withhold antibiotics. In neutropenic fever, this is potentially fatal.\n\nMs. Chen has ANC 200 — she has no immune defense. Bacterial doubling time is 20 minutes. 8 minutes after you leave the room, the RN calls over the intercom: <em>"Doctor — she just went unresponsive. I'm checking for a pulse… I don't have one. Code Blue NOW."</em>`,
+          showVitalsButton: true,
+          showCodeBlue: true,
+          codeBlueConfig: {
+            rhythm: 'Pulseless Electrical Activity (PEA)',
+            overhead: 'Code Blue, Tower 6 Oncology Bed 22. Code Blue, Tower 6 Bed 22. Airway Team to Tower 6.',
+            cause: 'PEA cardiac arrest from untreated neutropenic septic shock. ANC 200 = no immune reserve. Without antibiotics, gram-negative bacteremia progressed to overwhelming sepsis with cardiovascular collapse in under 10 minutes. This is why neutropenic fever is treated as an oncologic emergency with mandatory antibiotic initiation within 30–60 minutes.',
+            monitor_phrase: 'Look at the monitor — narrow complex PEA. No pulse on check. Begin CPR.',
+            hs_ts: [
+              'Hypovolemia ← distributive shock, no IV fluids given',
+              'Hydrogen ion (severe lactic acidosis, rapidly worsening)',
+              'Hypoxia ← SpO₂ 84% before arrest, no airway intervention',
+              'Hypo/Hyperkalemia ← AKI (Cr 1.8) in setting of shock',
+              'Tension pneumothorax (rule out — CXR showed RLL infiltrate)',
+              'Thrombosis ← PICC thrombus already identified by US',
+              'Tamponade (rule out in oncology patients)'
+            ],
+            acls_specifics: [
+              'Epinephrine 1mg IV q3–5 min — start immediately',
+              'Cefepime + vancomycin DURING resuscitation — antibiotics are the definitive treatment',
+              'Secure airway — bag-mask then intubate',
+              'Push IV fluids during CPR (no fluids had been given)',
+              'Post-ROSC: ICU transfer, norepinephrine, continue antibiotics',
+              'IDSA mandate: antibiotics within 30–60 min of neutropenic fever recognition',
+              'Do NOT wait for cultures before starting antibiotics in neutropenic fever'
+            ],
+            rosc_label: '✓ ROSC Achieved — Starting Cefepime + Vancomycin Immediately →'
+          },
+          nextVitals: [
+            { lbl: 'HR',   val: '148',  unit: 'bpm',   st: 'vc' },
+            { lbl: 'BP',   val: '58/28',unit: 'mm Hg', st: 'vc' },
+            { lbl: 'MAP',  val: '38',   unit: 'mm Hg', st: 'vc' },
+            { lbl: 'SpO₂', val: '84%',  unit: '4L NC', st: 'vc' },
+          ],
+          vitalsMsg: `After ROSC, cefepime and vancomycin are started immediately. Airway is secured. Ms. Chen is transferred to the MICU.<br/><br/><strong>Key teaching:</strong> Neutropenic fever = oncologic emergency. Antibiotics must be started within 30–60 minutes of recognition. You do NOT wait for culture results — you treat empirically and de-escalate later based on sensitivities.`,
+          nextDecision: 'decision2_postcode',
+          updatedExam: [
+            { icon: '🧠', lbl: 'Neuro',   key: 'neuro',   text: 'Post-cardiac arrest. Intubated and sedated. Neurological prognosis guarded given arrest duration.' },
+            { icon: '❤️', lbl: 'Cardiac', key: 'cardiac', text: 'ROSC achieved. Sinus tachycardia. Norepinephrine initiated for persistent hypotension.' },
+            { icon: '🫁', lbl: 'Lungs',   key: 'lungs',   text: 'Intubated on FiO₂ 100%. RLL consolidation on CXR.' },
+            { icon: '💉', lbl: 'PICC',    key: 'picc',    text: 'PICC remains in place. Hematology-oncology reviewing removal given bacteremia risk.' }
+          ]
+        },
+        {
+          id: 'default-ss3-d1',
+          label: 'INCOMPLETE ORDERS — NEUTROPENIC ARREST',
+          type: 'neutral',
+          triggers: [],
+          requires: 0,
+          excludes: [],
+          headline: 'Incomplete orders — neutropenic septic arrest',
+          narrative: `Ms. Chen is in neutropenic septic shock with ANC 200. Without immediate anti-pseudomonal coverage and hemodynamic support, bacterial doubling progresses unchecked.\n\n10 minutes later: the RN calls urgently — <em>"She's unresponsive. I don't have a pulse. CODE BLUE!"</em>`,
+          showVitalsButton: true,
+          showCodeBlue: true,
+          codeBlueConfig: {
+            rhythm: 'Pulseless Electrical Activity (PEA)',
+            overhead: 'Code Blue, Tower 6 Oncology Bed 22. Code Blue, Tower 6 Bed 22.',
+            cause: '',
+            monitor_phrase: 'Look at the monitor — organized rhythm, no pulse. PEA. Begin CPR immediately.',
+            hs_ts: [
+              'Hypovolemia ← distributive shock, no resuscitation initiated',
+              'Hydrogen ion (lactic acidosis from untreated septic shock)',
+              'Hypoxia ← SpO₂ 84% declining without intervention',
+              'Hypo/Hyperkalemia ← AKI (Cr 1.8)',
+              'Thrombosis ← PICC thrombus already identified',
+              'Tension pneumothorax (rule out — RLL infiltrate on CXR)'
+            ],
+            acls_specifics: [
+              'Epinephrine 1mg IV q3–5 min — start immediately',
+              'Cefepime + vancomycin IV DURING resuscitation — definitive treatment',
+              'Secure airway — bag-mask ventilation then intubate',
+              'Push IV fluids during CPR',
+              'After ROSC: ICU transfer, norepinephrine, continue antibiotics',
+              'Neutropenic fever = antibiotic within 30–60 min — delays are fatal'
+            ],
+            rosc_label: '✓ ROSC Achieved — Initiating Cefepime + Vancomycin →'
+          },
+          noROSCMsg: `Despite resuscitation, Ms. Chen did not achieve ROSC.\n\nNeutropenic fever is an oncologic emergency requiring antibiotics within 30–60 minutes of recognition. ANC 200 means there is no immune reserve whatsoever — every minute without antibiotics allows unchecked bacterial multiplication.`,
+          nextVitals: [
+            { lbl: 'HR',   val: '152',  unit: 'bpm',   st: 'vc' },
+            { lbl: 'BP',   val: '58/28',unit: 'mm Hg', st: 'vc' },
+            { lbl: 'MAP',  val: '38',   unit: 'mm Hg', st: 'vc' },
+          ],
+          vitalsMsg: `ROSC achieved. Ms. Chen is intubated. Cefepime + vancomycin started immediately post-arrest.`,
+          nextDecision: 'decision2_postcode'
+        }
+      ]
+    },
+
+    decision2_postcode: {
+      title: 'Post-Arrest MICU Management',
+      prompt: 'Ms. Chen achieved ROSC and has been intubated. She is now in the MICU. MAP is 52 mm Hg. ANC 200 — she is profoundly immunocompromised. What are your orders?',
+      placeholder: `Enter your post-arrest orders...\ne.g.: cefepime, vancomycin, norepinephrine, blood cultures, etc.`,
+      branches: [
+        {
+          id: 'full-postcode-ss3',
+          label: '✓ COMPLETE POST-ARREST BUNDLE',
+          type: 'good',
+          triggers: ['cefepime','meropenem','vancomycin','vanco','norepinephrine','norepi','levophed','blood culture','bcx'],
+          requires: 3,
+          excludes: [],
+          headline: 'Complete post-arrest management',
+          narrative: `Full bundle initiated:\n\n<strong>Cefepime + vancomycin:</strong> Anti-pseudomonal + gram-positive coverage — essential for neutropenic fever\n<strong>Norepinephrine:</strong> First-line vasopressor for MAP ≥65\n<strong>Blood cultures × 2:</strong> PICC and peripheral — differential time-to-positivity for CRBSI diagnosis\n\n<strong>2026 SSC:</strong> Cefepime as extended infusion (prolonged beta-lactam infusion now a strong recommendation) optimizes time above MIC.`,
+          showVitalsButton: false,
+          nextDecision: 'decision2'
+        },
+        {
+          id: 'abx-no-pressor-ss3',
+          label: '⚠ ANTIBIOTICS — NO VASOPRESSOR',
+          type: 'warning',
+          triggers: ['cefepime','meropenem','vancomycin','vanco','antibiotic'],
+          requires: 1,
+          excludes: ['norepinephrine','norepi','levophed','vasopressor','pressor'],
+          headline: 'Antibiotics started — vasopressor not ordered',
+          narrative: `Correct antibiotics — but MAP 52 requires immediate vasopressor support. Antibiotics treat the cause; norepinephrine maintains perfusion pressure while the antibiotics work.\n\nThe MICU fellow: <em>"Antibiotics are going — but her MAP is 52. We need norepi now."</em>`,
+          showVitalsButton: false,
+          nextDecision: 'decision2_postcode'
+        },
+        {
+          id: 'default-ss3-postcode',
+          label: 'POST-ARREST ORDERS NEEDED',
+          type: 'neutral',
+          triggers: [],
+          requires: 0,
+          excludes: [],
+          headline: 'Complete post-arrest bundle required',
+          narrative: `Ms. Chen is post-arrest in the MICU. Immediate priorities: <strong>(1)</strong> Norepinephrine for MAP ≥65, <strong>(2)</strong> Cefepime + vancomycin — anti-pseudomonal + gram-positive coverage, <strong>(3)</strong> Blood cultures from PICC AND peripheral if not already drawn. What are your orders?`,
+          showVitalsButton: false,
+          nextDecision: 'decision2'
+        }
+      ]
+    },
+
+    decision2: {
+      title: 'Rapid Response & Airway Decision',
+      prompt: '45 minutes later: 2L LR given, cefepime + vancomycin running, norepinephrine at 0.2 mcg/kg/min. MAP is 62 — still borderline. RR is now 32. SpO₂ dropped to 88% on 4L NC. She is increasingly confused. The RN says: "I think she needs more help than we can give her up here. Are we going to intubate?"',
+      placeholder: `Enter your orders...\ne.g.: rapid response, intubate, RSI, MICU transfer, HFNC, etc.`,
+      branches: [
+        {
+          id: 'rrt-and-intubation',
+          label: '✓ RAPID RESPONSE + PROACTIVE INTUBATION',
+          type: 'good',
+          triggers: ['rapid response','rrt','intubate','intubation','airway','rsi','icu','micu','intensive care'],
+          requires: 2,
+          excludes: [],
+          headline: 'Rapid response activated + airway secured proactively',
+          narrative: `You activate the Rapid Response and proactively address the airway — recognizing the signs of impending respiratory failure: RR 32, SpO₂ 88%, worsening confusion, and escalating vasopressor requirements.\n\n<span class="hl">In neutropenic patients, respiratory failure progresses rapidly. Planned intubation with RSI is always safer than crash intubation</span> in a coagulopathic (INR 1.6), thrombocytopenic (Plt 42) patient.\n\n<strong>RRT criteria met:</strong><br/>• SpO₂ <90% on supplemental O₂ ✓<br/>• SBP <90 ✓<br/>• Altered mental status ✓<br/>• Staff worried ✓\n\nMs. Chen is intubated with ketamine (hemodynamically favorable) + succinylcholine and transferred to the MICU.`,
+          showVitalsButton: false,
+          nextDecision: null,
+          endState: 'good',
+          endMsg: `<strong>Case Complete.</strong><br/><br/>Ms. Chen is intubated and in the MICU on lung-protective ventilation. Blood cultures from the peripheral site grew Staph aureus within 12 hours — CRBSI confirmed. Vancomycin was the critical empiric choice. Hematology-oncology is reviewing PICC removal.<br/><br/><span style="color:var(--cyan)"><strong>2026 SSC Update:</strong></span> Once susceptibilities are available, the 2026 guidelines <strong>recommend</strong> de-escalation of antimicrobial therapy (upgraded from "suggest" in 2021). When Staph aureus sensitivities confirm MSSA, transition from vancomycin to oxacillin or nafcillin for superior outcomes.`,
+          decisions: [
+            'Recognized neutropenic fever as an oncologic emergency — antibiotics within 60 min',
+            'Correctly selected cefepime + vancomycin',
+            'Drew paired blood cultures: PICC + peripheral site',
+            'Initiated fluid resuscitation and norepinephrine',
+            'Activated RRT before patient crashed',
+            'Secured airway proactively via RSI — avoided crash intubation'
+          ]
+        },
+        {
+          id: 'rrt-no-airway',
+          label: '⚠ RRT ACTIVATED — AIRWAY NOT ADDRESSED',
+          type: 'warning',
+          triggers: ['rapid response','rrt','icu','micu','intensive care','transfer'],
+          requires: 1,
+          excludes: ['intubate','intubation','airway','rsi','hfnc','high flow','bipap'],
+          headline: 'Rapid response called — airway deferred',
+          narrative: `You correctly activate the Rapid Response. But Ms. Chen has RR 32, SpO₂ 88%, and worsening confusion — <span class="hl">you should be actively planning airway management in parallel</span>.\n\nThe MICU fellow arrives: <em>"We need to talk about the airway now. Neutropenic patients with septic shock and respiratory failure have very narrow windows. If she tires out, we are going to have a very difficult crash intubation in a coagulopathic, thrombocytopenic patient."</em>`,
+          showVitalsButton: false,
+          nextDecision: null,
+          endState: 'good',
+          endMsg: `<strong>Case Complete.</strong><br/><br/>The RRT team intubated Ms. Chen at bedside. Outcome similar — proactive airway planning would have been preferable. Key: airway planning and RRT activation should happen simultaneously in this scenario.`,
+          decisions: [
+            'Correctly identified deterioration and activated RRT',
+            'Airway consideration was reactive rather than proactive',
+            'In neutropenic septic shock + respiratory failure, airway planning should be concurrent with RRT'
+          ]
+        },
+        {
+          id: 'o2-escalation-no-rrt',
+          label: '✗ OXYGEN ONLY — NO LEVEL-OF-CARE ESCALATION — ARREST',
+          type: 'bad',
+          triggers: ['hfnc','high flow','non-rebreather','nrb','bipap','increase oxygen','more oxygen','nasal cannula'],
+          requires: 1,
+          excludes: ['rapid response','rrt','intubate','intubation','icu','micu'],
+          headline: 'O₂ escalated — no RRT — patient arrests',
+          narrative: `You escalate oxygen but don't escalate the level of care. Ms. Chen meets RRT criteria on multiple counts — SpO₂ 88%, MAP 62, altered mental status — and the window for a controlled intubation in a coagulopathic, thrombocytopenic patient is closing fast.\n\n15 minutes later she becomes apneic. Then: no pulse.\n\nThe floor nurse shouts: <em>"She went apneic — now I don't have a pulse! CODE BLUE!"</em>`,
+          showVitalsButton: true,
+          showCodeBlue: true,
+          codeBlueConfig: {
+            rhythm: 'PEA → Asystole (Hypoxic Arrest)',
+            overhead: 'Code Blue, Tower 6 Oncology Bed 22. Airway Team to Tower 6 STAT.',
+            cause: '',
+            monitor_phrase: 'Look at the monitor — asystole transitioning from PEA. No pulse. Begin CPR and bag-mask ventilation.',
+            hs_ts: [
+              'Hypoxia ← PRIMARY CAUSE — apnea from respiratory failure',
+              'Hydrogen ion (hypoxic + lactic acidosis)',
+              'Hypovolemia ← distributive shock, inadequate resuscitation',
+              'Tension pneumothorax (rule out — RLL consolidation on CXR)',
+              'Thrombosis ← PICC thrombus (SVC territory)',
+              'Tamponade (rule out in oncology patients)'
+            ],
+            acls_specifics: [
+              'Bag-mask ventilation at 100% FiO₂ — airway is the primary cause',
+              'Immediate endotracheal intubation — secure airway first',
+              'Epinephrine 1mg IV q3–5 min',
+              'NOTE: Plt 42 and INR 1.6 — crash intubation in coagulopathic patient = high risk',
+              'A controlled RSI before arrest would have been significantly safer',
+              'After ROSC: MICU transfer, continue antibiotics, vasopressor support'
+            ],
+            rosc_label: '✓ ROSC After Airway Secured — Transferring to MICU →'
+          },
+          noROSCMsg: `Despite resuscitation, Ms. Chen did not achieve ROSC.\n\nRespiratory failure progressed to hypoxic cardiac arrest. The controlled RSI window was missed. In neutropenic patients with septic shock and worsening hypoxia, RRT activation and airway planning must happen simultaneously — not sequentially. Crash intubation in a coagulopathic (INR 1.6), thrombocytopenic (Plt 42) patient carries very high procedural risk.`,
+          nextVitals: [
+            { lbl: 'HR',   val: '124',  unit: 'bpm',   st: 'vc' },
+            { lbl: 'BP',   val: '70/40',unit: 'mm Hg', st: 'vc' },
+            { lbl: 'SpO₂', val: '82%',  unit: 'BVM',   st: 'vc' },
+          ],
+          vitalsMsg: `ROSC achieved after crash intubation. Ms. Chen is in the MICU on mechanical ventilation. The crash setting — in a Plt 42, INR 1.6 patient — could have been avoided with earlier RRT activation and planned RSI.`,
+          nextDecision: 'decision2'
+        },
+        {
+          id: 'default-ss3-d2',
+          label: 'ESCALATION DELAYED — PATIENT ARRESTS',
+          type: 'neutral',
+          triggers: [],
+          requires: 0,
+          excludes: [],
+          headline: 'No escalation plan — respiratory arrest',
+          narrative: `No escalation orders entered. Ms. Chen has SpO₂ 88%, MAP 62, and is increasingly confused — she meets Rapid Response criteria.\n\nMinutes later she becomes apneic. The bedside nurse activates a Code Blue.`,
+          showVitalsButton: true,
+          showCodeBlue: true,
+          codeBlueConfig: {
+            rhythm: 'PEA (Hypoxic)',
+            overhead: 'Code Blue, Tower 6 Oncology Bed 22. Airway Team to Tower 6.',
+            cause: '',
+            monitor_phrase: 'Look at the monitor — PEA. No respiratory effort. Begin CPR and bag-mask ventilation.',
+            hs_ts: [
+              'Hypoxia ← PRIMARY — respiratory failure without intervention',
+              'Hydrogen ion (hypoxic and lactic acidosis)',
+              'Hypovolemia ← distributive shock',
+              'Tension pneumothorax (rule out)',
+              'Thrombosis ← PICC thrombus'
+            ],
+            acls_specifics: [
+              'Bag-mask ventilation at 100% FiO₂ immediately',
+              'Intubate — airway is the arrest cause',
+              'Epinephrine 1mg IV q3–5 min',
+              'After ROSC: MICU transfer, vasopressor, continue antibiotics'
+            ],
+            rosc_label: '✓ ROSC Achieved — Transferring to MICU →'
+          },
+          noROSCMsg: `Despite resuscitation, Ms. Chen did not achieve ROSC.\n\nNo escalation was initiated despite meeting Rapid Response criteria. RRT activation and simultaneous RSI planning are mandatory when SpO₂ <90%, MAP <65, and mental status is deteriorating in a neutropenic patient.`,
+          nextVitals: [
+            { lbl: 'HR',   val: '118',  unit: 'bpm',   st: 'vc' },
+            { lbl: 'BP',   val: '72/42',unit: 'mm Hg', st: 'vc' },
+            { lbl: 'SpO₂', val: '88%',  unit: 'BVM',   st: 'vc' },
+          ],
+          vitalsMsg: `ROSC achieved. Ms. Chen is intubated and transferred to the MICU.`,
+          nextDecision: 'decision2'
+        }
+      ]
+    }
+  }
+
+]; // end SEPSIS_CASES
+
+// ═══════════════════════════════════════════════════════════════
 //  CASE ART SVGs
 // ═══════════════════════════════════════════════════════════════
 
@@ -2199,6 +3981,18 @@ const ARTS = {
   ards: {
     bg: 'background:radial-gradient(ellipse at 50% 50%,rgba(63,157,224,0.18) 0%,transparent 70%),linear-gradient(155deg,#0c1829 0%,#0b1520 100%)',
     svg: `<svg viewBox="0 0 80 80" fill="none"><ellipse cx="27" cy="46" rx="14" ry="20" stroke="#3f9de0" stroke-width="1.5" fill="rgba(63,157,224,0.07)"/><ellipse cx="53" cy="46" rx="14" ry="20" stroke="#3f9de0" stroke-width="1.5" fill="rgba(63,157,224,0.07)"/><path d="M40 15L40 42" stroke="#3f9de0" stroke-width="2" stroke-linecap="round"/><path d="M40 23C34 23 27 29 27 38" stroke="#3f9de0" stroke-width="1.5"/><path d="M40 23C46 23 53 29 53 38" stroke="#3f9de0" stroke-width="1.5"/><path d="M18 50Q22 46 26 50Q30 54 34 50" stroke="#e04f4f" stroke-width="1.2" fill="none"/><path d="M46 50Q50 46 54 50Q58 54 62 50" stroke="#e04f4f" stroke-width="1.2" fill="none"/></svg>`
+  },
+  sepsis1: {
+    bg: 'background:radial-gradient(ellipse at 50% 50%,rgba(94,196,125,0.18) 0%,transparent 70%),linear-gradient(155deg,#0c1829 0%,#0b160e 100%)',
+    svg: `<svg viewBox="0 0 80 80" fill="none"><circle cx="40" cy="38" r="18" stroke="#5ec47d" stroke-width="1.5" fill="rgba(94,196,125,0.07)"/><path d="M28 38L36 46L52 30" stroke="#5ec47d" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M40 14L40 20M40 56L40 62M14 38L20 38M60 38L66 38" stroke="#5ec47d" stroke-width="1.5" stroke-linecap="round" opacity=".5"/><circle cx="40" cy="38" r="26" stroke="#5ec47d" stroke-width="1" stroke-dasharray="3 4" opacity=".3"/></svg>`
+  },
+  sepsis2: {
+    bg: 'background:radial-gradient(ellipse at 50% 50%,rgba(167,107,220,0.18) 0%,transparent 70%),linear-gradient(155deg,#0c1829 0%,#120b1a 100%)',
+    svg: `<svg viewBox="0 0 80 80" fill="none"><path d="M40 20C40 20 24 28 24 42C24 52 31 58 40 58C49 58 56 52 56 42C56 28 40 20 40 20Z" stroke="#a76bdc" stroke-width="1.5" fill="rgba(167,107,220,0.07)"/><path d="M32 40L38 46L50 34" stroke="#a76bdc" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><line x1="40" y1="14" x2="40" y2="18" stroke="#a76bdc" stroke-width="1.5" stroke-linecap="round" opacity=".6"/><line x1="40" y1="62" x2="40" y2="66" stroke="#a76bdc" stroke-width="1.5" stroke-linecap="round" opacity=".6"/><line x1="18" y1="40" x2="22" y2="40" stroke="#a76bdc" stroke-width="1.5" stroke-linecap="round" opacity=".6"/><line x1="58" y1="40" x2="62" y2="40" stroke="#a76bdc" stroke-width="1.5" stroke-linecap="round" opacity=".6"/></svg>`
+  },
+  sepsis3: {
+    bg: 'background:radial-gradient(ellipse at 50% 50%,rgba(224,141,53,0.18) 0%,transparent 70%),linear-gradient(155deg,#0c1829 0%,#191008 100%)',
+    svg: `<svg viewBox="0 0 80 80" fill="none"><circle cx="40" cy="36" r="14" stroke="#e08d35" stroke-width="1.5" fill="rgba(224,141,53,0.07)"/><path d="M33 36C33 32.1 36.1 29 40 29C43.9 29 47 32.1 47 36" stroke="#e08d35" stroke-width="1.5" fill="none"/><line x1="40" y1="50" x2="40" y2="62" stroke="#e08d35" stroke-width="2" stroke-linecap="round"/><line x1="34" y1="58" x2="46" y2="58" stroke="#e08d35" stroke-width="1.5" stroke-linecap="round"/><circle cx="56" cy="22" r="6" stroke="#e04f4f" stroke-width="1.5" fill="rgba(224,79,79,0.12)"/><line x1="53" y1="22" x2="59" y2="22" stroke="#e04f4f" stroke-width="1.2"/><line x1="56" y1="19" x2="56" y2="25" stroke="#e04f4f" stroke-width="1.2"/></svg>`
   }
 };
 
@@ -2207,6 +4001,7 @@ const ARTS = {
 // ═══════════════════════════════════════════════════════════════
 
 const State = {
+  activeModule: 'critical',
   caseData: null,
   revealed: new Set(),
   decisions: [],        // track what branch outcomes the user hit
@@ -2221,6 +4016,11 @@ const State = {
   triedHFNC: false, // track if HFNC was tried before intubation
   totalFluidGiven: 0, // track cumulative fluid volume across all decisions (in mL)
   micuPromptedNotOrdered: false, // track if MICU was prompted but not initially ordered
+  lastOrderedAntibiotic: null, // track the specific antibiotic ordered (for token resolution)
+  lactateOrdered: false,        // track whether lactate was ordered (for conditional display)
+  culturesOrdered: false,       // track whether blood cultures were ordered
+  ctOrdered: false,              // track whether CT abdomen was ordered
+  postCodePath: false,           // track whether user arrived via a code-blue ROSC pathway (ss-1)
 
   reset() {
     this.caseData = null;
@@ -2237,6 +4037,12 @@ const State = {
     this.triedHFNC = false;
     this.totalFluidGiven = 0;
     this.micuPromptedNotOrdered = false;
+    this.lastOrderedAntibiotic = null;
+    this.lactateOrdered = false;
+    this.culturesOrdered = false;
+    this.ctOrdered = false;
+    this.postCodePath = false;
+    // NOTE: activeModule is intentionally NOT reset here — it persists across cases
   }
 };
 
@@ -2293,7 +4099,8 @@ function buildPhaseTrack(totalPhases, activePhase) {
 function renderCaseList() {
   const grid = $('cases-grid');
   if (!grid) return;
-  grid.innerHTML = CASES.map((c, i) => {
+  const dataset = State.activeModule === 'sepsis' ? SEPSIS_CASES : CASES;
+  grid.innerHTML = dataset.map((c, i) => {
     const art = ARTS[c.artType];
     return `
       <div class="case-card" data-idx="${i}" tabindex="0" role="button" aria-label="Launch ${c.title}">
@@ -2301,7 +4108,7 @@ function renderCaseList() {
         <div class="case-card-body">
           <div class="case-title-text">${c.title}</div>
           <div class="case-blurb">${c.blurb}</div>
-          <span class="case-tag">Advanced</span>
+          <span class="case-tag">${State.activeModule === 'sepsis' ? 'Intermediate' : 'Advanced'}</span>
         </div>
       </div>
     `;
@@ -2320,7 +4127,8 @@ function renderCaseList() {
 
 function launchCase(idx) {
   State.reset();
-  State.caseData = CASES[idx];
+  const dataset = State.activeModule === 'sepsis' ? SEPSIS_CASES : CASES;
+  State.caseData = dataset[idx];
   $('sim-case-label').textContent = `${State.caseData.title}`;
   showScreen('screen-sim');
   buildPhaseTrack(5, 1);
@@ -2630,8 +4438,380 @@ const ORDER_CATEGORIES = {
   }
 };
 
+// ═══════════════════════════════════════════════════════════════
+//  MEDICAL TERMINOLOGY NORMALIZER
+//  Expands clinical abbreviations and shorthand before pattern matching.
+//  Applied to every order line so existing regex patterns catch them.
+// ═══════════════════════════════════════════════════════════════
+
+const MEDICAL_ABBREVS = [
+  // ── CONSULTATIONS ─────────────────────────────────────────
+  [/\begs\b/g,                    'emergency general surgery'],
+  [/\bgen surg\b/g,               'general surgery'],
+  [/\bgen surgery\b/g,            'general surgery'],
+  [/\bsurg consult\b/g,           'surgery consult'],
+  [/\bid consult\b/g,             'infectious disease consult'],
+  [/\bid\b(?! )/g,                'infectious disease'],
+  [/\bcards?\b(?!iac|iology)/g,   'cardiology'],
+  [/\bnephro\b/g,                 'nephrology'],
+  [/\bpulm\b(?!on)/g,             'pulmonary'],
+  [/\bgastro\b/g,                 'gastroenterology'],
+  [/\bgi\b(?!\w)/g,               'gastroenterology'],
+  [/\bheme onc\b/g,               'hematology oncology'],
+  [/\bheme\b/g,                   'hematology'],
+  [/\bonc\b(?!\w)/g,              'oncology'],
+  [/\bendo\b(?!\w)/g,             'endocrinology'],
+  [/\brheum\b/g,                  'rheumatology'],
+  [/\bneuro\b(?!\w)/g,            'neurology'],
+  [/\bpsych\b/g,                  'psychiatry'],
+  [/\bpalliative\b/g,             'palliative care'],
+  [/\bsw consult\b/g,             'social work consult'],
+  [/\bpt consult\b/g,             'physical therapy consult'],
+  [/\bot consult\b/g,             'occupational therapy consult'],
+  [/\bpert\b/g,                   'pulmonary embolism response team'],
+  [/\birr?\b(?!\w)/g,             'interventional radiology'],
+  [/\brt consult\b/g,             'respiratory therapy consult'],
+  [/\brt\b(?!\w)/g,               'respiratory therapy'],
+  [/\brrt\b/g,                    'rapid response team'],
+
+  // ── LEVELS OF CARE ────────────────────────────────────────
+  [/\bmicu\b/g,                   'medical intensive care unit'],
+  [/\bsicu\b/g,                   'surgical intensive care unit'],
+  [/\bcticu\b/g,                  'cardiothoracic intensive care unit'],
+  [/\bnicu\b/g,                   'neuro intensive care unit'],
+  [/\bicu\b(?!\w)/g,              'intensive care unit'],
+  [/\btele\b(?!\w)/g,             'telemetry'],
+  [/\bstep.?down\b/g,             'step down unit'],
+  [/\bsnf\b/g,                    'skilled nursing facility'],
+
+  // ── LINES / TUBES / PROCEDURES ────────────────────────────
+  [/\ba.?line\b/g,                'arterial line'],
+  [/\bcvl\b/g,                    'central venous line'],
+  [/\btlc\b/g,                    'triple lumen catheter'],
+  [/\bpicc\b/g,                   'peripherally inserted central catheter'],
+  [/\bij line\b/g,                'internal jugular line'],
+  [/\bscv\b/g,                    'subclavian vein catheter'],
+  [/\bngt\b/g,                    'nasogastric tube'],
+  [/\bogt\b/g,                    'orogastric tube'],
+  [/\bng tube\b/g,                'nasogastric tube'],
+  [/\bng\b(?!\w)/g,               'nasogastric'],
+  [/\bfoley\b/g,                  'urinary catheter'],
+  [/\bscd[s]?\b/g,                'sequential compression devices'],
+  [/\bio access\b/g,              'intraosseous'],
+  [/\bchest tube\b/g,             'thoracostomy'],
+  [/\blp\b(?!\w)/g,               'lumbar puncture'],
+  [/\bthoracentesis\b/g,          'pleural drainage'],
+  [/\bparacentesis\b/g,           'abdominal drainage'],
+
+  // ── LABS ──────────────────────────────────────────────────
+  [/\bbcx\b/g,                    'blood cultures'],
+  [/\bblood cx\b/g,               'blood cultures'],
+  [/\bucx\b/g,                    'urine culture'],
+  [/\burine cx\b/g,               'urine culture'],
+  [/\bwound cx\b/g,               'wound culture'],
+  [/\bsputum cx\b/g,              'sputum culture'],
+  [/\bcbc\b/g,                    'complete blood count'],
+  [/\bcbc w diff\b/g,             'complete blood count with differential'],
+  [/\bcmp\b/g,                    'comprehensive metabolic panel'],
+  [/\bbmp\b/g,                    'basic metabolic panel'],
+  [/\blfts?\b/g,                  'liver function tests'],
+  [/\bcoags?\b/g,                 'coagulation studies'],
+  [/\binr\b/g,                    'prothrombin time inr'],
+  [/\bptt\b/g,                    'partial thromboplastin time'],
+  [/\bpt\/inr\b/g,                'prothrombin time inr'],
+  [/\babg\b/g,                    'arterial blood gas'],
+  [/\bvbg\b/g,                    'venous blood gas'],
+  [/\blytes?\b/g,                 'electrolytes'],
+  [/\bua\b(?!\w)/g,               'urinalysis'],
+  [/\bpct\b(?!\w)/g,              'procalcitonin'],
+  [/\bpoc glucose\b/g,            'point of care glucose'],
+  [/\bfsbg\b/g,                   'fingerstick blood glucose'],
+  [/\bfsbs?\b/g,                  'fingerstick blood sugar'],
+  [/\btsh\b/g,                    'thyroid stimulating hormone'],
+  [/\bfobt\b/g,                   'fecal occult blood test'],
+  [/\bc diff\b/g,                 'c difficile'],
+  [/\bcdiff\b/g,                  'c difficile'],
+  [/\bd.?dimer\b/g,               'd dimer'],
+  [/\btrop\b(?!\w)/g,             'troponin'],
+  [/\bbnp\b/g,                    'brain natriuretic peptide'],
+  [/\bnt.?probnp\b/g,             'nt proBNP'],
+  [/\bcrp\b/g,                    'c reactive protein'],
+  [/\besr\b/g,                    'erythrocyte sedimentation rate'],
+  [/\bferritin\b/g,               'ferritin'],
+  [/\tibc\b/g,                    'total iron binding capacity'],
+  [/\buric acid\b/g,              'uric acid'],
+  [/\bamylase\b/g,                'amylase'],
+  [/\blipase\b/g,                 'lipase'],
+  [/\ba1c\b/g,                    'hemoglobin a1c'],
+  [/\bhba1c\b/g,                  'hemoglobin a1c'],
+  [/\brenal panel\b/g,            'basic metabolic panel'],
+  [/\bcomprehensive panel\b/g,    'comprehensive metabolic panel'],
+  [/\bphos\b/g,                   'phosphate level'],
+  [/\bphos level\b/g,             'phosphate'],
+  [/\bmag\b(?!\w)/g,              'magnesium level'],
+  [/\bca\b(?! \w\w)/g,            'calcium level'],
+
+  // ── IMAGING ───────────────────────────────────────────────
+  [/\bcxr\b/g,                    'chest x-ray'],
+  [/\bpa.?lat\b/g,                'chest x-ray pa lateral'],
+  [/\bkub\b/g,                    'abdominal x-ray'],
+  [/\baxr\b/g,                    'abdominal x-ray'],
+  [/\bct a\/p\b/g,                'ct abdomen pelvis'],
+  [/\bct ap\b/g,                  'ct abdomen pelvis'],
+  [/\bct abd\b/g,                 'ct abdomen'],
+  [/\bct chest\b/g,               'ct chest'],
+  [/\bctpa\b/g,                   'ct pulmonary angiography'],
+  [/\bct head\b/g,                'ct brain head'],
+  [/\bct brain\b/g,               'ct brain'],
+  [/\bct neck\b/g,                'ct neck'],
+  [/\bct spine\b/g,               'ct spine'],
+  [/\bct pe\b/g,                  'ct pulmonary angiography'],
+  [/\bv\/q\b/g,                   'ventilation perfusion scan'],
+  [/\bvq scan\b/g,                'ventilation perfusion scan'],
+  [/\bruq us\b/g,                 'right upper quadrant ultrasound'],
+  [/\blfe us\b/g,                 'left upper quadrant ultrasound'],
+  [/\ble us\b/g,                  'lower extremity ultrasound'],
+  [/\bue us\b/g,                  'upper extremity ultrasound'],
+  [/\btte\b/g,                    'transthoracic echocardiogram'],
+  [/\btee\b/g,                    'transesophageal echocardiogram'],
+  [/\becho\b/g,                   'echocardiogram'],
+  [/\bmri brain\b/g,              'mri brain head'],
+  [/\bmri spine\b/g,              'mri spine'],
+  [/\bmri w\/wo\b/g,              'mri with without contrast'],
+  [/\bpet scan\b/g,               'positron emission tomography'],
+  [/\bnuclear stress\b/g,         'nuclear stress test'],
+  [/\bmibi\b/g,                   'nuclear stress test'],
+
+  // ── MEDICATIONS — ANTIBIOTICS ────────────────────────────
+  [/\bpip[\s-]?tazo\b/g,          'piperacillin tazobactam'],
+  [/\bzosyn\b/g,                  'piperacillin tazobactam'],
+  [/\bptaz\b/g,                   'piperacillin tazobactam'],
+  [/\bamp[\s-]?sulbactam\b/g,     'ampicillin sulbactam'],
+  [/\bunasyn\b/g,                 'ampicillin sulbactam'],
+  [/\bvanco\b/g,                  'vancomycin'],
+  [/\bceftri\b/g,                 'ceftriaxone'],
+  [/\brocephin\b/g,               'ceftriaxone'],
+  [/\bcefe\b(?!\w)/g,             'cefepime'],
+  [/\bmero\b(?!\w)/g,             'meropenem'],
+  [/\bflagyl\b/g,                 'metronidazole'],
+  [/\bflagyl iv\b/g,              'iv metronidazole'],
+  [/\bflagyl po\b/g,              'po metronidazole'],
+  [/\bdiflucan\b/g,               'fluconazole'],
+  [/\bmica\b(?!\w)/g,             'micafungin'],
+  [/\bambisome\b/g,               'amphotericin b'],
+  [/\bampho b\b/g,                'amphotericin b'],
+  [/\blevaquin\b/g,               'levofloxacin'],
+  [/\bcipro\b/g,                  'ciprofloxacin'],
+  [/\bdapto\b/g,                  'daptomycin'],
+  [/\blinez\b/g,                  'linezolid'],
+  [/\baz\b(?!\w)/g,               'aztreonam'],
+  [/\bgent\b(?!\w)/g,             'gentamicin'],
+  [/\btobra\b/g,                  'tobramycin'],
+  [/\bamika\b/g,                  'amikacin'],
+  [/\bclinda\b/g,                 'clindamycin'],
+  [/\bazithro\b/g,                'azithromycin'],
+  [/\bdoxy\b/g,                   'doxycycline'],
+  [/\btmp[\s-]?smx\b/g,           'trimethoprim sulfamethoxazole'],
+  [/\bbactrim\b/g,                'trimethoprim sulfamethoxazole'],
+  [/\bpo vanco\b/g,               'oral vancomycin'],
+  [/\boral vanco\b/g,             'oral vancomycin'],
+
+  // ── MEDICATIONS — VASOPRESSORS / CARDIAC ─────────────────
+  [/\bnorepi\b/g,                 'norepinephrine'],
+  [/\blevophed\b/g,               'norepinephrine'],
+  [/\bepi drip\b/g,               'epinephrine infusion'],
+  [/\bvaso\b(?!pressin)/g,        'vasopressin'],
+  [/\bneo\b(?!\w)/g,              'phenylephrine'],
+  [/\bdopa\b(?!mine)/g,           'dopamine'],
+  [/\bdobuta\b/g,                 'dobutamine'],
+  [/\bmilri\b/g,                  'milrinone'],
+
+  // ── MEDICATIONS — FLUIDS ──────────────────────────────────
+  [/\blr\b(?!\w)/g,               'lactated ringers'],
+  [/\blrs\b(?!\w)/g,              'lactated ringers'],
+  [/\bns\b(?!\w)/g,               'normal saline'],
+  [/\bd5w\b/g,                    'd5 water dextrose'],
+  [/\bd5ns\b/g,                   'dextrose normal saline'],
+  [/\bd5½ns\b/g,                  'dextrose half normal saline'],
+  [/\bprbc[s]?\b/g,               'packed red blood cells transfusion'],
+  [/\bpacked red[s]?\b/g,         'packed red blood cells transfusion'],
+  [/\bffp\b/g,                    'fresh frozen plasma'],
+  [/\bcryo\b(?!\w)/g,             'cryoprecipitate'],
+  [/\bplts\b(?!\w)/g,             'platelets transfusion'],
+  [/\btpn\b/g,                    'total parenteral nutrition'],
+  [/\bppn\b/g,                    'peripheral parenteral nutrition'],
+  [/\b½ns\b/g,                    'half normal saline'],
+  [/\b0\.45\b/g,                  'half normal saline'],
+
+  // ── MEDICATIONS — ANTICOAGULATION ─────────────────────────
+  [/\bufh\b/g,                    'unfractionated heparin'],
+  [/\bheparin gtt\b/g,            'heparin infusion'],
+  [/\bsteparin\b/g,               'heparin'],
+  [/\benox\b/g,                   'enoxaparin'],
+  [/\blovenox\b/g,                'enoxaparin'],
+  [/\blmwh\b/g,                   'low molecular weight heparin enoxaparin'],
+  [/\beliquis\b/g,                'apixaban'],
+  [/\bxarelto\b/g,                'rivaroxaban'],
+  [/\bcoumadin\b/g,               'warfarin'],
+  [/\bdvt ppx\b/g,                'dvt prophylaxis heparin'],
+  [/\bdvt px\b/g,                 'dvt prophylaxis heparin'],
+  [/\bvte ppx\b/g,                'vte prophylaxis heparin'],
+
+  // ── MEDICATIONS — ELECTROLYTES / SUPPLEMENTS ──────────────
+  [/\bkcl\b/g,                    'potassium chloride potassium'],
+  [/\bk rider\b/g,                'potassium chloride potassium'],
+  [/\bk repletion\b/g,            'potassium chloride potassium'],
+  [/\bkphos\b/g,                  'potassium phosphate'],
+  [/\bnaph?co3\b/g,               'sodium bicarbonate bicarb'],
+  [/\bbicarb\b/g,                 'sodium bicarbonate'],
+  [/\bmgso4\b/g,                  'magnesium sulfate magnesium'],
+  [/\bmag repl\b/g,               'magnesium replacement'],
+  [/\bca gluconate\b/g,           'calcium gluconate calcium'],
+  [/\bd50\b/g,                    'dextrose 50 glucose'],
+  [/\bd10\b/g,                    'dextrose 10 glucose'],
+  [/\bmvi\b/g,                    'multivitamin'],
+  [/\bthiamine\b/g,               'vitamin b1 thiamine'],
+  [/\bfolate\b/g,                 'folic acid folate'],
+
+  // ── MEDICATIONS — CARDIAC ─────────────────────────────────
+  [/\bamio\b/g,                   'amiodarone'],
+  [/\blido\b(?!\w)/g,             'lidocaine'],
+  [/\batrop\b/g,                  'atropine'],
+  [/\bdigoxin\b/g,                'digoxin'],
+  [/\bmetop\b/g,                  'metoprolol'],
+  [/\blopressor\b/g,              'metoprolol'],
+  [/\bcoreg\b/g,                  'carvedilol'],
+  [/\bnorvasc\b/g,                'amlodipine'],
+  [/\bcardizem\b/g,               'diltiazem'],
+  [/\bhyd?ral\b/g,                'hydralazine'],
+  [/\bntg\b/g,                    'nitroglycerin'],
+  [/\bnipride\b/g,                'sodium nitroprusside'],
+  [/\bnitroprusside\b/g,          'sodium nitroprusside'],
+  [/\blasix\b/g,                  'furosemide'],
+  [/\bbumex\b/g,                  'bumetanide'],
+  [/\bspiro\b/g,                  'spironolactone'],
+  [/\bzarox\b/g,                  'metolazone'],
+  [/\baldo\b(?!\w)/g,             'aldactone spironolactone'],
+  [/\btorsemide\b/g,              'torsemide diuretic'],
+
+  // ── MEDICATIONS — SEDATION / PAIN / NEURO ─────────────────
+  [/\bpropofol\b/g,               'propofol sedation'],
+  [/\bdiprivan\b/g,               'propofol sedation'],
+  [/\bversed\b/g,                 'midazolam sedation'],
+  [/\bativan\b/g,                 'lorazepam benzodiazepine'],
+  [/\bprecedex\b/g,               'dexmedetomidine sedation'],
+  [/\bdex\b(?!\w)/g,              'dexmedetomidine'],
+  [/\bket\b(?!amine)/g,           'ketamine'],
+  [/\bketamine\b/g,               'ketamine'],
+  [/\bdilaudid\b/g,               'hydromorphone opioid'],
+  [/\bhm\b(?!\w)/g,               'hydromorphone opioid'],
+  [/\bfent\b(?!\w)/g,             'fentanyl opioid'],
+  [/\bms\b(?! )(?!contin)/g,      'morphine opioid'],
+  [/\bhaldol\b/g,                 'haloperidol antipsychotic'],
+  [/\bseroquel\b/g,               'quetiapine antipsychotic'],
+  [/\bclonopin\b/g,               'clonazepam benzodiazepine'],
+  [/\bkeppra\b/g,                 'levetiracetam seizure'],
+  [/\bdilantin\b/g,               'phenytoin seizure'],
+
+  // ── MEDICATIONS — GI ──────────────────────────────────────
+  [/\bppi\b/g,                    'proton pump inhibitor pantoprazole'],
+  [/\bprotonix\b/g,               'pantoprazole ppi'],
+  [/\bprilosec\b/g,               'omeprazole ppi'],
+  [/\bnexium\b/g,                 'esomeprazole ppi'],
+  [/\bh2b\b/g,                    'h2 blocker famotidine'],
+  [/\bpepcid\b/g,                 'famotidine h2 blocker'],
+  [/\bzantac\b/g,                 'ranitidine h2 blocker'],
+  [/\breglan\b/g,                 'metoclopramide'],
+  [/\bzofran\b/g,                 'ondansetron antiemetic'],
+  [/\bcolace\b/g,                 'docusate stool softener'],
+  [/\bmom\b(?!\w)/g,              'milk of magnesia laxative'],
+  [/\blactulose\b/g,              'lactulose laxative'],
+  [/\brifaximin\b/g,              'rifaximin'],
+  [/\bsucralfate\b/g,             'sucralfate'],
+
+  // ── MEDICATIONS — PULM / RESPIRATORY ─────────────────────
+  [/\bduonebs?\b/g,               'albuterol ipratropium nebulizer'],
+  [/\balbuterol neb\b/g,          'albuterol nebulizer'],
+  [/\bipratropium neb\b/g,        'ipratropium nebulizer'],
+  [/\bdpi\b/g,                    'dry powder inhaler'],
+  [/\bsalb\b/g,                   'albuterol'],
+  [/\bnac\b(?!\w)/g,              'n-acetylcysteine'],
+  [/\bhfnc\b/g,                   'high flow nasal cannula'],
+  [/\bhf nc\b/g,                  'high flow nasal cannula'],
+  [/\bnrb\b/g,                    'non rebreather mask'],
+  [/\bnrm\b/g,                    'non rebreather mask'],
+
+  // ── MEDICATIONS — STEROIDS / ENDOCRINE ───────────────────
+  [/\bsolumedrol\b/g,             'methylprednisolone steroid'],
+  [/\bsolu.medrol\b/g,            'methylprednisolone steroid'],
+  [/\bsolu.cortef\b/g,            'hydrocortisone steroid'],
+  [/\bhc\b(?!\w)/g,               'hydrocortisone steroid'],
+  [/\bdex\b(?!\w)/g,              'dexamethasone steroid'],
+  [/\bpred\b(?!\w)/g,             'prednisone steroid'],
+  [/\binsulin gtt\b/g,            'insulin infusion'],
+  [/\binsulin drip\b/g,           'insulin infusion'],
+  [/\briss\b/g,                   'regular insulin sliding scale'],
+  [/\bss insulin\b/g,             'sliding scale insulin'],
+  [/\bglargine\b/g,               'insulin glargine'],
+  [/\blantus\b/g,                 'insulin glargine'],
+  [/\bnph insulin\b/g,            'nph insulin'],
+
+  // ── MISC ORDERS ───────────────────────────────────────────
+  [/\bnpo\b/g,                    'nothing by mouth npo'],
+  [/\bclears\b(?! ight)/g,        'clear liquid diet'],
+  [/\bhob\b/g,                    'head of bed elevation'],
+  [/\bfall precautions\b/g,       'fall precautions safety'],
+  [/\bcontact precautions\b/g,    'contact isolation precautions'],
+  [/\bdroplet precautions\b/g,    'droplet isolation precautions'],
+  [/\bairborne precautions\b/g,   'airborne isolation precautions'],
+  [/\bdnr\b/g,                    'do not resuscitate'],
+  [/\bdni\b/g,                    'do not intubate'],
+  [/\bfull code\b/g,              'full resuscitation code'],
+  [/\bgoc\b/g,                    'goals of care'],
+  [/\bacp\b/g,                    'advance care planning'],
+  [/\brepeat labs\b/g,            'repeat laboratory'],
+  [/\bserial labs\b/g,            'serial laboratory'],
+  [/\bq\s?4h?\b/g,                'every 4 hours'],
+  [/\bq\s?6h?\b/g,                'every 6 hours'],
+  [/\bq\s?8h?\b/g,                'every 8 hours'],
+  [/\bq\s?12h?\b/g,               'every 12 hours'],
+  [/\bqd\b/g,                     'daily'],
+  [/\bqhs\b/g,                    'nightly at bedtime'],
+  [/\bbid\b/g,                    'twice daily'],
+  [/\btid\b/g,                    'three times daily'],
+  [/\bqid\b/g,                    'four times daily'],
+  [/\bprn\b/g,                    'as needed'],
+  [/\biv push\b/g,                'intravenous bolus'],
+  [/\biv\b(?!\w)/g,               'intravenous'],
+  [/\bpo\b(?!\w)/g,               'by mouth oral'],
+  [/\bsq\b(?!\w)/g,               'subcutaneous'],
+  [/\bim\b(?!\w)/g,               'intramuscular'],
+  [/\bsl\b(?!\w)/g,               'sublingual'],
+  [/\bpr\b(?!\w)/g,               'per rectum rectal'],
+  [/\bngt feeds\b/g,              'nasogastric tube enteral feeding'],
+  [/\btube feeds\b/g,             'enteral nutrition feeding'],
+  [/\bplr\b/g,                    'passive leg raise fluid responsiveness'],
+  [/\bppv\b/g,                    'pulse pressure variation fluid responsiveness'],
+  [/\bsvv\b/g,                    'stroke volume variation fluid responsiveness'],
+];
+
+/**
+ * Normalizes a clinical order line by expanding medical abbreviations
+ * and shorthand before pattern matching. Case-insensitive.
+ * @param {string} text — raw order line (already lowercased)
+ * @returns {string} — expanded text
+ */
+function normalizeMedicalOrder(text) {
+  let out = text;
+  for (const [pattern, expansion] of MEDICAL_ABBREVS) {
+    out = out.replace(pattern, expansion);
+  }
+  return out;
+}
+
 function classifyOrderLine(line) {
-  const l = line.toLowerCase().trim();
+  const raw = line.toLowerCase().trim();
+  const l   = normalizeMedicalOrder(raw);   // expand abbreviations first
   if (!l || l.startsWith('//') || l.startsWith('#')) return null;
   for (const [cat, def] of Object.entries(ORDER_CATEGORIES)) {
     if (def.patterns.some(p => p.test(l))) {
@@ -3167,6 +5347,251 @@ function getCaseResultCatalog(caseId) {
           {lbl:'Team',val:'MICU attending paged',unit:'',ref:'',cls:'rv-ok'},
         ],'MICU consult placed. Attending will evaluate for ICU admission criteria and assist with critical care management.') },
       commonEKG,
+    ],
+
+    // ── SEPSIS CASE 1 — Arthur Hayes ─────────────────────────────
+    'ss-1': [
+      // LABS — no interpretation notes; user interprets independently
+      { id:'cbc', cat:'lab',
+        triggers:[/\bcbc\b/,/\bcomplete blood count\b/,/\bwbc\b/,/\bhemoglobin\b/,/\bhgb\b/,/\bplatelets?\b(?! transfusion)/],
+        card: () => resultCard('lab','Lab','CBC',
+          [
+            {lbl:'WBC',          val:'10.2',  unit:'K/µL',  ref:'4.5–11.0',  cls:'rv-a'},
+            {lbl:'Bands',        val:'11%',   unit:'',      ref:'<5%',        cls:'rv-a'},
+            {lbl:'Hgb',          val:'11.4',  unit:'g/dL',  ref:'13.5–17.5', cls:'rv-a'},
+            {lbl:'Hct',          val:'34.2',  unit:'%',     ref:'41–53',      cls:'rv-a'},
+            {lbl:'MCV',          val:'88',    unit:'fL',    ref:'80–100',     cls:'rv-ok'},
+            {lbl:'Platelets',    val:'138',   unit:'K/µL',  ref:'150–400',    cls:'rv-a'},
+          ],'')
+      },
+      { id:'bmp', cat:'lab',
+        triggers:[/\bcmp\b/,/\bbmp\b/,/\bbasic metabolic\b/,/\bcomprehensive metabolic\b/,/\belectrolytes?\b/,/\blytes\b/,/\bcreatinine\b/,/\bcreat\b/,/\bbun\b/,/\bglucose\b/,/\brenal function\b/,/\bkidney function\b/],
+        card: () => resultCard('lab','Lab','CMP (Comprehensive Metabolic Panel)',
+          [
+            {lbl:'Na',         val:'132',   unit:'mEq/L', ref:'135–145',  cls:'rv-a'},
+            {lbl:'K',          val:'3.4',   unit:'mEq/L', ref:'3.5–5.0',  cls:'rv-a'},
+            {lbl:'Cl',         val:'101',   unit:'mEq/L', ref:'96–106',   cls:'rv-ok'},
+            {lbl:'CO₂',        val:'19',    unit:'mEq/L', ref:'22–29',    cls:'rv-a'},
+            {lbl:'BUN',        val:'34',    unit:'mg/dL', ref:'7–25',     cls:'rv-a'},
+            {lbl:'Creatinine', val:'1.9',   unit:'mg/dL', ref:'0.6–1.2',  cls:'rv-c'},
+            {lbl:'Baseline Cr',val:'1.1',   unit:'mg/dL', ref:'(prior)',  cls:'rv-ok'},
+            {lbl:'eGFR',       val:'~38',   unit:'mL/min',ref:'>60',      cls:'rv-c'},
+            {lbl:'Glucose',    val:'108',   unit:'mg/dL', ref:'70–100',   cls:'rv-ok'},
+            {lbl:'Ca',         val:'8.8',   unit:'mg/dL', ref:'8.5–10.5', cls:'rv-ok'},
+            {lbl:'Total Protein',val:'6.4', unit:'g/dL',  ref:'6.3–8.2',  cls:'rv-ok'},
+            {lbl:'Albumin',    val:'3.1',   unit:'g/dL',  ref:'3.5–5.0',  cls:'rv-a'},
+            {lbl:'Total Bili', val:'1.6',   unit:'mg/dL', ref:'0.2–1.2',  cls:'rv-a'},
+            {lbl:'Alk Phos',   val:'130',   unit:'U/L',   ref:'44–147',   cls:'rv-ok'},
+            {lbl:'AST',        val:'48',    unit:'U/L',   ref:'10–40',    cls:'rv-a'},
+            {lbl:'ALT',        val:'41',    unit:'U/L',   ref:'7–56',     cls:'rv-ok'},
+          ],'')
+      },
+      { id:'lfts', cat:'lab',
+        triggers:[/\blfts?\b/,/\bliver (panel|function|enzymes?)\b/,/\bast\b/,/\balt\b/,/\balk(aline)? phos\b/,/\bbilirubin\b/,/\bbili\b/],
+        card: () => resultCard('lab','Lab','Liver Panel',
+          [
+            {lbl:'AST',        val:'48',  unit:'U/L',   ref:'10–40',   cls:'rv-a'},
+            {lbl:'ALT',        val:'41',  unit:'U/L',   ref:'7–56',    cls:'rv-ok'},
+            {lbl:'Alk Phos',   val:'130', unit:'U/L',   ref:'44–147',  cls:'rv-ok'},
+            {lbl:'Total Bili', val:'1.6', unit:'mg/dL', ref:'0.2–1.2', cls:'rv-a'},
+            {lbl:'Direct Bili',val:'0.5', unit:'mg/dL', ref:'0.0–0.3', cls:'rv-a'},
+            {lbl:'Albumin',    val:'3.1', unit:'g/dL',  ref:'3.5–5.0', cls:'rv-a'},
+            {lbl:'Total Protein',val:'6.4',unit:'g/dL', ref:'6.3–8.2', cls:'rv-ok'},
+          ],'')
+      },
+      { id:'lactate', cat:'lab',
+        triggers:[/\blactate\b/,/\blactic acid\b/],
+        card: () => resultCard('lab','Lab','Lactate Level',
+          [
+            {lbl:'Lactate', val:'5.9', unit:'mmol/L', ref:'0.5–2.0', cls:'rv-c'},
+          ],'')
+      },
+      { id:'procalcitonin', cat:'lab',
+        triggers:[/\bprocalcitonin\b/,/\bpct\b(?![\w])/],
+        card: () => resultCard('lab','Lab','Procalcitonin',
+          [
+            {lbl:'Procalcitonin', val:'1.8', unit:'ng/mL', ref:'<0.25', cls:'rv-c'},
+          ],'')
+      },
+      { id:'coags', cat:'lab',
+        triggers:[/\bcoags?\b/,/\bpt\b(?![\w])/,/\bptt\b/,/\binr\b/,/\bcoagulation\b/,/\bprothrombin\b/,/\bfibrinogen\b/],
+        card: () => resultCard('lab','Lab','Coagulation Panel',
+          [
+            {lbl:'PT',        val:'13.2', unit:'sec',  ref:'11.0–13.5', cls:'rv-ok'},
+            {lbl:'INR',       val:'1.1',  unit:'',     ref:'0.8–1.2',   cls:'rv-ok'},
+            {lbl:'PTT',       val:'31',   unit:'sec',  ref:'25–35',     cls:'rv-ok'},
+            {lbl:'Fibrinogen',val:'410',  unit:'mg/dL',ref:'200–400',   cls:'rv-a'},
+          ],'')
+      },
+      { id:'cultures', cat:'lab',
+        triggers:[/\bblood cultures?\b/,/\bbc\b(?![\w])/,/\bbcx\b/,/\bcultures?\b/],
+        card: () => resultCard('lab','Lab','Blood Cultures × 2',
+          [
+            {lbl:'Set 1 — peripheral', val:'Pending (drawn)', unit:'', ref:'', cls:'rv-a'},
+            {lbl:'Set 2 — peripheral', val:'Pending (drawn)', unit:'', ref:'', cls:'rv-a'},
+            {lbl:'Collection time',    val:'19:34',           unit:'', ref:'', cls:'rv-ok'},
+          ],'')
+      },
+      { id:'cdiff', cat:'lab',
+        triggers:[/\bc\.?\s*diff\b/,/\bcdiff\b/,/\bclostridium\b/,/\bclostridioides\b/,/\bc diff pcr\b/,/\bstool culture\b/,/\bstool pcr\b/,/\bgdh\b/,/\bea\b.*\btoxin\b/],
+        card: () => resultCard('lab','Lab','C. diff PCR',
+          [
+            {lbl:'C. diff PCR',  val:'PENDING',         unit:'', ref:'', cls:'rv-a'},
+            {lbl:'Collection',   val:'Sample collected', unit:'', ref:'', cls:'rv-ok'},
+            {lbl:'TAT',          val:'2–4 hours',        unit:'', ref:'', cls:'rv-ok'},
+          ],'')
+      },
+      { id:'ua', cat:'lab',
+        triggers:[/\bua\b(?![\w])/,/\burinalysis\b/,/\burine cultures?\b/,/\burine cx\b/],
+        card: () => resultCard('lab','Lab','Urinalysis + Culture',
+          [
+            {lbl:'Color',    val:'Dark yellow', unit:'',     ref:'',     cls:'rv-a'},
+            {lbl:'Clarity',  val:'Cloudy',      unit:'',     ref:'Clear',cls:'rv-a'},
+            {lbl:'Sp Gravity',val:'1.028',      unit:'',     ref:'1.003–1.030',cls:'rv-ok'},
+            {lbl:'pH',       val:'5.5',         unit:'',     ref:'4.5–8',cls:'rv-ok'},
+            {lbl:'WBC',      val:'5–10',        unit:'/hpf', ref:'<5',   cls:'rv-a'},
+            {lbl:'RBC',      val:'2–5',         unit:'/hpf', ref:'<3',   cls:'rv-ok'},
+            {lbl:'Bacteria', val:'Few',         unit:'',     ref:'None', cls:'rv-a'},
+            {lbl:'Nitrite',  val:'Negative',    unit:'',     ref:'Neg',  cls:'rv-ok'},
+            {lbl:'Leuk Est', val:'Trace',       unit:'',     ref:'Neg',  cls:'rv-a'},
+            {lbl:'Culture',  val:'Pending',     unit:'',     ref:'',     cls:'rv-a'},
+          ],'')
+      },
+      // IMAGING — interpretation notes kept
+      { id:'ct-abdomen', cat:'imaging',
+        triggers:[/\bct\b.*\b(abd|abdomen|pelvis|abdom)\b/,/\b(abd|abdomen|pelvis)\b.*\bct\b/,/\bct a\/p\b/,/\bct ap\b/,/\babdominal ct\b/,/\bcomputed tomography.*abd\b/],
+        card: () => resultCard('imaging','Imaging','CT Abdomen/Pelvis (Non-Contrast)',
+          [
+            {lbl:'Transverse colon', val:'Markedly dilated — 9.2 cm',     unit:'', ref:'<6 cm', cls:'rv-c'},
+            {lbl:'Colonic wall',     val:'Thinned, edematous',            unit:'', ref:'',       cls:'rv-c'},
+            {lbl:'Pneumatosis',      val:'Focal intramural air — present',unit:'', ref:'None',   cls:'rv-c'},
+            {lbl:'Pericolonic',      val:'Extensive fat stranding',       unit:'', ref:'',       cls:'rv-c'},
+            {lbl:'Perforation',      val:'No free air — NOT YET perforated', unit:'', ref:'',   cls:'rv-a'},
+            {lbl:'Free fluid',       val:'Small amount perihepatic',      unit:'', ref:'None',   cls:'rv-a'},
+            {lbl:'Liver/Spleen',     val:'Unremarkable',                  unit:'', ref:'',       cls:'rv-ok'},
+          ],'')
+      },
+      { id:'kub', cat:'imaging',
+        triggers:[/\bkub\b/,/\babdominal x.?ray\b/,/\baxr\b/,/\bflat plate\b/,/\bplain film.*abd\b/,/\babdominal film\b/],
+        card: () => resultCard('imaging','Imaging','KUB (Abdominal X-Ray)',
+          [
+            {lbl:'Colon — transverse', val:'Markedly dilated',      unit:'',   ref:'<6 cm',    cls:'rv-c'},
+            {lbl:'Diameter',           val:'>9 cm at widest point', unit:'',   ref:'',          cls:'rv-c'},
+            {lbl:'Haustral markings',  val:'Loss of haustra noted', unit:'',   ref:'Present',   cls:'rv-c'},
+            {lbl:'Bowel wall',         val:'"Thumbprinting" present',unit:'',  ref:'Smooth',    cls:'rv-c'},
+            {lbl:'Air-fluid levels',   val:'Present',               unit:'',   ref:'Absent',    cls:'rv-a'},
+            {lbl:'Free air',           val:'No pneumoperitoneum',   unit:'',   ref:'',          cls:'rv-ok'},
+            {lbl:'Small bowel',        val:'Mildly dilated loops',  unit:'',   ref:'',          cls:'rv-a'},
+          ],'Marked non-obstructive colonic dilation exceeding 6 cm, predominantly in the transverse colon. Loss of haustral markings, air-fluid levels, and mucosal thumbprinting are present — consistent with severe colonic wall edema.')
+      },
+      { id:'cxr', cat:'imaging',
+        triggers:[/\bcxr\b/,/\bchest.?x.?ray\b/,/\bchest radiograph\b/,/\bportable cxr\b/,/\bportable chest\b/],
+        card: () => resultCard('imaging','Imaging','Chest X-Ray (Portable)',
+          [
+            {lbl:'Lungs',    val:'Clear bilaterally',         unit:'', ref:'', cls:'rv-ok'},
+            {lbl:'Pleural',  val:'No effusion',               unit:'', ref:'', cls:'rv-ok'},
+            {lbl:'Cardiac',  val:'Normal cardiac silhouette', unit:'', ref:'', cls:'rv-ok'},
+            {lbl:'Mediastinum',val:'No widening',             unit:'', ref:'', cls:'rv-ok'},
+            {lbl:'Bones',    val:'No acute abnormality',      unit:'', ref:'', cls:'rv-ok'},
+          ],'No acute cardiopulmonary process identified.')
+      },
+      // CONSULTATIONS
+      { id:'micu-consult', cat:'consult',
+        triggers:[/\bmicu\b/,/\bicu\b(?! )/,/\bcritical care\b/,/\bintensiv(e|ist)/,/\btransfer.*unit\b/,/\badmit.*icu\b/],
+        card: () => resultCard('consult','Consultation','MICU Consultation',
+          [
+            {lbl:'Status', val:'Consult placed',    unit:'', ref:'', cls:'rv-ok'},
+            {lbl:'Team',   val:'MICU fellow paged', unit:'', ref:'', cls:'rv-ok'},
+            {lbl:'ETA',    val:'~15 minutes',       unit:'', ref:'', cls:'rv-ok'},
+          ],'MICU consult placed. Attending will assess for ICU transfer criteria.\n\n2026 SSC (Rec 15): For adults with sepsis or septic shock requiring ICU admission, guidelines suggest admission within 6 hours.')
+      },
+      { id:'surgery-consult', cat:'consult',
+        triggers:[/\bsurgery\b/,/\bsurgical\b/,/\bgen surg\b/,/\bgeneral surgery\b/,/\bsurg consult\b/,/\bcolectomy\b/],
+        card: () => resultCard('consult','Consultation','Emergency General Surgery Consultation',
+          [
+            {lbl:'Status',   val:'⚠ URGENT consult placed',   unit:'', ref:'', cls:'rv-c'},
+            {lbl:'Team',     val:'Surgery fellow paged STAT',  unit:'', ref:'', cls:'rv-ok'},
+            {lbl:'Reason',   val:'Toxic megacolon on CT',      unit:'', ref:'', cls:'rv-c'},
+            {lbl:'ETA',      val:'Arriving within 15 minutes', unit:'', ref:'', cls:'rv-ok'},
+          ],'Emergency surgery consult placed for toxic megacolon. Surgery will evaluate for subtotal colectomy with end ileostomy — indicated if clinical deterioration, perforation, or failure to improve with medical management within 24–48 hours. Keep patient NPO and on strict bowel rest.')
+      },
+      { id:'id-consult', cat:'consult',
+        triggers:[/\binfectious disease\b/,/\bid consult\b/,/\binfect dis\b/,/\bid\b(?! ).*consult/],
+        card: () => resultCard('consult','Consultation','Infectious Disease Consultation',
+          [
+            {lbl:'Status', val:'Consult placed', unit:'', ref:'', cls:'rv-ok'},
+            {lbl:'Team',   val:'ID fellow paged',unit:'', ref:'', cls:'rv-ok'},
+          ],'ID consult placed. Do not delay antibiotics waiting for ID to respond — start empiric broad-spectrum coverage now.')
+      },
+      { id:'central-line', cat:'procedure',
+        triggers:[/\bcentral line\b/,/\bcentral venous\b/,/\bcvc\b/,/\bcvl\b/,/\btlc\b/,/\btriple lumen\b/,/\binternal jugular\b/,/\bij line\b/,/\bsubclavian\b/,/\bfemoral line\b/],
+        card: () => resultCard('procedure','Procedure','Central Venous Line (CVC)',
+          [
+            {lbl:'Status',   val:'Order placed', unit:'', ref:'', cls:'rv-ok'},
+            {lbl:'Site',     val:'Internal jugular (preferred) or subclavian', unit:'', ref:'', cls:'rv-ok'},
+            {lbl:'Team',     val:'Fellow to bedside for placement', unit:'', ref:'', cls:'rv-ok'},
+            {lbl:'Indication',val:'Vasopressor administration, hemodynamic monitoring', unit:'', ref:'', cls:'rv-ok'},
+          ],'Central venous access ordered. Required for reliable vasopressor delivery. Per 2026 SSC, peripheral vasopressor is acceptable while obtaining central access — do not delay norepinephrine initiation waiting for central line placement.')
+      },
+      { id:'arterial-line', cat:'procedure',
+        triggers:[/\barterial line\b/,/\ba.?line\b/,/\bart line\b/,/\bradial art\b/,/\bfemoral art\b/],
+        card: () => resultCard('procedure','Procedure','Arterial Line',
+          [
+            {lbl:'Status',    val:'Order placed', unit:'', ref:'', cls:'rv-ok'},
+            {lbl:'Site',      val:'Radial artery (preferred)', unit:'', ref:'', cls:'rv-ok'},
+            {lbl:'Team',      val:'Fellow to bedside', unit:'', ref:'', cls:'rv-ok'},
+            {lbl:'Indication',val:'Continuous BP monitoring, serial ABGs', unit:'', ref:'', cls:'rv-ok'},
+          ],'Arterial line ordered. Provides beat-to-beat blood pressure monitoring and direct arterial access for ABGs. Recommended in septic shock requiring vasopressors.')
+      },
+      commonEKG,
+    ],
+
+    // ── SEPSIS CASE 2 — Valentina Reyes ──────────────────────────
+    'ss-2': [
+      { id:'central-line', cat:'procedure',
+        triggers:[/\bcentral line\b/,/\bcentral venous\b/,/\bcvc\b/,/\bcvl\b/,/\btlc\b/,/\btriple lumen\b/,/\binternal jugular\b/,/\bij line\b/,/\bsubclavian\b/,/\bfemoral line\b/],
+        card: () => resultCard('procedure','Procedure','Central Venous Line (CVC)',
+          [
+            {lbl:'Status',    val:'Order placed', unit:'', ref:'', cls:'rv-ok'},
+            {lbl:'Site',      val:'Internal jugular or subclavian', unit:'', ref:'', cls:'rv-ok'},
+            {lbl:'Team',      val:'Fellow to bedside for placement', unit:'', ref:'', cls:'rv-ok'},
+            {lbl:'Indication',val:'Vasopressor administration, CVP monitoring', unit:'', ref:'', cls:'rv-ok'},
+          ],'Central line ordered. 2026 SSC: Peripheral vasopressor acceptable while obtaining central access — do not delay vasopressor initiation.')
+      },
+      { id:'arterial-line', cat:'procedure',
+        triggers:[/\barterial line\b/,/\ba.?line\b/,/\bart line\b/,/\bradial art\b/,/\bfemoral art\b/],
+        card: () => resultCard('procedure','Procedure','Arterial Line',
+          [
+            {lbl:'Status',    val:'Order placed', unit:'', ref:'', cls:'rv-ok'},
+            {lbl:'Site',      val:'Radial artery (preferred)', unit:'', ref:'', cls:'rv-ok'},
+            {lbl:'Indication',val:'Continuous BP, serial ABGs', unit:'', ref:'', cls:'rv-ok'},
+          ],'Arterial line ordered. Recommended in septic shock requiring vasopressors.')
+      },
+      commonEKG,
+    ],
+
+    // ── SEPSIS CASE 3 — Gloria Chen ──────────────────────────────
+    'ss-3': [
+      { id:'central-line', cat:'procedure',
+        triggers:[/\bcentral line\b/,/\bcentral venous\b/,/\bcvc\b/,/\bcvl\b/,/\btlc\b/,/\btriple lumen\b/,/\binternal jugular\b/,/\bij line\b/,/\bsubclavian\b/,/\bfemoral line\b/],
+        card: () => resultCard('procedure','Procedure','Central Venous Line (CVC)',
+          [
+            {lbl:'Status',    val:'Order placed', unit:'', ref:'', cls:'rv-ok'},
+            {lbl:'Site',      val:'Internal jugular (femoral acceptable given coagulopathy)', unit:'', ref:'', cls:'rv-ok'},
+            {lbl:'Team',      val:'Fellow to bedside', unit:'', ref:'', cls:'rv-ok'},
+            {lbl:'Note',      val:'Plt 42, INR 1.6 — increased bleeding risk', unit:'', ref:'', cls:'rv-a'},
+          ],'Central line placed with bleeding precautions given Plt 42 and INR 1.6. Compressible site (femoral) may be preferred over non-compressible (subclavian) in coagulopathic patients.')
+      },
+      { id:'arterial-line', cat:'procedure',
+        triggers:[/\barterial line\b/,/\ba.?line\b/,/\bart line\b/,/\bradial art\b/,/\bfemoral art\b/],
+        card: () => resultCard('procedure','Procedure','Arterial Line',
+          [
+            {lbl:'Status',    val:'Order placed', unit:'', ref:'', cls:'rv-ok'},
+            {lbl:'Site',      val:'Radial artery', unit:'', ref:'', cls:'rv-ok'},
+            {lbl:'Note',      val:'Plt 42 — hold firm pressure after placement', unit:'', ref:'', cls:'rv-a'},
+          ],'Arterial line ordered with coagulopathy precautions. Provides continuous BP monitoring and serial ABG access.')
+      },
+      commonEKG,
     ]
   };
   return catalogs[caseId] || [];
@@ -3200,6 +5625,96 @@ function resultCard(type, typeLabel, name, rows, note) {
 function extractFluidDetail(orderText) {
   const m = orderText.match(/(\d+[\.,]?\d*\s*(?:ml|cc|liter|l|mg))/i);
   return m ? orderText.trim().substring(0,80) : orderText.trim().substring(0,80);
+}
+
+// Resolves dynamic tokens in prompt/narrative/vitalsMsg strings.
+// Tokens are replaced at render time using live State values.
+// Currently supported:
+//   {{FLUID_L}}        → actual litres given, or "IV fluids" if nothing tracked
+//   {{FLUID_ML}}       → actual mL given
+//   {{ANTIBIOTIC}}     → specific antibiotic ordered, or "antibiotics" if not tracked
+//   {{LACTATE_D2}}     → repeat lactate sentence if lactate was ordered; empty if not
+//   {{BCX_LINE}}       → "Blood cultures from two peripheral sites are drawn. " if ordered, else ""
+//   {{LACTATE_LINE}}   → "Lactate is sent. " if ordered, else ""
+//   {{FLUID_LINE}}     → "XL IV crystalloid initiated. " if fluids ordered, else ""
+//   {{ABX_LINE}}       → "Antibiotic started. " if ordered, else ""
+//   {{ABX_REMINDER}}   → advisory note if antibiotics were NOT ordered, else ""
+//   {{ATTENDING_QUOTE}} → contextual attending remark based on what was ordered
+//   {{FLUID_AND_ABX}}  → summary phrase of fluid + antibiotic for vitalsMsg
+function resolveTokens(text) {
+  if (!text) return text;
+  const fluidMl = State.totalFluidGiven || 0;
+  const fluidsLStr = fluidMl > 0 ? (fluidMl / 1000).toFixed(1) + 'L' : 'IV fluids';
+  const ml = String(fluidMl);
+  const abx = State.lastOrderedAntibiotic || 'antibiotics';
+
+  // Individual order lines — only include if that order was placed
+  const bcxLine   = State.culturesOrdered        ? 'Blood cultures from two peripheral sites are drawn. ' : '';
+  const lactLine  = State.lactateOrdered         ? 'Lactate is sent. '                                    : '';
+  const fluidLine = fluidMl > 0                  ? (fluidMl/1000).toFixed(1) + 'L IV crystalloid initiated. ' : '';
+  const abxLine   = State.lastOrderedAntibiotic  ? State.lastOrderedAntibiotic + ' started. '             : '';
+
+  // Advisory if antibiotics were not ordered
+  const abxReminder = State.lastOrderedAntibiotic ? '' :
+    '\n\n<span class="hl">Note: IV antibiotics have not been ordered yet</span> — this is the most time-sensitive intervention in sepsis. Each hour of delay increases mortality by ~7–10%.';
+
+  // Attending quote varies by whether antibiotics were ordered
+  const attendingQuote = State.lastOrderedAntibiotic
+    ? 'The attending: <em>"Good — the workup and the resuscitation have to run simultaneously. Don\'t wait for results before treating."</em>'
+    : 'The attending: <em>"Good start on resuscitation — but we still need IV antibiotics. Don\'t wait for culture results to come back."</em>';
+
+  // Fluid + antibiotic summary for vitalsMsg
+  const fluidAndAbx = (() => {
+    const f = fluidMl > 0 ? (fluidMl/1000).toFixed(1) + 'L LR' : null;
+    const a = State.lastOrderedAntibiotic || null;
+    if (f && a) return f + ' and ' + a;
+    if (f)      return f;
+    if (a)      return a;
+    return 'initial management';
+  })();
+
+  // Repeat lactate sentence for decision2 prompt
+  const lactateD2 = State.lactateOrdered
+    ? 'Repeat lactate is 6.8 mmol/L — rising from 5.9. '
+    : '';
+
+  const fluidGiven = fluidMl > 0;
+
+  // POCUS IVC result — depends on whether fluids were given
+  const pocusVolResult = fluidGiven
+    ? `<strong>Cardiac view:</strong> Hyperdynamic LV. No pericardial effusion.<br/><strong>IVC:</strong> Plethoric. Diameter 2.1 cm. <span class="hl"><30% inspiratory collapse</span> — consistent with elevated right-sided filling pressures.<br/><strong>Lung:</strong> Bilateral B-lines present at bases.<br/><br/>Assessment: <span class="hl">NOT significantly volume responsive</span>. Additional fluid boluses are unlikely to improve cardiac output and risk worsening pulmonary edema.`
+    : `<strong>Cardiac view:</strong> Hyperdynamic LV. No pericardial effusion. Small underfilled ventricle.<br/><strong>IVC:</strong> Collapsible. Diameter 1.3 cm. <span class="hl">>60% inspiratory collapse with sniff test</span> — consistent with low right atrial pressure.<br/><strong>Lung:</strong> A-lines bilaterally — no pulmonary edema.<br/><br/>Assessment: <span class="hl">Volume responsive</span>. Patient likely to benefit from IV fluid resuscitation.`;
+
+  const pocusVolMsg = fluidGiven
+    ? `POCUS findings suggest the patient has received adequate or near-adequate volume. MAP remains ${fluidMl > 0 ? '62' : '63'} mm Hg — fluid alone will not correct the hypotension at this stage.`
+    : `POCUS confirms significant hypovolemia. Initiate IV fluid resuscitation — target 30 mL/kg balanced crystalloid (LR preferred per 2026 SSC guidelines). Reassess after initial bolus.`;
+
+  // PLR result — depends on whether fluids were given
+  const plrVolResult = fluidGiven
+    ? `Passive leg raise performed — patient supine, legs elevated to 45° for 60 seconds.<br/><br/>Heart rate: 88 → 89 bpm (no change)<br/>Systolic BP: 101 → 103 mm Hg (+2 mm Hg)<br/>Pulse pressure: no significant change (<5%)<br/><br/><span class="hl">Negative PLR — NOT fluid responsive.</span> A positive response requires ≥10% increase in pulse pressure or cardiac output. This patient will not significantly benefit from further fluid loading.`
+    : `Passive leg raise performed — patient supine, legs elevated to 45° for 60 seconds.<br/><br/>Heart rate: 88 → 84 bpm<br/>Systolic BP: 101 → 113 mm Hg (+12 mm Hg)<br/>Pulse pressure: increased by 14%<br/><br/><span class="hl">Positive PLR — fluid responsive.</span> ≥10% increase in pulse pressure confirms volume responsiveness. Initiate IV fluid resuscitation.`;
+
+  const plrVolMsg = fluidGiven
+    ? `PLR confirms the patient is NOT significantly fluid responsive. Further volume loading is unlikely to improve perfusion. Consider vasopressor support.`
+    : `PLR confirms fluid responsiveness. Initiate IV fluid resuscitation — 30 mL/kg balanced crystalloid. Reassess after initial bolus.`;
+
+  return text
+    .replace(/\{\{FLUID_L\}\}L/g, fluidsLStr)
+    .replace(/\{\{FLUID_L\}\}/g, fluidMl > 0 ? (fluidMl / 1000).toFixed(1) : '—')
+    .replace(/\{\{FLUID_ML\}\}/g, ml)
+    .replace(/\{\{ANTIBIOTIC\}\}/g, abx)
+    .replace(/\{\{LACTATE_D2\}\}/g, lactateD2)
+    .replace(/\{\{BCX_LINE\}\}/g, bcxLine)
+    .replace(/\{\{LACTATE_LINE\}\}/g, lactLine)
+    .replace(/\{\{FLUID_LINE\}\}/g, fluidLine)
+    .replace(/\{\{ABX_LINE\}\}/g, abxLine)
+    .replace(/\{\{ABX_REMINDER\}\}/g, abxReminder)
+    .replace(/\{\{ATTENDING_QUOTE\}\}/g, attendingQuote)
+    .replace(/\{\{FLUID_AND_ABX\}\}/g, fluidAndAbx)
+    .replace(/\{\{POCUS_VOL_RESULT\}\}/g, pocusVolResult)
+    .replace(/\{\{POCUS_VOL_MSG\}\}/g, pocusVolMsg)
+    .replace(/\{\{PLR_VOL_RESULT\}\}/g, plrVolResult)
+    .replace(/\{\{PLR_VOL_MSG\}\}/g, plrVolMsg);
 }
 
 function extractFluidVolume(orderText) {
@@ -3463,7 +5978,8 @@ function processOrdersAndShowResults(orderText, decisionKey, onAllDone) {
   const caseId = State.caseData.id;
   const catalog = getCaseResultCatalog(caseId);
   const lines = orderText.split('\n').filter(l => l.trim().length > 1);
-  const lower = orderText.toLowerCase();
+  const lower    = orderText.toLowerCase();
+  const expanded = normalizeMedicalOrder(lower);   // abbreviation-expanded version for matching
 
   // Check for intubation order
   const intubationOrdered = /\b(intubat(e|ed|ion|ing)?|rsi|secure airway|ett)\b/.test(lower);
@@ -3500,15 +6016,56 @@ function processOrdersAndShowResults(orderText, decisionKey, onAllDone) {
   }
 
   // Track cumulative fluid volume (for Case 1 septic shock management)
-  if (/\b(fluid|bolus|saline|lactated|ringer|lr|ns|crystalloid)\b/.test(lower)) {
+  if (/\b(fluid|bolus|saline|lactated|ringer|lr|ns|crystalloid|lactated ringers|normal saline)\b/.test(expanded)) {
     const fluidVolume = extractFluidVolume(orderText);
     State.totalFluidGiven += fluidVolume;
     console.log(`Fluid ordered: ${fluidVolume}mL. Total fluid given: ${State.totalFluidGiven}mL`);
   }
 
-  // Find which catalog items were triggered
-  const triggered = catalog.filter(item => 
-    item.triggers.some(re => re.test(lower))
+  // Detect and store the specific antibiotic ordered for token resolution
+  if (!State.lastOrderedAntibiotic || /\bantibiotic\b/.test(expanded)) {
+    const abxMap = [
+      { re: /\bmeropenem\b/,                                                       name: 'meropenem' },
+      { re: /\bimipenem\b/,                                                        name: 'imipenem-cilastatin' },
+      { re: /\bcefepime\b/,                                                        name: 'cefepime' },
+      { re: /\bpiperacillin.?tazobactam\b|\bpip.?taz\b|\bpiperacillin\b|\bzosyn\b/,name: 'piperacillin-tazobactam (Zosyn)' },
+      { re: /\bampicillin.?sulbactam\b|\bunasyn\b/,                               name: 'ampicillin-sulbactam (Unasyn)' },
+      { re: /\bvancomycin\b/,                                                      name: 'vancomycin' },
+      { re: /\bceftriaxone\b|\brocephin\b/,                                        name: 'ceftriaxone (Rocephin)' },
+      { re: /\bceftazidime\b/,                                                     name: 'ceftazidime' },
+      { re: /\bcefepime\b/,                                                        name: 'cefepime' },
+      { re: /\baztreonam\b/,                                                       name: 'aztreonam' },
+      { re: /\blevofloxacin\b|\blevaquin\b/,                                       name: 'levofloxacin' },
+      { re: /\bciprofloxacin\b|\bcipro\b/,                                         name: 'ciprofloxacin' },
+      { re: /\bmetronidazole\b|\bflagyl\b/,                                        name: 'metronidazole (Flagyl)' },
+      { re: /\bdaptomycin\b/,                                                      name: 'daptomycin' },
+      { re: /\blinezolid\b/,                                                       name: 'linezolid' },
+      { re: /\bclindamycin\b|\bclinda\b/,                                         name: 'clindamycin' },
+      { re: /\btrimethoprim.?sulfamethoxazole\b|\bbactrim\b|\btmp.?smx\b/,         name: 'TMP-SMX (Bactrim)' },
+      { re: /\bbroad.?spectrum\b|\bantibiotic\b|\babx\b/,                          name: 'broad-spectrum antibiotics' },
+    ];
+    const match = abxMap.find(a => a.re.test(expanded));
+    if (match) State.lastOrderedAntibiotic = match.name;
+  }
+
+  // Track whether lactate was ordered
+  if (/\blactate\b|\blactic acid\b/.test(expanded)) {
+    State.lactateOrdered = true;
+  }
+
+  // Track whether blood cultures were ordered
+  if (/\bblood cultures?\b|\bbcx\b|\bblood cx\b|\bcultures?\b/.test(expanded)) {
+    State.culturesOrdered = true;
+  }
+
+  // Track whether CT abdomen was ordered
+  if (/\bct\b.*\b(abd|abdomen|pelvis|abdom|ap\b|a\/p)\b|\b(abd|abdomen|pelvis)\b.*\bct\b|\bct a\/p\b|\bct ap\b|\babdominal ct\b|\bcomputed tomography.*abd\b/.test(expanded)) {
+    State.ctOrdered = true;
+  }
+
+  // Find which catalog items were triggered — check both raw and expanded text
+  const triggered = catalog.filter(item =>
+    item.triggers.some(re => re.test(lower) || re.test(expanded))
   );
 
   // Deduplicate by id
@@ -3970,6 +6527,26 @@ function renderPhase3_Data() {
       }
       if (label1) label1.textContent = 'Lung View (B-lines)';
       if (label2) label2.textContent = 'IVC View';
+    } else if (artType === 'sepsis1') {
+      // Sepsis Case 1: Floor sepsis — cardiac + IVC views
+      if (video1) {
+        video1.innerHTML = `
+          <source src="SS1-POCUS-Cardiac.mp4" type="video/mp4">
+          <source src="SS1-POCUS-Cardiac.mov" type="video/quicktime">
+          Your browser does not support the video tag.
+        `;
+        video1.load();
+      }
+      if (video2) {
+        video2.innerHTML = `
+          <source src="SS1-POCUS-IVC.mp4" type="video/mp4">
+          <source src="SS1-POCUS-IVC.mov" type="video/quicktime">
+          Your browser does not support the video tag.
+        `;
+        video2.load();
+      }
+      if (label1) label1.textContent = 'Cardiac View';
+      if (label2) label2.textContent = 'IVC View';
     } else {
       // Default: Case 1 - use default videos
       if (video1) {
@@ -4004,6 +6581,92 @@ function renderPhase3_Data() {
 function renderPhase4_Decision(decisionKey) {
   buildPhaseTrack(5, 4);
   const c = State.caseData;
+
+  // ── SS-1 TOXIC MEGACOLON GATE ─────────────────────────────────
+  // If routing to decision_toxic but CT abdomen was never ordered,
+  // the colon has been silently progressing toward perforation.
+  // Trigger an immediate Code Blue — missed imaging led to missed diagnosis.
+  if (decisionKey === 'decision_toxic' && c?.id === 'ss-1' && !State.ctOrdered) {
+    const content = $('sim-content');
+    if (content) {
+      content.innerHTML = `
+        ${patientStrip()}
+        <div class="sim-card">
+          <div class="sim-card-head">
+            <span class="phase-badge" style="background:var(--red-bg);color:var(--red);border-color:var(--red);">⚠ CRITICAL DETERIORATION</span>
+            <span class="sim-card-title" style="color:var(--red);">Patient Decompensating</span>
+          </div>
+          <div class="sim-card-body">
+            <div class="vignette" style="border-left:4px solid var(--red);padding-left:16px;">
+              <p>The RN calls urgently: <em>"Doctor — Mr. Hayes just screamed out in pain. His abdomen is completely rigid now. He's gone pale, diaphoretic, and his pressure dropped to 62/30. He's not responding to me — I don't have a pulse. I'm calling a Code Blue!"</em></p>
+              <p style="color:var(--tx-2);font-size:13px;margin-top:8px;">No abdominal imaging was ordered. The CT abdomen was not performed. The toxic megacolon progressed to colonic perforation undetected.</p>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    showCodeBlueModal(
+      () => { renderPhase4_Decision('decision_toxic_postrosc'); },
+      {
+        rhythm: 'Pulseless Electrical Activity (PEA — Septic + Obstructive)',
+        overhead: 'Code Blue, Tower 3 Bed 14. Code Blue, Tower 3 Bed 14. General Surgery to Tower 3 Bed 14 STAT.',
+        cause: '',
+        monitor_phrase: 'Look at the monitor — PEA. Rigid, silent abdomen. No pulse on check. Begin CPR immediately.',
+        hs_ts: [
+          'Hypovolemia ← massive third-spacing from fecal peritonitis',
+          'Hydrogen ion (severe metabolic acidosis from peritonitis)',
+          'Hypoxia ← respiratory compromise from abdominal distension',
+          'Tension from abdominal compartment syndrome — consider decompression',
+          'Septic source uncontrolled — bowel perforation with fecal contamination'
+        ],
+        acls_specifics: [
+          'Epinephrine 1mg IV q3–5 min — start immediately',
+          'Aggressive IV resuscitation — massive fluid losses from peritonitis',
+          'Broad-spectrum antibiotics covering gram-negatives AND anaerobes (pip-tazo or carbapenems)',
+          'Emergency surgery activation during CPR — emergent laparotomy required',
+          'After ROSC: emergent OR for subtotal colectomy',
+          'CT abdomen should have been ordered in the initial workup'
+        ],
+        rosc_label: '✓ ROSC Achieved — Emergent Surgery Activation →'
+      },
+      () => { showNoROSCScreen(
+        `Despite resuscitation efforts, Mr. Hayes did not achieve ROSC. The code was called.\n\nRoot cause: No CT abdomen was ordered, so the toxic megacolon was never identified. The dilated, thinned colon with intramural air perforated silently while management focused on hemodynamics alone.\n\nKey teaching: In any septic patient with a markedly distended, tympanitic abdomen and profuse diarrhea, abdominal imaging is a critical part of the workup — not optional.`
+      ); }
+    );
+    return;
+  }
+  // ── END GATE ──────────────────────────────────────────────────
+
+  // ── SS-1 POST-CODE PATH FLAGS ─────────────────────────────────
+  // When arriving at decision2_postcode for ss-1 via ROSC, flag the
+  // post-code path so downstream routing can skip volume assessment.
+  // NOTE: ctOrdered is NOT set here — user must order imaging themselves.
+  if (decisionKey === 'decision2_postcode' && c?.id === 'ss-1') {
+    State.postCodePath = true;
+  }
+
+  // When on the post-code path, skip volume assessment and go straight to
+  // the surgical management step (decision_toxic_postrosc).
+  if (decisionKey === 'decision2_volassess' && State.postCodePath) {
+    renderPhase4_Decision('decision_toxic_postrosc');
+    return;
+  }
+  // ── END FLAGS ─────────────────────────────────────────────────
+
+  // ── SS-1 DECISION_TOXIC PROMPT OVERRIDE ──────────────────────
+  // If CT was ordered, show the radiologist call with findings.
+  // If CT was NOT ordered, the missed-CT gate above already fired
+  // and returned — so we only reach this point when ctOrdered is true.
+  if (decisionKey === 'decision_toxic' && c?.id === 'ss-1') {
+    const dec = c['decision_toxic'];
+    if (dec && State.ctOrdered) {
+      dec.prompt = 'The CT abdomen results are back. The radiologist calls you: "On Mr. Hayes\' CT we\'re seeing marked dilation of the transverse colon measuring 9.2 centimeters, thinning of the colonic wall, focal intramural air, and extensive pericolonic fat stranding. No free air at this time." Mr. Hayes\' abdomen is markedly distended and tympanitic. What are your next orders?';
+    } else if (dec && !State.ctOrdered) {
+      dec.prompt = 'Mr. Hayes is stabilizing hemodynamically but the RN calls you urgently: "His abdomen is getting worse — it\'s more distended than before and he\'s grimacing whenever I press on it. He\'s also having more loose watery stool. The attending is asking if we\'ve looked into what\'s going on with his belly." What are your next orders?';
+    }
+  }
+  // ── END PROMPT OVERRIDE ───────────────────────────────────────
   const dec = c[decisionKey];
   if (!dec) { renderPhase3_Data(); return; }
   State.currentDecision = decisionKey;
@@ -4026,7 +6689,7 @@ function renderPhase4_Decision(decisionKey) {
     <div class="sim-card">
       <div class="sim-card-head"><span class="phase-badge pb-branch">Phase 4 · Clinical Decision</span><span class="sim-card-title">${dec.title}</span></div>
       <div class="sim-card-body">
-        <div class="vignette" style="margin-bottom:20px;">${dec.prompt}</div>
+        <div class="vignette" style="margin-bottom:20px;">${resolveTokens(dec.prompt)}</div>
         ${ordersSection(decisionKey)}
       </div>
     </div>
@@ -4149,17 +6812,18 @@ function evaluateBranch(decisionKey, orderText) {
   }
 
   // Default branch matching logic for all other cases
+  const lowerExp = normalizeMedicalOrder(lower); // expanded for branch matching
   let matched = dec.branches.find(b => {
     if (b.triggers.length === 0 && b.requires === 0) return false; // skip default for now
     if (b.excludes && b.excludes.length > 0) {
-      if (b.excludes.some(ex => lower.includes(ex))) return false;
+      if (b.excludes.some(ex => lower.includes(ex) || lowerExp.includes(ex))) return false;
     }
-    // Handle both string and regex triggers
+    // Handle both string and regex triggers — check raw AND expanded text
     const hits = b.triggers.filter(t => {
       if (t instanceof RegExp) {
-        return t.test(lower);
+        return t.test(lower) || t.test(lowerExp);
       } else {
-        return lower.includes(t);
+        return lower.includes(t) || lowerExp.includes(t);
       }
     }).length;
     // count unique categories hit (simple: just count total matches ≥ requires)
@@ -4215,6 +6879,7 @@ function renderBranchResult(decisionKey, branch) {
     narrative = `You've now given additional fluid. Combined with your initial order, the patient has received approximately <span class="hl">${totalLiters}L total</span> (target: 30 mL/kg = ~2.5L for this 82 kg patient).<br/><br/>
     However, the patient remains hypotensive despite completing fluid resuscitation. MAP remains <65 mm Hg despite adequate volume. What's your next step?`;
   }
+  narrative = resolveTokens(narrative);
 
   const block = CE('div');
   block.id = 'branch-result-block';
@@ -4287,7 +6952,7 @@ function renderNextActions(decisionKey, branch) {
         <div class="end-box">
           <div class="end-icon ${iconClass}">${iconChar}</div>
           <div class="end-title" style="color:var(--${branch.endState === 'good' ? 'green' : 'amber'})">${branch.endState === 'good' ? 'Case Complete' : 'Case Concluded'}</div>
-          <div class="end-text">${branch.endMsg}</div>
+          <div class="end-text">${resolveTokens(branch.endMsg)}</div>
           ${ordersReview}
           ${summaryItems ? `<div class="summary-box"><div class="summary-lbl">Your Decision Pathway</div>${summaryItems}</div>` : ''}
           <div class="btn-row" style="justify-content:center;">
@@ -4332,7 +6997,29 @@ function bindNextActions(decisionKey, branch) {
   if (showVitalsBtn) {
     showVitalsBtn.addEventListener('click', () => {
       // Check if we should show Code Blue modal first (Case 2)
-      if (branch.showCodeBlue) {
+      // Open POCUS video modal before proceeding if requested
+    if (branch.showPocusModal) {
+      const artType = State.caseData?.artType;
+      const video1 = $('pocus-video');
+      const video2 = $('pocus-video-ivc');
+      const label1 = document.querySelector('.pocus-video-item:nth-child(1) .pocus-video-label');
+      const label2 = document.querySelector('.pocus-video-item:nth-child(2) .pocus-video-label');
+      if (artType === 'sepsis1' && video1 && video2) {
+        video1.innerHTML = `<source src="SS1-POCUS-Cardiac.mp4" type="video/mp4"><source src="SS1-POCUS-Cardiac.mov" type="video/quicktime">`;
+        video2.innerHTML = `<source src="SS1-POCUS-IVC.mp4" type="video/mp4"><source src="SS1-POCUS-IVC.mov" type="video/quicktime">`;
+        video1.load(); video2.load();
+        if (label1) label1.textContent = 'Cardiac View';
+        if (label2) label2.textContent = 'IVC View';
+      }
+      openModal('modal-pocus');
+      if (video1) video1.play().catch(()=>{});
+      if (video2) video2.play().catch(()=>{});
+    }
+
+    if (branch.showCodeBlue) {
+        // Build the no-ROSC handler
+        const noROSCHandler = () => showNoROSCScreen(branch.noROSCMsg || null);
+
         showCodeBlueModal(() => {
           // After ROSC, check for MICU transfer or show vitals
           if (branch.showMICUTransfer) {
@@ -4342,7 +7029,7 @@ function bindNextActions(decisionKey, branch) {
           } else {
             showVitalsAndProceed(branch);
           }
-        });
+        }, branch.codeBlueConfig || null, noROSCHandler);
       } 
       // Check if we should show MICU transfer modal
       else if (branch.showMICUTransfer) {
@@ -4603,6 +7290,7 @@ function showVitalsAndProceed(branch) {
     vitalsMsg = `After receiving ${totalLiters}L total fluid, BP has improved slightly to 84/48 mm Hg (MAP 60 mm Hg). However, MAP remains <65 mm Hg despite adequate fluid.<br/><br/>
     RN: <em>"We've now given ${totalLiters} liters total. His pressure is a little better but still low. What do you want to do next?"</em>`;
   }
+  vitalsMsg = resolveTokens(vitalsMsg);
   
   // Build objective labs/imaging section from recognized orders
   let objectiveSection = '';
@@ -4995,72 +7683,278 @@ function bindUnlockButtons() {
 //  CODE BLUE MODAL (Case 2)
 // ═══════════════════════════════════════════════════════════════
 
-function showCodeBlueModal(onROSC) {
+function showCodeBlueModal(onROSC, config, onNoROSC) {
+
+  // ── defaults (backward-compatible with CC-2 existing calls) ──
+  const cfg = Object.assign({
+    rhythm:        'Pulseless Electrical Activity (PEA)',
+    overhead:      'Code Blue, ICU Bed 12. Code Blue, ICU Bed 12.',
+    cause:         'Hemodynamic collapse from untreated shock',
+    hs_ts:         ['Hypovolemia', 'Hypoxia', 'Hydrogen ion (acidosis)', 'Hypo/Hyperkalemia',
+                    'Tension pneumothorax', 'Thrombosis (PE)', 'Tamponade', 'Toxins'],
+    acls_specifics: ['Treat the underlying cause of arrest (H\'s and T\'s)'],
+    monitor_phrase: 'Look at the monitor — the patient has lost pulse.',
+    rosc_label:    '✓ ROSC Achieved — Return of Spontaneous Circulation →'
+  }, config || {});
+
+  const isVFib = cfg.rhythm.toLowerCase().includes('vfib') ||
+                 cfg.rhythm.toLowerCase().includes('ventricular fibrillation') ||
+                 cfg.rhythm.toLowerCase().includes('vf ') ||
+                 cfg.rhythm.toLowerCase().includes('pulseless vt');
+
+  const rhythmColor = isVFib ? 'var(--amber)' : 'var(--red)';
+  const rhythmIcon  = isVFib ? '⚡' : '📉';
+
+  const hsTsHtml = cfg.hs_ts.map(h =>
+    `<li style="margin:3px 0;">${h}</li>`
+  ).join('');
+
+  const specificsHtml = cfg.acls_specifics.map(s =>
+    `<li style="margin:3px 0;color:var(--amber);">${s}</li>`
+  ).join('');
+
   const modal = CE('div');
   modal.className = 'modal-overlay';
   modal.id = 'modal-code-blue';
   modal.innerHTML = `
-    <div class="modal-box modal-sm">
-      <div class="modal-head" style="background:var(--red-bg);border-color:var(--red);">
-        <div>
-          <span class="modal-tag" style="background:var(--red);color:var(--bg);">CRITICAL EVENT</span>
-          <h3 class="modal-title" style="color:var(--red);">Code Blue Activation</h3>
-        </div>
-      </div>
-      <div class="modal-body">
-        <div style="text-align:center;margin-bottom:20px;">
-          <div style="width:80px;height:80px;margin:0 auto 16px;border-radius:50%;background:var(--red-bg);border:3px solid var(--red);display:flex;align-items:center;justify-content:center;font-size:36px;animation:pulse 1.5s ease-in-out infinite;">
-            ⚠️
-          </div>
-          <div style="font-family:var(--font-h);font-size:22px;font-weight:700;color:var(--red);margin-bottom:12px;">Patient in Cardiac Arrest</div>
-          <div style="font-size:15px;color:var(--tx-1);line-height:1.8;text-align:left;background:var(--bg-3);padding:16px;border-radius:8px;border-left:4px solid var(--red);">
-            <strong style="color:var(--red);">Overhead Page:</strong> <em>"Code Blue, ICU Bed 12. Code Blue, ICU Bed 12."</em><br/><br/>
-            The patient has lost pulse and is unresponsive. The code team is performing high-quality CPR. You are running the code.<br/><br/>
-            <strong style="color:var(--amber);">Follow ACLS Algorithm:</strong>
-            <ul style="margin:8px 0 0 20px;padding:0;">
-              <li>CPR: 30 compressions, 2 breaths</li>
-              <li>Assess rhythm every 2 minutes</li>
-              <li>Epinephrine 1mg IV q3-5min</li>
-              <li>Treat reversible causes (H's and T's)</li>
-              <li>Consider thrombolytics for massive PE</li>
-            </ul>
+    <div class="modal-box" style="max-width:620px;max-height:90vh;overflow-y:auto;">
+
+      <!-- HEADER -->
+      <div class="modal-head" style="background:var(--red-bg);border-color:var(--red);padding:20px 24px;">
+        <div style="display:flex;align-items:center;gap:14px;width:100%;">
+          <div style="width:56px;height:56px;flex-shrink:0;border-radius:50%;background:var(--red-bg);border:3px solid var(--red);display:flex;align-items:center;justify-content:center;font-size:26px;animation:cb-pulse 1.2s ease-in-out infinite;">⚠️</div>
+          <div>
+            <div style="font-family:var(--font-h);font-size:11px;font-weight:700;letter-spacing:2px;color:var(--red);margin-bottom:4px;">🚨 CRITICAL EVENT</div>
+            <div style="font-family:var(--font-h);font-size:22px;font-weight:700;color:var(--red);line-height:1.1;">CODE BLUE</div>
+            <div style="font-size:13px;color:var(--tx-2);margin-top:2px;">Patient in Cardiac Arrest</div>
           </div>
         </div>
       </div>
-      <div class="modal-foot">
-        <button class="btn btn--primary btn--full" id="code-blue-rosc" style="background:var(--green);border-color:var(--green);font-size:17px;padding:14px;">
-          ✓ ROSC Achieved (Return of Spontaneous Circulation) →
+
+      <div class="modal-body" style="padding:20px 24px;display:flex;flex-direction:column;gap:16px;">
+
+        <!-- OVERHEAD PAGE -->
+        <div style="background:var(--bg-3);border-left:4px solid var(--red);border-radius:6px;padding:14px 16px;">
+          <div style="font-size:11px;font-weight:700;letter-spacing:1.5px;color:var(--red);margin-bottom:6px;">📢 OVERHEAD PAGE</div>
+          <div style="font-style:italic;color:var(--tx-1);font-size:14px;line-height:1.5;">"${cfg.overhead}"</div>
+        </div>
+
+        <!-- MONITOR ALERT -->
+        <div style="background:var(--bg-3);border:2px solid ${rhythmColor};border-radius:8px;padding:14px 16px;text-align:center;">
+          <div style="font-size:28px;margin-bottom:6px;">${rhythmIcon}</div>
+          <div style="font-family:var(--font-h);font-size:15px;font-weight:700;color:${rhythmColor};margin-bottom:4px;">${cfg.monitor_phrase}</div>
+          <div style="display:inline-block;background:var(--bg);border:1px solid ${rhythmColor};border-radius:4px;padding:6px 16px;font-family:var(--font-mono);font-size:13px;color:${rhythmColor};font-weight:600;margin-top:4px;">${cfg.rhythm}</div>
+        </div>
+
+        <!-- CAUSE -->
+        ${cfg.cause ? `
+        <div style="background:var(--bg-3);border-left:4px solid var(--amber);border-radius:6px;padding:12px 16px;">
+          <div style="font-size:11px;font-weight:700;letter-spacing:1.5px;color:var(--amber);margin-bottom:4px;">ROOT CAUSE</div>
+          <div style="font-size:13px;color:var(--tx-1);">${cfg.cause}</div>
+        </div>` : ''}
+
+        <!-- ACLS ALGORITHM -->
+        <div style="background:var(--bg-3);border-radius:8px;padding:16px;">
+          <div style="font-size:11px;font-weight:700;letter-spacing:1.5px;color:var(--cyan);margin-bottom:12px;">⚡ ACLS ALGORITHM — YOU ARE RUNNING THE CODE</div>
+
+          <!-- CPR -->
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;">
+            <div style="background:var(--bg);border:1px solid var(--bd);border-radius:6px;padding:10px 12px;">
+              <div style="font-size:10px;font-weight:700;color:var(--red);letter-spacing:1px;margin-bottom:4px;">CPR</div>
+              <div style="font-size:12px;color:var(--tx-1);line-height:1.6;">Rate: <strong>100–120/min</strong><br/>Depth: <strong>≥2 inches</strong><br/>Full chest recoil<br/>Minimize interruptions</div>
+            </div>
+            <div style="background:var(--bg);border:1px solid var(--bd);border-radius:6px;padding:10px 12px;">
+              <div style="font-size:10px;font-weight:700;color:var(--amber);letter-spacing:1px;margin-bottom:4px;">AIRWAY</div>
+              <div style="font-size:12px;color:var(--tx-1);line-height:1.6;">BVM ventilation<br/>Ratio: <strong>30:2</strong> (no airway)<br/>or <strong>continuous CPR</strong> + 1 breath/6 sec (advanced airway)<br/>ETCO₂ target: >10 mm Hg</div>
+            </div>
+          </div>
+
+          <!-- Rhythm-specific steps -->
+          ${isVFib ? `
+          <div style="background:rgba(233,165,53,0.1);border:1px solid var(--amber);border-radius:6px;padding:12px 14px;margin-bottom:10px;">
+            <div style="font-size:11px;font-weight:700;color:var(--amber);margin-bottom:8px;">⚡ SHOCKABLE RHYTHM — VFib / Pulseless VT</div>
+            <div style="font-size:12px;color:var(--tx-1);line-height:1.8;">
+              1. <strong>Defibrillate immediately</strong> — 200J biphasic (or max monophasic)<br/>
+              2. Resume CPR immediately × 2 min, then reassess<br/>
+              3. IV/IO access → <strong>Epinephrine 1 mg IV q3–5 min</strong><br/>
+              4. <strong>Amiodarone 300 mg IV</strong> (first dose) — after 2nd shock if refractory<br/>
+              5. Amiodarone 150 mg IV (second dose if needed)<br/>
+              6. Reassess rhythm after each 2-min CPR cycle
+            </div>
+          </div>
+          ` : `
+          <div style="background:rgba(224,79,79,0.1);border:1px solid var(--red);border-radius:6px;padding:12px 14px;margin-bottom:10px;">
+            <div style="font-size:11px;font-weight:700;color:var(--red);margin-bottom:8px;">📉 NON-SHOCKABLE RHYTHM — PEA / Asystole</div>
+            <div style="font-size:12px;color:var(--tx-1);line-height:1.8;">
+              1. <strong>CPR immediately</strong> — do NOT defibrillate<br/>
+              2. <strong>Epinephrine 1 mg IV q3–5 min</strong> — give ASAP<br/>
+              3. No routine role for atropine in PEA<br/>
+              4. Reassess rhythm every 2 min<br/>
+              5. <strong>Treat reversible causes (H's and T's)</strong> — this is the key intervention
+            </div>
+          </div>
+          `}
+
+          <!-- H's and T's -->
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;">
+            <div style="background:var(--bg);border:1px solid var(--bd);border-radius:6px;padding:10px 12px;">
+              <div style="font-size:10px;font-weight:700;color:var(--cyan);letter-spacing:1px;margin-bottom:6px;">H's & T's — REVERSIBLE CAUSES</div>
+              <ul style="margin:0;padding-left:16px;font-size:12px;color:var(--tx-1);line-height:1.7;">
+                ${hsTsHtml}
+              </ul>
+            </div>
+            <div style="background:var(--bg);border:1px solid var(--amber);border-radius:6px;padding:10px 12px;">
+              <div style="font-size:10px;font-weight:700;color:var(--amber);letter-spacing:1px;margin-bottom:6px;">THIS CASE — KEY INTERVENTION</div>
+              <ul style="margin:0;padding-left:16px;font-size:12px;line-height:1.7;">
+                ${specificsHtml}
+              </ul>
+            </div>
+          </div>
+
+          <!-- Post-ROSC -->
+          <div style="background:rgba(63,157,224,0.08);border:1px solid var(--cyan);border-radius:6px;padding:10px 14px;">
+            <div style="font-size:10px;font-weight:700;color:var(--cyan);letter-spacing:1px;margin-bottom:6px;">POST-ROSC CARE</div>
+            <div style="font-size:12px;color:var(--tx-1);line-height:1.7;">
+              Target <strong>SBP ≥90</strong> · <strong>SpO₂ 92–98%</strong> · <strong>MAP ≥65</strong><br/>
+              12-lead ECG immediately (rule out STEMI)<br/>
+              Consider targeted temperature management (TTM) if comatose<br/>
+              Treat the cause that led to arrest
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- FOOTER -->
+      <div class="modal-foot" style="padding:16px 24px;display:flex;flex-direction:column;gap:10px;">
+        <button class="btn btn--primary btn--full" id="code-blue-rosc" style="background:var(--green);border-color:var(--green);font-size:16px;padding:14px;letter-spacing:0.5px;">
+          ${cfg.rosc_label}
+        </button>
+        <button class="btn btn--full" id="code-blue-no-rosc" style="background:var(--red-bg);border:2px solid var(--red);color:var(--red);font-size:14px;padding:12px;border-radius:var(--r-sm);cursor:pointer;font-family:var(--font-h);font-weight:600;letter-spacing:0.5px;">
+          ✗ ROSC Not Achieved — Case Concluded
         </button>
       </div>
     </div>
   `;
-  
-  // Add pulse animation
+
+  // Pulse animation
   const style = document.createElement('style');
   style.textContent = `
-    @keyframes pulse {
-      0%, 100% { transform: scale(1); opacity: 1; }
-      50% { transform: scale(1.1); opacity: 0.8; }
+    @keyframes cb-pulse {
+      0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(224,79,79,0.4); }
+      50% { transform: scale(1.08); box-shadow: 0 0 0 8px rgba(224,79,79,0); }
     }
   `;
   document.head.appendChild(style);
-  
+
   document.body.appendChild(modal);
   modal.removeAttribute('hidden');
   document.body.style.overflow = 'hidden';
-  
+
+  const closeModal = () => {
+    modal.setAttribute('hidden', '');
+    document.body.style.overflow = '';
+    modal.remove();
+    style.remove();
+  };
+
   setTimeout(() => {
     const roscBtn = $('code-blue-rosc');
     if (roscBtn) {
       roscBtn.addEventListener('click', () => {
-        modal.setAttribute('hidden', '');
-        document.body.style.overflow = '';
-        modal.remove();
-        style.remove();
+        closeModal();
         if (onROSC) onROSC();
       });
     }
+    const noRoscBtn = $('code-blue-no-rosc');
+    if (noRoscBtn) {
+      noRoscBtn.addEventListener('click', () => {
+        closeModal();
+        if (onNoROSC) {
+          onNoROSC();
+        } else {
+          showNoROSCScreen();
+        }
+      });
+    }
   }, 100);
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  NO-ROSC TERMINAL SCREEN
+// ═══════════════════════════════════════════════════════════════
+
+function showNoROSCScreen(customMsg) {
+  const c = State.caseData;
+  const content = $('sim-content');
+  if (!content) return;
+
+  const msg = customMsg || `Despite prolonged resuscitation efforts, return of spontaneous circulation was not achieved. The team called the code after ${c?.patient?.name || 'the patient'} did not respond to ACLS interventions.`;
+
+  content.innerHTML = `
+    ${patientStrip()}
+    <div class="sim-card">
+      <div class="sim-card-head">
+        <span class="phase-badge" style="background:var(--red-bg);color:var(--red);border-color:var(--red);">CODE BLUE — OUTCOME</span>
+        <span class="sim-card-title" style="color:var(--red);">ROSC Not Achieved</span>
+      </div>
+      <div class="sim-card-body">
+        <div class="end-box" style="border-color:var(--red);">
+          <div class="end-icon" style="background:var(--red-bg);border-color:var(--red);color:var(--red);">✗</div>
+          <div class="end-title" style="color:var(--red);">Case Concluded</div>
+          <div class="end-text">${msg}</div>
+
+          <div style="background:var(--bg-3);border-left:4px solid var(--red);border-radius:6px;padding:16px;margin:16px 0;text-align:left;">
+            <div style="font-size:11px;font-weight:700;letter-spacing:1.5px;color:var(--red);margin-bottom:10px;">DEBRIEF — WHAT LED TO THIS OUTCOME</div>
+            <div style="font-size:13px;color:var(--tx-1);line-height:1.8;">
+              <strong>Root cause:</strong> Inadequate initial sepsis management allowed progressive hemodynamic collapse.<br/><br/>
+              The sepsis bundle must be initiated simultaneously — not sequentially:<br/>
+              <ul style="margin:8px 0 0 18px;padding:0;line-height:1.9;">
+                <li><strong>Blood cultures × 2</strong> before antibiotics</li>
+                <li><strong>Lactate level</strong> — confirms hypoperfusion, guides resuscitation</li>
+                <li><strong>30 mL/kg IV crystalloid</strong> within the first 3 hours</li>
+                <li><strong>Broad-spectrum IV antibiotics</strong> within 1 hour of recognition</li>
+                <li><strong>Vasopressor</strong> if MAP <65 despite adequate fluids</li>
+              </ul>
+              <br/>
+              <span style="color:var(--amber);">Every hour of antibiotic delay in sepsis increases mortality by ~7–10%.</span>
+            </div>
+          </div>
+
+          <div style="background:var(--bg-3);border-left:4px solid var(--cyan);border-radius:6px;padding:14px 16px;margin-bottom:16px;text-align:left;">
+            <div style="font-size:11px;font-weight:700;letter-spacing:1.5px;color:var(--cyan);margin-bottom:8px;">ACLS PEARL — PULSELESS SEPTIC PATIENT</div>
+            <div style="font-size:12px;color:var(--tx-1);line-height:1.8;">
+              In PEA arrest from septic shock, <strong>treating the underlying cause</strong> is the only definitive intervention.<br/>
+              Epinephrine q3–5 min maintains perfusion pressure, but survival depends on:<br/>
+              <ul style="margin:6px 0 0 18px;padding:0;line-height:1.8;">
+                <li>IV antibiotics started <em>during</em> resuscitation</li>
+                <li>Aggressive volume resuscitation during CPR</li>
+                <li>Identification and reversal of H's and T's</li>
+                <li>High-quality CPR: rate 100–120/min, depth ≥2 inches</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="btn-row" style="justify-content:center;">
+            <button class="btn btn--primary" id="btn-restart-nrosc">Restart Case</button>
+            <button class="btn btn--secondary" id="btn-cases-nrosc">Select Another Case</button>
+            <button class="btn btn--secondary" id="btn-home-nrosc">Return Home</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+
+  buildPhaseTrack(5, 4);
+
+  const r = $('btn-restart-nrosc');
+  if (r) r.addEventListener('click', () => { State.revealed = new Set(); State.decisions = []; renderPhase1_Vignette(); });
+  const ca = $('btn-cases-nrosc');
+  if (ca) ca.addEventListener('click', () => { State.reset(); renderCaseList(); showScreen('screen-cases'); });
+  const h = $('btn-home-nrosc');
+  if (h) h.addEventListener('click', () => { State.reset(); showScreen('screen-home'); });
+
+  content.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
 // ═══════════════════════════════════════════════════════════════
@@ -5128,23 +8022,35 @@ function showRNMsg(title, msg, tag = 'RN MESSAGE') {
 // ═══════════════════════════════════════════════════════════════
 
 function init() {
-  // Home → cases
-  document.querySelectorAll('.module-card--active').forEach(card => {
-    const go = () => { renderCaseList(); showScreen('screen-cases'); };
-    card.addEventListener('click', go);
-    card.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); go(); }});
-  });
+  // Critical Care module card
+  const criticalCard = document.querySelector('.module-card--active[data-module="critical"]');
+  if (criticalCard) {
+    const go = () => {
+      State.activeModule = 'critical';
+      updateCasesHeader();
+      renderCaseList();
+      showScreen('screen-cases');
+    };
+    criticalCard.addEventListener('click', go);
+    criticalCard.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); go(); }});
+  }
 
-  // Locked module
-  document.querySelectorAll('.module-card--locked').forEach(card => {
-    card.addEventListener('click', () => {
-      showRNMsg('Module Locked', 'The Sepsis Simulation is currently in development. Check back soon.', 'SYSTEM');
-    });
-  });
+  // Sepsis module card
+  const sepsisCard = document.querySelector('.module-card--active[data-module="sepsis"]');
+  if (sepsisCard) {
+    const go = () => {
+      State.activeModule = 'sepsis';
+      updateCasesHeader();
+      renderCaseList();
+      showScreen('screen-cases');
+    };
+    sepsisCard.addEventListener('click', go);
+    sepsisCard.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); go(); }});
+  }
 
   // Nav buttons
   $('back-to-home').addEventListener('click', () => { State.reset(); showScreen('screen-home'); });
-  $('back-to-cases').addEventListener('click', () => { State.reset(); showScreen('screen-cases'); });
+  $('back-to-cases').addEventListener('click', () => { State.reset(); renderCaseList(); showScreen('screen-cases'); });
 
   // Modal controls
   $('close-rn').addEventListener('click', () => closeModal('modal-rn'));
@@ -5170,6 +8076,20 @@ function init() {
     o.addEventListener('click', e => { if (e.target === o) closeAllModals(); });
   });
   document.addEventListener('keydown', e => { if (e.key === 'Escape') closeAllModals(); });
+}
+
+function updateCasesHeader() {
+  const isSepsis = State.activeModule === 'sepsis';
+  const eyebrow = document.querySelector('.cases-eyebrow');
+  const title   = document.querySelector('.cases-title');
+  const sub     = document.querySelector('.cases-sub');
+  const bc      = document.querySelector('#screen-cases .breadcrumb span');
+  if (eyebrow) eyebrow.textContent = isSepsis ? 'SEPSIS SIMULATION · PGY-1' : 'CRITICAL CARE SIMULATION · Simulation';
+  if (title)   title.textContent   = isSepsis ? 'Choose a Scenario'         : 'Choose a Scenario';
+  if (sub)     sub.textContent     = isSepsis
+    ? 'Three sepsis scenarios focused on early recognition, antibiotic selection, vasopressors, and escalation decisions.'
+    : 'Your management decisions create different patient responses. There are multiple possible pathways through each case.';
+  if (bc)      bc.textContent      = isSepsis ? 'Sepsis'                    : 'Critical Care';
 }
 
 document.addEventListener('DOMContentLoaded', init);
