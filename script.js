@@ -274,6 +274,37 @@ e.g.: Lactate, CBC, CMP, cultures, oxygen, etc.`,
             ],
             rosc_label: '✓ ROSC Achieved — Continuing Sepsis Management →'
           },
+                    showVitalsButton: true,
+          showCodeBlue: true,
+          codeBlueConfig: {
+            rhythm: '',
+            overhead: 'Code Blue, Tower 3 Bed 14. Code Blue, Tower 3 Bed 14. All available staff respond.',
+            cause: '',
+            monitor_phrase: 'Look at the monitor. No pulse on check. What do you see?',
+            hs_ts: [
+              'Hypovolemia — assess volume status',
+              'Hypoxia — ensure adequate ventilation and oxygenation',
+              'Hydrogen ion (acidosis) — check ABG, treat underlying cause',
+              'Hypo/Hyperkalemia — check electrolytes',
+              'Hypothermia — check temperature',
+              'Tension pneumothorax — needle decompression if suspected',
+              'Tamponade — bedside ultrasound if suspected',
+              'Toxins — review medications and exposures',
+              'Thrombosis (PE or coronary) — consider if suspected',
+              'Thrombosis (acute MI) — ECG after ROSC'
+            ],
+            acls_specifics: [
+              'Begin high-quality CPR — rate 100\u2013120/min, depth \u22652 inches, full recoil',
+              'Secure airway — bag-mask ventilation, then intubate',
+              'Epinephrine 1 mg IV/IO q3\u20135 min — give as soon as access obtained',
+              'Establish IV/IO access if not already in place',
+              'Identify and treat reversible causes (H\u2019s and T\u2019s)',
+              'Reassess rhythm every 2 min — check for pulse with rhythm check',
+              'If ROSC: 12-lead ECG, target SpO\u2082 92\u201398%, avoid hyperthermia'
+            ],
+            rosc_label: '\u2713 ROSC Achieved \u2192 Initiating Resuscitation'
+          },
+          noROSCMsg: `Despite resuscitation, the patient did not achieve ROSC.\n\nNo interventions were ordered in a patient with septic shock. Fluid resuscitation, IV antibiotics, vasopressor support, and MICU transfer must all begin simultaneously at recognition of septic shock — every minute of delay worsens outcomes.`,
           nextVitals: [
             { lbl: 'HR',    val: '136',   unit: 'bpm',    st: 'vc' },
             { lbl: 'BP',    val: '68/34', unit: 'mm Hg',  st: 'vc' },
@@ -461,7 +492,7 @@ e.g.: Additional interventions, medications, consults, etc.`,
           ],
           vitalsMsg: `MICU team initiated norepinephrine. MAP slowly improving to 61 mm Hg.<br/><br/>
           MICU attending: <em>"In septic shock with MAP <65 despite fluids, don't wait for us to arrive — start the pressor. Time matters."</em>`,
-          nextDecision: 'decision2',
+          nextDecision: 'decision2Delayed',
           updatedExam: [
             { icon:'🧠', lbl:'Neuro',   key:'neuro',   text:'Confused. GCS 12. Slowly improving.' },
             { icon:'👁️', lbl:'General', key:'gen',     text:'Ill-appearing. Diaphoretic.' },
@@ -1065,6 +1096,37 @@ e.g.: Labs, imaging, oxygen, medications, consults, etc.`,
             ],
             rosc_label: '✓ ROSC Achieved — PERT Team Taking Over →'
           },
+                    showVitalsButton: true,
+          showCodeBlue: true,
+          codeBlueConfig: {
+            rhythm: '',
+            overhead: 'Code Blue, MICU Bed 6. Code Blue, MICU Bed 6. Crash cart to MICU STAT.',
+            cause: '',
+            monitor_phrase: 'Look at the monitor. No pulse on check. What do you see?',
+            hs_ts: [
+              'Hypovolemia — assess volume status',
+              'Hypoxia — ensure adequate ventilation and oxygenation',
+              'Hydrogen ion (acidosis) — check ABG, treat underlying cause',
+              'Hypo/Hyperkalemia — check electrolytes',
+              'Hypothermia — check temperature',
+              'Tension pneumothorax — needle decompression if suspected',
+              'Tamponade — bedside ultrasound if suspected',
+              'Toxins — review medications and exposures',
+              'Thrombosis (PE or coronary) — consider if suspected',
+              'Thrombosis (acute MI) — ECG after ROSC'
+            ],
+            acls_specifics: [
+              'Begin high-quality CPR — rate 100–120/min, depth ≥2 inches, full recoil',
+              'Secure airway — bag-mask ventilation, then intubate',
+              'Epinephrine 1 mg IV/IO q3–5 min — give as soon as access obtained',
+              'Establish IV/IO access if not already in place',
+              'Identify and treat reversible causes (H\u2019s and T\u2019s)',
+              'Reassess rhythm every 2 min — check for pulse with rhythm check',
+              'If ROSC: 12-lead ECG, target SpO\u2082 92–98%, avoid hyperthermia'
+            ],
+            rosc_label: '\u2713 ROSC Achieved \u2192 Continuing Resuscitation'
+          },
+          noROSCMsg: `Despite resuscitation, the patient did not achieve ROSC.\n\nLarge fluid boluses in massive pulmonary embolism worsen right ventricular dilation and septal bowing — pushing the interventricular septum into the LV, reducing CO, and precipitating obstructive shock and cardiac arrest. In massive PE, judicious fluid (250–500 mL max) is a temporizing measure only. Definitive therapy (systemic thrombolytics or catheter-directed therapy) is the priority.`,
           nextVitals: [
             { lbl: 'HR',    val: '148',   unit: 'bpm',    st: 'vc' },
             { lbl: 'BP',    val: '66/38', unit: 'mm Hg',  st: 'vc' },
@@ -1276,6 +1338,37 @@ e.g.: Labs, imaging, oxygen, medications, consults, etc.`,
             ],
             rosc_label: '✓ ROSC After Thrombolytics — PERT Team Assuming Care →'
           },
+                    showVitalsButton: true,
+          showCodeBlue: true,
+          codeBlueConfig: {
+            rhythm: '',
+            overhead: 'Code Blue, MICU Bed 6. Code Blue, MICU Bed 6.',
+            cause: '',
+            monitor_phrase: 'Look at the monitor. No pulse on check. What do you see?',
+            hs_ts: [
+              'Hypovolemia — assess volume status',
+              'Hypoxia — ensure adequate ventilation and oxygenation',
+              'Hydrogen ion (acidosis) — check ABG, treat underlying cause',
+              'Hypo/Hyperkalemia — check electrolytes',
+              'Hypothermia — check temperature',
+              'Tension pneumothorax — needle decompression if suspected',
+              'Tamponade — bedside ultrasound if suspected',
+              'Toxins — review medications and exposures',
+              'Thrombosis (PE or coronary) — consider if suspected',
+              'Thrombosis (acute MI) — ECG after ROSC'
+            ],
+            acls_specifics: [
+              'Begin high-quality CPR — rate 100–120/min, depth ≥2 inches, full recoil',
+              'Secure airway — bag-mask ventilation, then intubate',
+              'Epinephrine 1 mg IV/IO q3–5 min — give as soon as access obtained',
+              'Establish IV/IO access if not already in place',
+              'Identify and treat reversible causes (H\u2019s and T\u2019s)',
+              'Reassess rhythm every 2 min — check for pulse with rhythm check',
+              'If ROSC: 12-lead ECG, target SpO\u2082 92–98%, avoid hyperthermia'
+            ],
+            rosc_label: '\u2713 ROSC Achieved \u2192 Continuing Resuscitation'
+          },
+          noROSCMsg: `Despite resuscitation, the patient did not achieve ROSC.\n\nIn massive PE with RV failure, additional fluid loading is contraindicated. It worsens interventricular septal shift, reduces LV preload, and causes obstructive shock. ROSC in this setting requires definitive PE therapy — systemic thrombolytics (tPA) are indicated when there is cardiac arrest from massive PE.`,
           nextVitals: [
             { lbl: 'HR',    val: '152',   unit: 'bpm',    st: 'vc' },
             { lbl: 'BP',    val: '58/32', unit: 'mm Hg',  st: 'vc' },
@@ -1329,7 +1422,7 @@ e.g.: Labs, imaging, oxygen, medications, consults, etc.`,
     },
 
     decision2: {
-      title: 'PERT Conference — Treatment Strategy Decision',
+      title: 'Multidisciplinary Conference — Treatment Decision',
       prompt: 'PERT team has assembled: Interventional Radiology, Pulmonary/Critical Care, Cardiology, and Primary Medicine. The patient remains critically ill with massive PE and hemodynamic instability. The team is discussing treatment options. What is your recommendation?',
       placeholder: `Enter your treatment recommendation...
 e.g.: Treatment strategy, rationale, monitoring plan, etc.`,
@@ -1519,6 +1612,7 @@ e.g.: Airway, medications, ventilation, etc.`,
           Target VT = 6 mL/kg × 54.7 = <span class="hl">328 mL</span> (NOT 6 × 72 kg actual weight)<br/><br/>
           Intubation successful on first attempt. ETT 7.5 at 21 cm at lip.`,
           showVitalsButton: true,
+                    showVitalsButton: true,
           nextVitals: [
             { lbl: 'HR',    val: '105',       unit: 'bpm',      st: 'vw' },
             { lbl: 'BP',    val: '92/54',     unit: 'mm Hg',    st: 'vw' },
@@ -1586,6 +1680,37 @@ e.g.: Airway, medications, ventilation, etc.`,
             ],
             rosc_label: '✓ ROSC After Needle Decompression — Continuing ARDS Care →'
           },
+                    showVitalsButton: true,
+          showCodeBlue: true,
+          codeBlueConfig: {
+            rhythm: '',
+            overhead: 'Code Blue, MICU Bed 3. Code Blue, MICU Bed 3. Crash cart to MICU STAT.',
+            cause: '',
+            monitor_phrase: 'Look at the monitor. No pulse on check. What do you see?',
+            hs_ts: [
+              'Hypovolemia — assess volume status',
+              'Hypoxia — ensure adequate ventilation and oxygenation',
+              'Hydrogen ion (acidosis) — check ABG, treat underlying cause',
+              'Hypo/Hyperkalemia — check electrolytes',
+              'Hypothermia — check temperature',
+              'Tension pneumothorax — needle decompression if suspected',
+              'Tamponade — bedside ultrasound if suspected',
+              'Toxins — review medications and exposures',
+              'Thrombosis (PE or coronary) — consider if suspected',
+              'Thrombosis (acute MI) — ECG after ROSC'
+            ],
+            acls_specifics: [
+              'Begin high-quality CPR — rate 100\u2013120/min, depth \u22652 inches, full recoil',
+              'Secure airway — bag-mask ventilation, then intubate',
+              'Epinephrine 1 mg IV/IO q3\u20135 min — give as soon as access obtained',
+              'Establish IV/IO access if not already in place',
+              'Identify and treat reversible causes (H\u2019s and T\u2019s)',
+              'Reassess rhythm every 2 min — check for pulse with rhythm check',
+              'If ROSC: 12-lead ECG, target SpO\u2082 92\u201398%, avoid hyperthermia'
+            ],
+            rosc_label: '\u2713 ROSC Achieved \u2192 Correcting Ventilator Settings'
+          },
+          noROSCMsg: `Despite resuscitation, the patient did not achieve ROSC.\n\nHigh tidal volumes (>8 mL/kg PBW) in ARDS cause volutrauma — progressive alveolar rupture, pneumothorax, tension pneumothorax, and barotrauma. ARDSnet protocol mandates 6 mL/kg PBW (ideal body weight). After ROSC, the first action must be correcting ventilator settings.`,
           nextVitals: [
             { lbl: 'VT',    val: '430 mL',    unit: '7.9 mL/kg',st: 'vc' },
             { lbl: 'Pplat', val: '34',        unit: 'cm H2O',   st: 'vc' },
@@ -1593,6 +1718,7 @@ e.g.: Airway, medications, ventilation, etc.`,
             { lbl: 'BP',    val: '82/48',     unit: 'mm Hg',    st: 'vc' },
           ],
           vitalsMsg: `After ROSC via needle decompression and chest tube, the tidal volume is corrected to 328 mL (6 mL/kg PBW).<br/><br/><strong>Key teaching:</strong> Tidal volume must be based on <span class="hl">Predicted Body Weight (PBW)</span>, not actual weight. For 5'4" female: PBW = 45.5 + 2.3 × (64−60) = 54.7 kg → VT = 328 mL. Pplat target is <30 cm H₂O. Barotrauma is a preventable, life-threatening complication of high-pressure ventilation.`,
+          nextDecision: 'decision2',
           updatedExam: [
             { icon:'😴', lbl:'General', key:'gen',     text:'Post-arrest. Intubated and sedated after ROSC. Chest tube in place on left side.' },
             { icon:'🧠', lbl:'Neuro',   key:'neuro',   text:'Post-cardiac arrest. Sedated. Neurological outcome depends on arrest duration.' },
@@ -1667,6 +1793,37 @@ e.g.: Airway, medications, ventilation, etc.`,
             ],
             rosc_label: '✓ ROSC Achieved — Airway Secured, Continuing ARDS Management →'
           },
+                    showVitalsButton: true,
+          showCodeBlue: true,
+          codeBlueConfig: {
+            rhythm: '',
+            overhead: 'Code Blue, MICU Bed 3. Code Blue, MICU Bed 3. Airway team respond STAT.',
+            cause: '',
+            monitor_phrase: 'Look at the monitor. No pulse on check. What do you see?',
+            hs_ts: [
+              'Hypovolemia — assess volume status',
+              'Hypoxia — ensure adequate ventilation and oxygenation',
+              'Hydrogen ion (acidosis) — check ABG, treat underlying cause',
+              'Hypo/Hyperkalemia — check electrolytes',
+              'Hypothermia — check temperature',
+              'Tension pneumothorax — needle decompression if suspected',
+              'Tamponade — bedside ultrasound if suspected',
+              'Toxins — review medications and exposures',
+              'Thrombosis (PE or coronary) — consider if suspected',
+              'Thrombosis (acute MI) — ECG after ROSC'
+            ],
+            acls_specifics: [
+              'Begin high-quality CPR — rate 100\u2013120/min, depth \u22652 inches, full recoil',
+              'Secure airway — bag-mask ventilation, then intubate',
+              'Epinephrine 1 mg IV/IO q3\u20135 min — give as soon as access obtained',
+              'Establish IV/IO access if not already in place',
+              'Identify and treat reversible causes (H\u2019s and T\u2019s)',
+              'Reassess rhythm every 2 min — check for pulse with rhythm check',
+              'If ROSC: 12-lead ECG, target SpO\u2082 92\u201398%, avoid hyperthermia'
+            ],
+            rosc_label: '\u2713 ROSC Achieved \u2192 Emergent Intubation'
+          },
+          noROSCMsg: `Despite resuscitation, the patient did not achieve ROSC.\n\nSevere ARDS with P/F ratio <100 requires endotracheal intubation and lung-protective mechanical ventilation. Non-invasive approaches are insufficient at this severity. Without intubation, progressive hypoxemia leads to hypoxic cardiac arrest.`,
           nextVitals: [
             { lbl: 'HR',   val: '152',    unit: 'bpm',      st: 'vc' },
             { lbl: 'BP',   val: '68/40',  unit: 'mm Hg',    st: 'vc' },
@@ -1880,6 +2037,7 @@ You must specify EXACT numbers:
           • Oxygenation: Improved (PaO₂ 58 → 78, P/F ratio 72 → 97)<br/>
           • Patient: Synchronous with ventilator<br/><br/>
           <strong>RT:</strong> <em>"Excellent response to your adjustments. Ventilation and oxygenation both improved. The patient is much more stable now."</em>`,
+          nextDecision: 'decision3',
           updatedExam: [
             { icon:'😴', lbl:'General', key:'gen',     text:'Intubated and sedated. RASS -1 to -2. Comfortable on ventilator. Improved from initial presentation.' },
             { icon:'🧠', lbl:'Neuro',   key:'neuro',   text:'Sedated on propofol. RASS -1 (easily arousable). Pupils equal and reactive. Follows simple commands when aroused.' },
@@ -2141,7 +2299,9 @@ Key considerations:
           • Ordered prone positioning per PROSEVA criteria (P/F <150, FiO₂ ≥60%)<br/>
           • Demonstrated complete evidence-based ARDS management<br/><br/>
           The patient continues to improve with prone positioning and will require ongoing ventilator management in the MICU.`,
-          nextDecision: null
+          nextDecision: null,
+          endState: 'good',
+          endMsg: `<strong>Case Complete.</strong><br/><br/>Ms. Rivera is prone on day 2 of mechanical ventilation. Over the next 18 hours her P/F ratio improves from 68 to 180. The MICU team begins discussion about supinating and assessing for weaning.<br/><br/><strong>Key teaching:</strong> Lung-protective ventilation (6 mL/kg PBW) + optimal PEEP targeting + prone positioning in severe ARDS (P/F <150) is the evidence-based bundle. The PROSEVA trial demonstrated a 16% absolute mortality reduction with early prone positioning in severe ARDS.`
         },
         {
           id: 'maintain-settings-acceptable',
@@ -2744,7 +2904,7 @@ const SEPSIS_CASES = [
     },
 
     decision_toxic: {
-      title: 'Toxic Megacolon Management',
+      title: 'Abdominal Emergency — Ongoing Management',
       prompt: 'The CT abdomen results are back. The radiologist calls you: "On Mr. Hayes\' CT we\'re seeing marked dilation of the transverse colon measuring 9.2 centimeters, thinning of the colonic wall, focal intramural air, and extensive pericolonic fat stranding. No free air at this time." Mr. Hayes\' abdomen is markedly distended and tympanitic. What are your next orders?',
       placeholder: `Enter your orders...\ne.g.: general surgery consult, IV metronidazole, PO vancomycin, NPO, bowel rest, etc.`,
       branches: [
@@ -2964,7 +3124,7 @@ const SEPSIS_CASES = [
     },
 
     decision_toxic_postrosc: {
-      title: 'Post-Arrest Management — Perforated Colon',
+      title: 'Post-Arrest Management',
       prompt: 'ROSC achieved. Mr. Hayes is intubated, hemodynamically unstable, and has a rigid abdomen. What are your immediate post-arrest orders?',
       placeholder: `Enter your orders...\ne.g.: norepinephrine, central line, IV metronidazole, PO vancomycin, surgery consult, etc.`,
       branches: [
