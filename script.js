@@ -3394,8 +3394,8 @@ const SEPSIS_CASES = [
             ],
             rosc_label: '✓ ROSC Achieved — Initiating Vasopressor Support →'
           },
+          noROSCMsg: `Despite resuscitation, Mr. Hayes did not achieve ROSC.\n\nFluid-refractory distributive shock progressed to PEA arrest. In septic shock with rising lactate and MAP <65 after initial fluid resuscitation, the next step is a vasopressor — not more fluid. Norepinephrine should have been initiated when MAP remained <65 after the first 2L.`,
           nextVitals: [
-            { lbl: 'HR',   val: '140',  unit: 'bpm',   st: 'vc' },
             { lbl: 'BP',   val: '60/30',unit: 'mm Hg', st: 'vc' },
             { lbl: 'MAP',  val: '40',   unit: 'mm Hg', st: 'vc' },
             { lbl: 'SpO₂', val: '87%',  unit: 'on NRB',st: 'vc' },
@@ -3893,7 +3893,7 @@ const SEPSIS_CASES = [
       { icon: '👁️', lbl: 'General', key: 'gen',     text: 'Acutely ill. Diaphoretic. Shivering with rigors. Visibly working to breathe — leaning forward, unable to complete full sentences.' },
       { icon: '👄', lbl: 'HEENT',   key: 'heent',   text: 'Dry mucous membranes. Oropharynx clear — no mucositis.' },
       { icon: '❤️', lbl: 'Cardiac', key: 'cardiac', text: 'Tachycardic. Regular rhythm. Extremities cooling.' },
-      { icon: '🪱', lbl: 'Lungs',   key: 'lungs',   text: 'Tachypneic, RR 26. Crackles at right lung base. Accessory muscle use — scalenes and sternocleidomastoids visibly engaged. Nasal flaring. Intercostal retractions. SpO₂ 90% on room air.' },
+      { icon: '🫁', lbl: 'Lungs',   key: 'lungs',   text: 'Tachypneic, RR 26. Crackles at right lung base. Accessory muscle use — scalenes and sternocleidomastoids visibly engaged. Nasal flaring. Intercostal retractions. SpO₂ 90% on room air.' },
       { icon: '🫃', lbl: 'Abdomen', key: 'abd',     text: 'Soft. Non-distended. Mild diffuse tenderness. No focal rebound.' }
     ],
 
@@ -3924,7 +3924,7 @@ const SEPSIS_CASES = [
           updatedExam: [
             { icon: '\uD83E\uDDE0', lbl: 'Neuro',   key: 'neuro',   text: 'Persistent confusion. Appears fatigued — decreased responsiveness to questions.' },
             { icon: '\u2764\uFE0F', lbl: 'Cardiac', key: 'cardiac', text: 'MAP at goal on vasopressor. HR slightly improved.' },
-            { icon: '🪱', lbl: 'Lungs',   key: 'lungs',   text: 'Worsening tachypnea — RR 28. Accessory muscle use prominent. SpO\u2082 88% on room air. She appears to be tiring — respiratory failure is progressing.' }
+            { icon: '🫁', lbl: 'Lungs',   key: 'lungs',   text: 'Worsening tachypnea — RR 28. Accessory muscle use prominent. SpO\u2082 88% on room air. She appears to be tiring — respiratory failure is progressing.' }
           ]
         },
         {
@@ -3948,7 +3948,7 @@ const SEPSIS_CASES = [
           nextDecision: 'decision2',
           updatedExam: [
             { icon: '\uD83E\uDDE0', lbl: 'Neuro', key: 'neuro', text: 'Persistent confusion. No meaningful improvement.' },
-            { icon: '🪱', lbl: 'Lungs', key: 'lungs', text: 'SpO\u2082 88% on room air. Accessory muscle use worsening. Respiratory failure progressing.' }
+            { icon: '🫁', lbl: 'Lungs', key: 'lungs', text: 'SpO\u2082 88% on room air. Accessory muscle use worsening. Respiratory failure progressing.' }
           ]
         },
         {
@@ -7021,49 +7021,57 @@ function generateOrdersReview() {
       let wasOrdered = ordered.has(id);
       
       // Handle aliases
-      if (id === 'norepi') wasOrdered = wasOrdered || ordered.has('norepinephrine') || ordered.has('levophed') || ordered.has('levo');
-      if (id === 'micu') wasOrdered = wasOrdered || ordered.has('icu') || ordered.has('critical care') || ordered.has('intensive care') || ordered.has('intensivist');
-      if (id === 'pert') wasOrdered = wasOrdered || ordered.has('pe team') || ordered.has('pe-team') || ordered.has('pe response') || ordered.has('pulmonary embolism team');
+      if (id === 'norepi') wasOrdered = wasOrdered || ordered.has('norepinephrine') || ordered.has('levophed') || ordered.has('levo') || ordered.has('vasopressor') || ordered.has('pressor');
+      if (id === 'micu') wasOrdered = wasOrdered || ordered.has('icu') || ordered.has('critical care') || ordered.has('intensive care') || ordered.has('intensivist') || ordered.has('transfer');
+      if (id === 'pert') wasOrdered = wasOrdered || ordered.has('pe team') || ordered.has('pe-team') || ordered.has('pe response') || ordered.has('pulmonary embolism team') || ordered.has('pulmonary embolism response');
       if (id === 'heparin') {
-        // Check for heparin itself and common anticoagulation terms
         wasOrdered = wasOrdered || 
                     ordered.has('heparin') || 
                     ordered.has('anticoagulation') || 
                     ordered.has('anticoagulate') ||
+                    ordered.has('anticoag') ||
                     ordered.has('lovenox') || 
                     ordered.has('enoxaparin') ||
-                    ordered.has('lmwh');
+                    ordered.has('lmwh') ||
+                    ordered.has('bivalirudin') ||
+                    ordered.has('argatroban');
       }
       if (id === 'vancomycin') wasOrdered = wasOrdered || ordered.has('vanco') || ordered.has('vanc');
-      if (id === 'piperacillin') wasOrdered = wasOrdered || ordered.has('ceftriaxone') || ordered.has('pip-tazo') || ordered.has('pip') || ordered.has('zosyn') || ordered.has('piptaz');
+      if (id === 'piperacillin') wasOrdered = wasOrdered || ordered.has('ceftriaxone') || ordered.has('pip-tazo') || ordered.has('pip') || ordered.has('zosyn') || ordered.has('piptaz') || ordered.has('ampicillin-sulbactam') || ordered.has('meropenem') || ordered.has('cefepime');
       if (id === 'intubation') wasOrdered = wasOrdered || ordered.has('intubate') || ordered.has('rsi') || ordered.has('ett') || ordered.has('vent') || ordered.has('intubation') || ordered.has('hfnc') || ordered.has('high flow') || ordered.has('nrb') || ordered.has('non-rebreather') || ordered.has('oxygen') || ordered.has('supplemental') || ordered.has('bipap');
-      if (id === 'lung-protective') wasOrdered = wasOrdered || ordered.has('6 ml/kg') || ordered.has('pbw') || ordered.has('vent');
-      if (id === 'sedation') wasOrdered = wasOrdered || ordered.has('propofol') || ordered.has('fentanyl') || ordered.has('midazolam') || ordered.has('versed') || ordered.has('sedation');
-      if (id === 'neuromuscular') wasOrdered = wasOrdered || ordered.has('rocuronium') || ordered.has('vecuronium') || ordered.has('cisatracurium') || ordered.has('paralytic') || ordered.has('neuromuscular');
-      if (id === 'ivfluid') wasOrdered = wasOrdered || ordered.has('fluid') || ordered.has('bolus') || ordered.has('ns') || ordered.has('lr') || ordered.has('saline');
+      if (id === 'lung-protective') wasOrdered = wasOrdered || ordered.has('6 ml/kg') || ordered.has('pbw') || ordered.has('vent') || ordered.has('lung protective') || ordered.has('ardsnet') || ordered.has('low tidal');
+      if (id === 'sedation') wasOrdered = wasOrdered || ordered.has('propofol') || ordered.has('fentanyl') || ordered.has('midazolam') || ordered.has('versed') || ordered.has('sedation') || ordered.has('ketamine') || ordered.has('precedex') || ordered.has('dexmedetomidine');
+      if (id === 'neuromuscular') wasOrdered = wasOrdered || ordered.has('rocuronium') || ordered.has('vecuronium') || ordered.has('cisatracurium') || ordered.has('paralytic') || ordered.has('neuromuscular') || ordered.has('succinylcholine') || ordered.has('roc');
+      if (id === 'ivfluid') wasOrdered = wasOrdered || ordered.has('fluid') || ordered.has('bolus') || ordered.has('ns') || ordered.has('lr') || ordered.has('saline') || ordered.has('lactated') || ordered.has('crystalloid') || ordered.has('normal saline') || ordered.has('1l') || ordered.has('2l') || ordered.has('30 ml');
+      if (id === 'ctpa') wasOrdered = wasOrdered || ordered.has('ct pe') || ordered.has('cta chest') || ordered.has('ct chest') || ordered.has('ctpa') || ordered.has('ct pulmonary') || ordered.has('pe protocol');
+      if (id === 'echo') wasOrdered = wasOrdered || ordered.has('echo') || ordered.has('echocardiogram') || ordered.has('bedside echo') || ordered.has('pocus') || ordered.has('cardiac ultrasound') || ordered.has('tee') || ordered.has('tte');
+      if (id === 'ddimer') wasOrdered = wasOrdered || ordered.has('d-dimer') || ordered.has('d dimer') || ordered.has('ddimer') || ordered.has('fibrinogen');
+      if (id === 'troponin') wasOrdered = wasOrdered || ordered.has('troponin') || ordered.has('trop') || ordered.has('cardiac enzymes');
+      if (id === 'bnp') wasOrdered = wasOrdered || ordered.has('bnp') || ordered.has('nt-probnp') || ordered.has('probnp') || ordered.has('brain natriuretic');
+      if (id === 'ekg') wasOrdered = wasOrdered || ordered.has('ekg') || ordered.has('ecg') || ordered.has('12-lead') || ordered.has('12 lead') || ordered.has('electrocardiogram');
+      if (id === 'cbc') wasOrdered = wasOrdered || ordered.has('cbc') || ordered.has('complete blood count') || ordered.has('wbc');
+      if (id === 'bmp') wasOrdered = wasOrdered || ordered.has('bmp') || ordered.has('cmp') || ordered.has('electrolytes') || ordered.has('lytes') || ordered.has('basic metabolic') || ordered.has('comprehensive');
       // SS-case-specific aliases
       if (id === 'antibiotics') wasOrdered = wasOrdered || ordered.has('ceftriaxone') || ordered.has('pip-tazo') || ordered.has('pip') || ordered.has('zosyn') || ordered.has('meropenem') || ordered.has('vancomycin') || ordered.has('vanco') || ordered.has('cefepime') || ordered.has('antibiotic') || ordered.has('abx');
       if (id === 'cultures') wasOrdered = wasOrdered || ordered.has('blood culture') || ordered.has('bcx') || ordered.has('culture');
       if (id === 'lactate') wasOrdered = wasOrdered || ordered.has('lactic acid');
-      if (id === 'ivfluid') wasOrdered = wasOrdered || ordered.has('fluid') || ordered.has('bolus') || ordered.has('ns') || ordered.has('lr') || ordered.has('saline') || ordered.has('lactated') || ordered.has('crystalloid');
-      if (id === 'ct-abdomen') wasOrdered = wasOrdered || ordered.has('ct abdomen') || ordered.has('ct a/p') || ordered.has('ct ap') || ordered.has('abdominal ct') || ordered.has('ct-abdomen');
-      if (id === 'cdiff') wasOrdered = wasOrdered || ordered.has('c diff') || ordered.has('cdiff') || ordered.has('clostridium') || ordered.has('c. diff');
-      if (id === 'surgery') wasOrdered = wasOrdered || ordered.has('surgery') || ordered.has('surgical') || ordered.has('gen surg') || ordered.has('general surgery') || ordered.has('egs') || ordered.has('emergency general surgery');
+      if (id === 'ct-abdomen') wasOrdered = wasOrdered || ordered.has('ct abdomen') || ordered.has('ct a/p') || ordered.has('ct ap') || ordered.has('abdominal ct') || ordered.has('ct-abdomen') || ordered.has('ct belly');
+      if (id === 'cdiff') wasOrdered = wasOrdered || ordered.has('c diff') || ordered.has('cdiff') || ordered.has('clostridium') || ordered.has('c. diff') || ordered.has('clostridioides');
+      if (id === 'surgery') wasOrdered = wasOrdered || ordered.has('surgery') || ordered.has('surgical') || ordered.has('gen surg') || ordered.has('general surgery') || ordered.has('egs') || ordered.has('emergency general surgery') || ordered.has('acute care surgery');
       if (id === 'flagyl') wasOrdered = wasOrdered || ordered.has('metronidazole') || ordered.has('flagyl') || ordered.has('iv metronidazole');
       if (id === 'po-vanco') wasOrdered = wasOrdered || ordered.has('po vancomycin') || ordered.has('oral vancomycin') || ordered.has('po vanco');
-      if (id === 'npo') wasOrdered = wasOrdered || ordered.has('npo') || ordered.has('nothing by mouth') || ordered.has('bowel rest');
-      if (id === 'central') wasOrdered = wasOrdered || ordered.has('central line') || ordered.has('central venous') || ordered.has('cvl') || ordered.has('cvc') || ordered.has('tlc') || ordered.has('triple lumen');
-      if (id === 'art-line') wasOrdered = wasOrdered || ordered.has('arterial line') || ordered.has('a-line') || ordered.has('a line') || ordered.has('art line');
-      if (id === 'hydrocortisone') wasOrdered = wasOrdered || ordered.has('steroid') || ordered.has('solu-cortef') || ordered.has('stress dose') || ordered.has('hydrocortisone');
-      if (id === 'cortisol') wasOrdered = wasOrdered || ordered.has('cortisol') || ordered.has('acth');
-      if (id === 'vasopressin') wasOrdered = wasOrdered || ordered.has('vasopressin') || ordered.has('pitressin') || ordered.has('second pressor');
-      if (id === 'abx-escalation') wasOrdered = wasOrdered || ordered.has('meropenem') || ordered.has('escalat') || ordered.has('broader') || ordered.has('broad') || ordered.has('carbapenem') || ordered.has('antifungal');
-      if (id === 'cefepime') wasOrdered = wasOrdered || ordered.has('cefepime') || ordered.has('maxipime') || ordered.has('zosyn') || ordered.has('pip-tazo') || ordered.has('piperacillin');
+      if (id === 'npo') wasOrdered = wasOrdered || ordered.has('npo') || ordered.has('nothing by mouth') || ordered.has('bowel rest') || ordered.has('keep npo');
+      if (id === 'central') wasOrdered = wasOrdered || ordered.has('central line') || ordered.has('central venous') || ordered.has('cvl') || ordered.has('cvc') || ordered.has('tlc') || ordered.has('triple lumen') || ordered.has('subclavian') || ordered.has('internal jugular') || ordered.has('femoral line');
+      if (id === 'art-line') wasOrdered = wasOrdered || ordered.has('arterial line') || ordered.has('a-line') || ordered.has('a line') || ordered.has('art line') || ordered.has('radial') || ordered.has('femoral art');
+      if (id === 'hydrocortisone') wasOrdered = wasOrdered || ordered.has('steroid') || ordered.has('solu-cortef') || ordered.has('stress dose') || ordered.has('hydrocortisone') || ordered.has('cortisol');
+      if (id === 'cortisol') wasOrdered = wasOrdered || ordered.has('cortisol') || ordered.has('acth') || ordered.has('cosyntropin');
+      if (id === 'vasopressin') wasOrdered = wasOrdered || ordered.has('vasopressin') || ordered.has('pitressin') || ordered.has('second pressor') || ordered.has('avp');
+      if (id === 'abx-escalation') wasOrdered = wasOrdered || ordered.has('meropenem') || ordered.has('escalat') || ordered.has('broader') || ordered.has('broad') || ordered.has('carbapenem') || ordered.has('antifungal') || ordered.has('micafungin') || ordered.has('fluconazole') || ordered.has('voriconazole');
+      if (id === 'cefepime') wasOrdered = wasOrdered || ordered.has('cefepime') || ordered.has('maxipime') || ordered.has('zosyn') || ordered.has('pip-tazo') || ordered.has('piperacillin') || ordered.has('meropenem');
       if (id === 'rrt') wasOrdered = wasOrdered || ordered.has('rapid response') || ordered.has('rrt');
-      if (id === 'cbc') wasOrdered = wasOrdered || ordered.has('cbc') || ordered.has('complete blood count') || ordered.has('wbc');
       if (id === 'cbc-diff') wasOrdered = wasOrdered || ordered.has('cbc with diff') || ordered.has('differential') || ordered.has('anc') || ordered.has('neutrophil');
       if (id === 'abg') wasOrdered = wasOrdered || ordered.has('abg') || ordered.has('arterial blood gas') || ordered.has('blood gas');
-      if (id === 'micu') wasOrdered = wasOrdered || ordered.has('micu') || ordered.has('icu') || ordered.has('intensive care');
+      if (id === 'micu') wasOrdered = wasOrdered || ordered.has('micu') || ordered.has('icu') || ordered.has('intensive care') || ordered.has('transfer');
       
       if (wasOrdered) {
         // Special handling for MICU if it was prompted
@@ -7088,49 +7096,57 @@ function generateOrdersReview() {
       let wasOrdered = ordered.has(id);
       
       // Handle aliases (same as above)
-      if (id === 'norepi') wasOrdered = wasOrdered || ordered.has('norepinephrine') || ordered.has('levophed') || ordered.has('levo');
-      if (id === 'micu') wasOrdered = wasOrdered || ordered.has('icu') || ordered.has('critical care') || ordered.has('intensive care') || ordered.has('intensivist');
-      if (id === 'pert') wasOrdered = wasOrdered || ordered.has('pe team') || ordered.has('pe-team') || ordered.has('pe response') || ordered.has('pulmonary embolism team');
+      if (id === 'norepi') wasOrdered = wasOrdered || ordered.has('norepinephrine') || ordered.has('levophed') || ordered.has('levo') || ordered.has('vasopressor') || ordered.has('pressor');
+      if (id === 'micu') wasOrdered = wasOrdered || ordered.has('icu') || ordered.has('critical care') || ordered.has('intensive care') || ordered.has('intensivist') || ordered.has('transfer');
+      if (id === 'pert') wasOrdered = wasOrdered || ordered.has('pe team') || ordered.has('pe-team') || ordered.has('pe response') || ordered.has('pulmonary embolism team') || ordered.has('pulmonary embolism response');
       if (id === 'heparin') {
-        // Check for heparin itself and common anticoagulation terms
         wasOrdered = wasOrdered || 
                     ordered.has('heparin') || 
                     ordered.has('anticoagulation') || 
                     ordered.has('anticoagulate') ||
+                    ordered.has('anticoag') ||
                     ordered.has('lovenox') || 
                     ordered.has('enoxaparin') ||
-                    ordered.has('lmwh');
+                    ordered.has('lmwh') ||
+                    ordered.has('bivalirudin') ||
+                    ordered.has('argatroban');
       }
       if (id === 'vancomycin') wasOrdered = wasOrdered || ordered.has('vanco') || ordered.has('vanc');
-      if (id === 'piperacillin') wasOrdered = wasOrdered || ordered.has('ceftriaxone') || ordered.has('pip-tazo') || ordered.has('pip') || ordered.has('zosyn') || ordered.has('piptaz');
+      if (id === 'piperacillin') wasOrdered = wasOrdered || ordered.has('ceftriaxone') || ordered.has('pip-tazo') || ordered.has('pip') || ordered.has('zosyn') || ordered.has('piptaz') || ordered.has('meropenem') || ordered.has('cefepime');
       if (id === 'intubation') wasOrdered = wasOrdered || ordered.has('intubate') || ordered.has('rsi') || ordered.has('ett') || ordered.has('vent') || ordered.has('intubation') || ordered.has('hfnc') || ordered.has('high flow') || ordered.has('nrb') || ordered.has('non-rebreather') || ordered.has('oxygen') || ordered.has('supplemental') || ordered.has('bipap');
-      if (id === 'lung-protective') wasOrdered = wasOrdered || ordered.has('6 ml/kg') || ordered.has('pbw') || ordered.has('vent');
-      if (id === 'sedation') wasOrdered = wasOrdered || ordered.has('propofol') || ordered.has('fentanyl') || ordered.has('midazolam') || ordered.has('versed') || ordered.has('sedation');
-      if (id === 'neuromuscular') wasOrdered = wasOrdered || ordered.has('rocuronium') || ordered.has('vecuronium') || ordered.has('cisatracurium') || ordered.has('paralytic') || ordered.has('neuromuscular');
-      if (id === 'ivfluid') wasOrdered = wasOrdered || ordered.has('fluid') || ordered.has('bolus') || ordered.has('ns') || ordered.has('lr') || ordered.has('saline');
+      if (id === 'lung-protective') wasOrdered = wasOrdered || ordered.has('6 ml/kg') || ordered.has('pbw') || ordered.has('vent') || ordered.has('lung protective') || ordered.has('ardsnet') || ordered.has('low tidal');
+      if (id === 'sedation') wasOrdered = wasOrdered || ordered.has('propofol') || ordered.has('fentanyl') || ordered.has('midazolam') || ordered.has('versed') || ordered.has('sedation') || ordered.has('ketamine') || ordered.has('precedex') || ordered.has('dexmedetomidine');
+      if (id === 'neuromuscular') wasOrdered = wasOrdered || ordered.has('rocuronium') || ordered.has('vecuronium') || ordered.has('cisatracurium') || ordered.has('paralytic') || ordered.has('neuromuscular') || ordered.has('succinylcholine') || ordered.has('roc');
+      if (id === 'ivfluid') wasOrdered = wasOrdered || ordered.has('fluid') || ordered.has('bolus') || ordered.has('ns') || ordered.has('lr') || ordered.has('saline') || ordered.has('lactated') || ordered.has('crystalloid') || ordered.has('normal saline') || ordered.has('1l') || ordered.has('2l') || ordered.has('30 ml');
+      if (id === 'ctpa') wasOrdered = wasOrdered || ordered.has('ct pe') || ordered.has('cta chest') || ordered.has('ct chest') || ordered.has('ctpa') || ordered.has('ct pulmonary') || ordered.has('pe protocol');
+      if (id === 'echo') wasOrdered = wasOrdered || ordered.has('echo') || ordered.has('echocardiogram') || ordered.has('bedside echo') || ordered.has('pocus') || ordered.has('cardiac ultrasound') || ordered.has('tee') || ordered.has('tte');
+      if (id === 'ddimer') wasOrdered = wasOrdered || ordered.has('d-dimer') || ordered.has('d dimer') || ordered.has('ddimer') || ordered.has('fibrinogen');
+      if (id === 'troponin') wasOrdered = wasOrdered || ordered.has('troponin') || ordered.has('trop') || ordered.has('cardiac enzymes');
+      if (id === 'bnp') wasOrdered = wasOrdered || ordered.has('bnp') || ordered.has('nt-probnp') || ordered.has('probnp') || ordered.has('brain natriuretic');
+      if (id === 'ekg') wasOrdered = wasOrdered || ordered.has('ekg') || ordered.has('ecg') || ordered.has('12-lead') || ordered.has('12 lead') || ordered.has('electrocardiogram');
+      if (id === 'cbc') wasOrdered = wasOrdered || ordered.has('cbc') || ordered.has('complete blood count') || ordered.has('wbc');
+      if (id === 'bmp') wasOrdered = wasOrdered || ordered.has('bmp') || ordered.has('cmp') || ordered.has('electrolytes') || ordered.has('lytes') || ordered.has('basic metabolic') || ordered.has('comprehensive');
       // SS-case-specific aliases
       if (id === 'antibiotics') wasOrdered = wasOrdered || ordered.has('ceftriaxone') || ordered.has('pip-tazo') || ordered.has('pip') || ordered.has('zosyn') || ordered.has('meropenem') || ordered.has('vancomycin') || ordered.has('vanco') || ordered.has('cefepime') || ordered.has('antibiotic') || ordered.has('abx');
       if (id === 'cultures') wasOrdered = wasOrdered || ordered.has('blood culture') || ordered.has('bcx') || ordered.has('culture');
       if (id === 'lactate') wasOrdered = wasOrdered || ordered.has('lactic acid');
-      if (id === 'ivfluid') wasOrdered = wasOrdered || ordered.has('fluid') || ordered.has('bolus') || ordered.has('ns') || ordered.has('lr') || ordered.has('saline') || ordered.has('lactated') || ordered.has('crystalloid');
-      if (id === 'ct-abdomen') wasOrdered = wasOrdered || ordered.has('ct abdomen') || ordered.has('ct a/p') || ordered.has('ct ap') || ordered.has('abdominal ct') || ordered.has('ct-abdomen');
-      if (id === 'cdiff') wasOrdered = wasOrdered || ordered.has('c diff') || ordered.has('cdiff') || ordered.has('clostridium') || ordered.has('c. diff');
-      if (id === 'surgery') wasOrdered = wasOrdered || ordered.has('surgery') || ordered.has('surgical') || ordered.has('gen surg') || ordered.has('general surgery') || ordered.has('egs') || ordered.has('emergency general surgery');
+      if (id === 'ct-abdomen') wasOrdered = wasOrdered || ordered.has('ct abdomen') || ordered.has('ct a/p') || ordered.has('ct ap') || ordered.has('abdominal ct') || ordered.has('ct-abdomen') || ordered.has('ct belly');
+      if (id === 'cdiff') wasOrdered = wasOrdered || ordered.has('c diff') || ordered.has('cdiff') || ordered.has('clostridium') || ordered.has('c. diff') || ordered.has('clostridioides');
+      if (id === 'surgery') wasOrdered = wasOrdered || ordered.has('surgery') || ordered.has('surgical') || ordered.has('gen surg') || ordered.has('general surgery') || ordered.has('egs') || ordered.has('emergency general surgery') || ordered.has('acute care surgery');
       if (id === 'flagyl') wasOrdered = wasOrdered || ordered.has('metronidazole') || ordered.has('flagyl') || ordered.has('iv metronidazole');
       if (id === 'po-vanco') wasOrdered = wasOrdered || ordered.has('po vancomycin') || ordered.has('oral vancomycin') || ordered.has('po vanco');
-      if (id === 'npo') wasOrdered = wasOrdered || ordered.has('npo') || ordered.has('nothing by mouth') || ordered.has('bowel rest');
-      if (id === 'central') wasOrdered = wasOrdered || ordered.has('central line') || ordered.has('central venous') || ordered.has('cvl') || ordered.has('cvc') || ordered.has('tlc') || ordered.has('triple lumen');
-      if (id === 'art-line') wasOrdered = wasOrdered || ordered.has('arterial line') || ordered.has('a-line') || ordered.has('a line') || ordered.has('art line');
-      if (id === 'hydrocortisone') wasOrdered = wasOrdered || ordered.has('steroid') || ordered.has('solu-cortef') || ordered.has('stress dose') || ordered.has('hydrocortisone');
-      if (id === 'cortisol') wasOrdered = wasOrdered || ordered.has('cortisol') || ordered.has('acth');
-      if (id === 'vasopressin') wasOrdered = wasOrdered || ordered.has('vasopressin') || ordered.has('pitressin') || ordered.has('second pressor');
-      if (id === 'abx-escalation') wasOrdered = wasOrdered || ordered.has('meropenem') || ordered.has('escalat') || ordered.has('broader') || ordered.has('broad') || ordered.has('carbapenem') || ordered.has('antifungal');
-      if (id === 'cefepime') wasOrdered = wasOrdered || ordered.has('cefepime') || ordered.has('maxipime') || ordered.has('zosyn') || ordered.has('pip-tazo') || ordered.has('piperacillin');
+      if (id === 'npo') wasOrdered = wasOrdered || ordered.has('npo') || ordered.has('nothing by mouth') || ordered.has('bowel rest') || ordered.has('keep npo');
+      if (id === 'central') wasOrdered = wasOrdered || ordered.has('central line') || ordered.has('central venous') || ordered.has('cvl') || ordered.has('cvc') || ordered.has('tlc') || ordered.has('triple lumen') || ordered.has('subclavian') || ordered.has('internal jugular') || ordered.has('femoral line');
+      if (id === 'art-line') wasOrdered = wasOrdered || ordered.has('arterial line') || ordered.has('a-line') || ordered.has('a line') || ordered.has('art line') || ordered.has('radial') || ordered.has('femoral art');
+      if (id === 'hydrocortisone') wasOrdered = wasOrdered || ordered.has('steroid') || ordered.has('solu-cortef') || ordered.has('stress dose') || ordered.has('hydrocortisone') || ordered.has('cortisol');
+      if (id === 'cortisol') wasOrdered = wasOrdered || ordered.has('cortisol') || ordered.has('acth') || ordered.has('cosyntropin');
+      if (id === 'vasopressin') wasOrdered = wasOrdered || ordered.has('vasopressin') || ordered.has('pitressin') || ordered.has('second pressor') || ordered.has('avp');
+      if (id === 'abx-escalation') wasOrdered = wasOrdered || ordered.has('meropenem') || ordered.has('escalat') || ordered.has('broader') || ordered.has('broad') || ordered.has('carbapenem') || ordered.has('antifungal') || ordered.has('micafungin') || ordered.has('fluconazole') || ordered.has('voriconazole');
+      if (id === 'cefepime') wasOrdered = wasOrdered || ordered.has('cefepime') || ordered.has('maxipime') || ordered.has('zosyn') || ordered.has('pip-tazo') || ordered.has('piperacillin') || ordered.has('meropenem');
       if (id === 'rrt') wasOrdered = wasOrdered || ordered.has('rapid response') || ordered.has('rrt');
-      if (id === 'cbc') wasOrdered = wasOrdered || ordered.has('cbc') || ordered.has('complete blood count') || ordered.has('wbc');
       if (id === 'cbc-diff') wasOrdered = wasOrdered || ordered.has('cbc with diff') || ordered.has('differential') || ordered.has('anc') || ordered.has('neutrophil');
       if (id === 'abg') wasOrdered = wasOrdered || ordered.has('abg') || ordered.has('arterial blood gas') || ordered.has('blood gas');
-      if (id === 'micu') wasOrdered = wasOrdered || ordered.has('micu') || ordered.has('icu') || ordered.has('intensive care');
+      if (id === 'micu') wasOrdered = wasOrdered || ordered.has('micu') || ordered.has('icu') || ordered.has('intensive care') || ordered.has('transfer');
       
       // Show MICU as missed if it was prompted (even if eventually ordered)
       if (id === 'micu' && State.micuPromptedNotOrdered) {
@@ -7545,6 +7561,13 @@ function evaluateBranch(decisionKey, orderText) {
   // For decision2_initial in ss-2, augment with previously ordered items
   // so that antibiotics ordered in an earlier step still count toward triggers
   if (c?.id === 'ss-2' && decisionKey === 'decision2_initial' && State.allOrdersEverOrdered?.size > 0) {
+    const prevOrders = Array.from(State.allOrdersEverOrdered).join(' ');
+    lower = lower + ' ' + prevOrders.toLowerCase();
+  }
+
+  // For decision2 in ss-1, augment with previously ordered items
+  // so that vasopressors ordered in prior steps still count toward triggers
+  if (c?.id === 'ss-1' && decisionKey === 'decision2' && State.allOrdersEverOrdered?.size > 0) {
     const prevOrders = Array.from(State.allOrdersEverOrdered).join(' ');
     lower = lower + ' ' + prevOrders.toLowerCase();
   }
@@ -8151,6 +8174,29 @@ function showVitalsAndProceed(branch) {
     });
   }
 
+  // For all cases: if intubation was directly ordered (via RSI popup) and the branch
+  // updatedExam doesn't already include intubated findings, update exam to reflect intubated state
+  const branchHasIntubatedExam = (branch.updatedExam || []).some(s =>
+    s.text && /intubat|mechanically ventilat|sedated.*propofol|RASS/i.test(s.text)
+  );
+  if (State.airwaySecured && State.intubationMeds && !branchHasIntubatedExam) {
+    const vent = State.ventilatorSettings;
+    const fio2 = vent?.FiO2 || vent?.fio2 || '60%';
+    const peep = vent?.PEEP || vent?.peep || '8';
+    State.currentExamSystems = State.currentExamSystems.map(sys => {
+      if (sys.key === 'neuro' || sys.key === 'neuro') {
+        return { ...sys, text: 'Sedated and intubated. RASS -2. Pupils equal and reactive. Responds to noxious stimuli.' };
+      }
+      if (sys.key === 'gen') {
+        return { ...sys, text: 'Intubated and sedated. Appears more comfortable than before intubation. Ventilator-synchronous.' };
+      }
+      if (sys.key === 'lungs') {
+        return { ...sys, text: `Intubated. Mechanical ventilation on FiO₂ ${fio2}, PEEP ${peep} cm H₂O. Equal bilateral breath sounds. Crackles present.` };
+      }
+      return sys;
+    });
+  }
+
   // Reset revealed exam systems for reassessment
   State.revealed = new Set();
   
@@ -8263,10 +8309,25 @@ function showVitalsAndProceed(branch) {
     // Add ventilator settings to treatment section if patient is intubated
     if (State.ventilatorSettings) {
       const ventSettings = State.ventilatorSettings;
+      const vt = ventSettings.vt || '—';
+      const rr = ventSettings.rr || '—';
+      const peep = ventSettings.peep || '—';
+      const fio2 = ventSettings.fio2 || '—';
+      const mode = ventSettings.mode || 'AC/VC';
+      
+      // Assess tidal volume appropriateness for CC-3
+      const vtNum = parseFloat(vt);
+      const vtNote = (!isNaN(vtNum) && vtNum <= 330) ? 'Lung-protective (≤6 mL/kg PBW)' : (!isNaN(vtNum) && vtNum > 400) ? '⚠ High — consider reducing to 6 mL/kg PBW' : '6 mL/kg PBW target';
+      const peepNum = parseFloat(peep);
+      const peepNote = (!isNaN(peepNum) && peepNum >= 8) ? 'Appropriate for ARDS (ARDSnet table)' : 'Consider increasing per ARDSnet PEEP/FiO₂ table';
+      const fio2Num = parseFloat(fio2);
+      const fio2pct = fio2.toString().includes('%') ? fio2 : `${fio2}%`;
+      const fio2Note = (!isNaN(fio2Num) && fio2Num <= 60) ? 'Targeting SpO₂ ≥88%' : 'High — titrate down as tolerated';
+
       const ventItem = `
         <div class="treatment-item" style="background:linear-gradient(135deg, var(--bg-2) 0%, var(--bg-3) 100%); border:2px solid var(--cyan); border-radius:8px; padding:16px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
           <div class="treatment-name" style="font-size:16px; font-weight:700; color:var(--cyan); margin-bottom:4px;">🫁 Mechanical Ventilator</div>
-          <div class="treatment-status" style="color:var(--tx-2); font-size:13px; margin-bottom:12px;">Patient intubated and mechanically ventilated</div>
+          <div class="treatment-status" style="color:var(--tx-2); font-size:13px; margin-bottom:12px;">Patient intubated — mechanically ventilated</div>
           <table class="vitals-tbl" style="width:100%; margin-top:0;">
             <thead>
               <tr>
@@ -8276,37 +8337,42 @@ function showVitalsAndProceed(branch) {
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <td>Mode</td>
-                <td class="vn">${ventSettings.mode}</td>
-                <td>Volume control</td>
-              </tr>
-              <tr>
-                <td>Tidal Volume</td>
-                <td class="vn">${ventSettings.vt}</td>
-                <td>Lung-protective</td>
-              </tr>
-              <tr>
-                <td>Respiratory Rate</td>
-                <td class="vn">${ventSettings.rr}</td>
-                <td>breaths/min</td>
-              </tr>
-              <tr>
-                <td>PEEP</td>
-                <td class="vn">${ventSettings.peep} cm H₂O</td>
-                <td>Optimal for ARDS</td>
-              </tr>
-              <tr>
-                <td>FiO₂</td>
-                <td class="vw">${ventSettings.fio2}</td>
-                <td>High oxygen</td>
-              </tr>
+              <tr><td>Mode</td><td class="vn">${mode}</td><td>Volume-controlled</td></tr>
+              <tr><td>Tidal Volume</td><td class="${(!isNaN(vtNum) && vtNum > 400) ? 'vc' : 'vn'}">${vt} mL</td><td>${vtNote}</td></tr>
+              <tr><td>Rate</td><td class="vn">${rr} /min</td><td>Adjust per ABG CO₂</td></tr>
+              <tr><td>PEEP</td><td class="vn">${peep} cm H₂O</td><td>${peepNote}</td></tr>
+              <tr><td>FiO₂</td><td class="vw">${fio2pct}</td><td>${fio2Note}</td></tr>
             </tbody>
           </table>
         </div>
       `;
-      // Add ventilator at the beginning of treatment section
       treatmentSection = ventItem + (treatmentSection || '');
+    }
+
+    // Show RSI medications if intubation was performed this session
+    if (State.intubationMeds) {
+      const { induction, paralytic, sedation } = State.intubationMeds;
+      const rsiCard = `
+        <div class="treatment-item" style="background:linear-gradient(135deg, var(--bg-2) 0%, var(--bg-3) 100%); border:2px solid var(--amber); border-radius:8px; padding:16px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); margin-bottom:8px;">
+          <div class="treatment-name" style="font-size:16px; font-weight:700; color:var(--amber); margin-bottom:4px;">💉 Rapid Sequence Intubation (RSI)</div>
+          <div class="treatment-status" style="color:var(--tx-2); font-size:13px; margin-bottom:12px;">Intubation completed — airway secured</div>
+          <table class="vitals-tbl" style="width:100%; margin-top:0;">
+            <thead>
+              <tr>
+                <th style="text-align:left;">Category</th>
+                <th style="text-align:left;">Agent</th>
+                <th style="text-align:left;">Role</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>Induction</td><td class="vn">${induction || '—'}</td><td>Sedation/hypnosis for laryngoscopy</td></tr>
+              <tr><td>Neuromuscular</td><td class="vn">${paralytic || '—'}</td><td>Paralysis for intubation</td></tr>
+              <tr><td>Post-intubation sedation</td><td class="vn">${sedation || '—'}</td><td>Ongoing sedation on vent</td></tr>
+            </tbody>
+          </table>
+        </div>
+      `;
+      treatmentSection = rsiCard + (treatmentSection || '');
     }
     
     // Add procedures (central line, arterial line) to treatment section
@@ -8412,6 +8478,20 @@ function showVitalsAndProceed(branch) {
         } else {
           return { ...v, val: '92%', unit: 'NRB 15L', st: 'vw' };
         }
+      }
+      return v;
+    });
+  }
+
+  // Global: if patient was intubated via RSI popup, update SpO₂ to reflect ventilator support
+  if (State.airwaySecured && State.intubationMeds && displayVitals) {
+    const vent = State.ventilatorSettings;
+    const fio2 = vent?.FiO2 || vent?.fio2 || '60%';
+    displayVitals = displayVitals.map(v => {
+      if ((v.lbl === 'SpO₂' || v.lbl === 'SpO2') && !v.unit?.includes('Vent')) {
+        const currentSpO2 = parseInt(v.val);
+        const improvedSpO2 = (!isNaN(currentSpO2) && currentSpO2 < 92) ? '93%' : v.val;
+        return { ...v, val: improvedSpO2, unit: `Vent FiO₂ ${fio2}`, st: 'vn' };
       }
       return v;
     });
