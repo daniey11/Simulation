@@ -245,10 +245,10 @@ e.g.: Lactate, CBC, CMP, cultures, oxygen, etc.`,
           showVitalsButton: true,
           showCodeBlue: true,
           codeBlueConfig: {
-            rhythm: 'Pulseless Electrical Activity (PEA)',
+            rhythm: '',
             overhead: 'Code Blue, Tower 2 Bed 8. Code Blue, Tower 2 Bed 8.',
-            cause: 'Cardiovascular collapse from untreated septic shock — distributive physiology with vasoplegia, progressive end-organ failure, and lactic acidosis.',
-            monitor_phrase: 'Look at the monitor — no pulse. PEA on telemetry.',
+            cause: 'Cardiovascular collapse from untreated septic shock — distributive physiology with vasoplegia and progressive hemodynamic failure.',
+            monitor_phrase: 'Look at the monitor. No pulse on check. Apply the defibrillator pads and identify the rhythm.',
             hs_ts: [
               'Hypovolemia — assess volume status',
               'Hypoxia — ensure adequate ventilation and oxygenation',
@@ -1067,10 +1067,10 @@ e.g.: Labs, imaging, oxygen, medications, consults, etc.`,
           showVitalsButton: true,
           showCodeBlue: true, // NEW: trigger code blue modal
           codeBlueConfig: {
-            rhythm: 'Pulseless Electrical Activity (PEA — Obstructive)',
+            rhythm: '',
             overhead: 'Code Blue, ICU Bed 12. Code Blue, ICU Bed 12. PERT Team to ICU Bed 12.',
-            cause: 'Obstructive PEA from worsened RV failure after large fluid bolus. In massive PE, the RV is already critically distended. Aggressive fluid loading → further RV dilation → interventricular septal shift → impaired LV filling → complete cardiovascular collapse.',
-            monitor_phrase: 'Look at the monitor — PEA. RV is maximally distended on POCUS. No pulse on check.',
+            cause: 'Obstructive cardiac arrest from worsened RV failure after large fluid bolus in massive PE. The RV was already critically distended — further fluid loading caused interventricular septal shift, impaired LV filling, and cardiovascular collapse.',
+            monitor_phrase: 'Look at the monitor. No pulse on check. Apply defibrillator pads — identify the rhythm.',
             hs_ts: [
               'Hypovolemia — assess volume status',
               'Hypoxia — ensure adequate ventilation and oxygenation',
@@ -1309,10 +1309,10 @@ e.g.: Labs, imaging, oxygen, medications, consults, etc.`,
           showVitalsButton: true,
           showCodeBlue: true,
           codeBlueConfig: {
-            rhythm: 'Pulseless Electrical Activity (PEA — Obstructive)',
+            rhythm: '',
             overhead: 'Code Blue, ICU Bed 12. Code Blue, ICU Bed 12. PERT Team Stat.',
-            cause: 'Obstructive PEA from RV failure worsened by fluid loading in massive PE. The RV was already at maximum capacity. Bolus → acute RV dilation → bowing of interventricular septum (D-sign) → complete LV inflow obstruction → cardiovascular collapse.',
-            monitor_phrase: 'Look at the monitor — PEA. POCUS: D-sign, RV larger than LV, no effective output.',
+            cause: 'Obstructive cardiac arrest from RV failure worsened by fluid loading in massive PE. The RV was at maximum capacity — bolus caused acute RV dilation, D-sign, complete LV inflow obstruction, and cardiovascular collapse.',
+            monitor_phrase: 'Look at the monitor. No pulse on check. Apply defibrillator pads — identify the rhythm.',
             hs_ts: [
               'Hypovolemia — assess volume status',
               'Hypoxia — ensure adequate ventilation and oxygenation',
@@ -1651,10 +1651,10 @@ e.g.: Airway, medications, ventilation, etc.`,
           showVitalsButton: true,
           showCodeBlue: true,
           codeBlueConfig: {
-            rhythm: 'PEA (Obstructive — Tension Pneumothorax)',
+            rhythm: '',
             overhead: 'Code Blue, MICU Bed 4. Code Blue, MICU Bed 4. Bring the thoracostomy tray.',
-            cause: 'Tension pneumothorax from ventilator-induced barotrauma. High tidal volume → Pplat 34 cm H₂O → alveolar rupture → pneumothorax → mediastinal shift → obstructive shock → PEA arrest.',
-            monitor_phrase: 'Look at the monitor — PEA. Absent left-sided breath sounds. Tracheal deviation to right.',
+            cause: 'Tension pneumothorax from ventilator-induced barotrauma. High tidal volume → alveolar rupture → pneumothorax → mediastinal shift → obstructive shock and cardiovascular collapse.',
+            monitor_phrase: 'Look at the monitor. No pulse on check. Apply defibrillator pads — identify the rhythm.',
             hs_ts: [
               'Hypovolemia — assess volume status',
               'Hypoxia — ensure adequate ventilation and oxygenation',
@@ -1764,9 +1764,9 @@ e.g.: Airway, medications, ventilation, etc.`,
           showVitalsButton: true,
           showCodeBlue: true,
           codeBlueConfig: {
-            rhythm: 'PEA → Asystole (Hypoxic Arrest)',
+            rhythm: '',
             overhead: 'Code Blue, MICU Bed 4. Airway Team to MICU Bed 4.',
-            cause: 'Hypoxic cardiac arrest from untreated respiratory failure. SpO₂ 72% sustained → profound cellular hypoxia → myocardial depression → cardiac arrest.',
+            cause: 'Hypoxic cardiac arrest from untreated respiratory failure. Sustained severe hypoxia led to myocardial depression and cardiovascular collapse.',
             monitor_phrase: 'Look at the monitor — HR 40 then flat line. No pulse on check.',
             hs_ts: [
               'Hypovolemia — assess volume status',
@@ -2642,10 +2642,10 @@ const SEPSIS_CASES = [
           showVitalsButton: true,
           showCodeBlue: true,
           codeBlueConfig: {
-            rhythm: 'Pulseless Electrical Activity (PEA)',
+            rhythm: '',
             overhead: 'Code Blue, Tower 3 Bed 14. Code Blue, Tower 3 Bed 14.',
-            cause: 'PEA arrest from untreated septic shock in the setting of toxic megacolon. Ordering only C. diff treatment without systemic resuscitation (IV fluids, IV antibiotics, vasopressor support) allowed hemodynamic collapse to progress unchecked.',
-            monitor_phrase: 'Look at the monitor — organized rhythm, no pulse. PEA. Start CPR now.',
+            cause: 'Cardiac arrest from untreated septic shock in the setting of toxic megacolon. Ordering only C. diff treatment without systemic resuscitation allowed hemodynamic collapse to progress unchecked.',
+            monitor_phrase: 'Look at the monitor. No pulse on check. Apply defibrillator pads and identify the rhythm.',
             hs_ts: [
               'Hypovolemia — assess volume status',
               'Hypoxia — ensure adequate ventilation and oxygenation',
@@ -2699,10 +2699,10 @@ const SEPSIS_CASES = [
           showVitalsButton: true,
           showCodeBlue: true,
           codeBlueConfig: {
-            rhythm: 'Pulseless Electrical Activity (PEA)',
+            rhythm: '',
             overhead: 'Code Blue, Tower 3 Bed 14 — Medical-Surgical Unit. Rapid Response to Tower 3 Bed 14.',
-            cause: 'PEA cardiac arrest from untreated septic shock. Progressive vasoplegia, end-organ hypoperfusion, and severe lactic acidosis (pH <7.1) led to myocardial depression and pulseless arrest.',
-            monitor_phrase: 'Look at the monitor — organized rhythm but no pulse on check. PEA arrest.',
+            cause: 'Cardiac arrest from untreated septic shock. Progressive vasoplegia, end-organ hypoperfusion, and severe lactic acidosis led to cardiovascular collapse.',
+            monitor_phrase: 'Look at the monitor. No pulse on check. Apply defibrillator pads and identify the rhythm.',
             hs_ts: [
               'Hypovolemia — assess volume status',
               'Hypoxia — ensure adequate ventilation and oxygenation',
@@ -2754,10 +2754,10 @@ const SEPSIS_CASES = [
           showVitalsButton: true,
           showCodeBlue: true,
           codeBlueConfig: {
-            rhythm: 'Pulseless Electrical Activity (PEA)',
+            rhythm: '',
             overhead: 'Code Blue, Tower 3 Bed 14. Code Blue, Tower 3 Bed 14.',
-            cause: 'PEA cardiac arrest from untreated septic shock. No IV fluids, no antibiotics — distributive shock progressed unchecked to cardiovascular collapse.',
-            monitor_phrase: 'Look at the monitor — PEA. No pulse on check. Begin high-quality CPR immediately.',
+            cause: 'Cardiac arrest from untreated septic shock. No IV fluids, no antibiotics — distributive shock progressed unchecked to cardiovascular collapse.',
+            monitor_phrase: 'Look at the monitor. No pulse on check. Apply defibrillator pads, identify the rhythm, and begin CPR.',
             hs_ts: [
               'Hypovolemia — assess volume status',
               'Hypoxia — ensure adequate ventilation and oxygenation',
@@ -2932,10 +2932,10 @@ const SEPSIS_CASES = [
           showVitalsButton: true,
           showCodeBlue: true,
           codeBlueConfig: {
-            rhythm: 'Pulseless Electrical Activity (PEA — Septic)',
+            rhythm: '',
             overhead: 'Code Blue, Tower 3 Bed 14. Surgery to Tower 3 Bed 14 STAT.',
             cause: '',
-            monitor_phrase: 'Look at the monitor — PEA. Rigid abdomen. No pulse on check. Begin CPR.',
+            monitor_phrase: 'Look at the monitor. No pulse on check. Apply defibrillator pads — identify the rhythm. Begin CPR.',
             hs_ts: [
               'Hypovolemia — assess volume status',
               'Hypoxia — ensure adequate ventilation and oxygenation',
@@ -2982,10 +2982,10 @@ const SEPSIS_CASES = [
           showVitalsButton: true,
           showCodeBlue: true,
           codeBlueConfig: {
-            rhythm: 'Pulseless Electrical Activity (PEA — Obstructive)',
+            rhythm: '',
             overhead: 'Code Blue, Tower 3 Bed 14. Code Blue, Tower 3 Bed 14. General Surgery to Tower 3 STAT.',
             cause: '',
-            monitor_phrase: 'Look at the monitor — PEA. Silent, rigid abdomen. No pulse. Begin CPR.',
+            monitor_phrase: 'Look at the monitor. No pulse on check. Apply defibrillator pads and identify the rhythm.',
             hs_ts: [
               'Hypovolemia — assess volume status',
               'Hypoxia — ensure adequate ventilation and oxygenation',
@@ -3032,10 +3032,10 @@ const SEPSIS_CASES = [
           showVitalsButton: true,
           showCodeBlue: true,
           codeBlueConfig: {
-            rhythm: 'Pulseless Electrical Activity (PEA — Septic + Obstructive)',
+            rhythm: '',
             overhead: 'Code Blue, Tower 3 Bed 14. Surgery to Tower 3 Bed 14 STAT.',
             cause: '',
-            monitor_phrase: 'Look at the monitor — PEA. Rigid abdomen. No pulse. Begin CPR immediately.',
+            monitor_phrase: 'Look at the monitor. No pulse on check. Apply defibrillator pads — identify the rhythm. Begin CPR.',
             hs_ts: [
               'Hypovolemia — assess volume status',
               'Hypoxia — ensure adequate ventilation and oxygenation',
@@ -3083,10 +3083,10 @@ const SEPSIS_CASES = [
           showVitalsButton: true,
           showCodeBlue: true,
           codeBlueConfig: {
-            rhythm: 'Pulseless Electrical Activity (PEA)',
+            rhythm: '',
             overhead: 'Code Blue, Tower 3 Bed 14. Code Blue, Tower 3 Bed 14.',
             cause: '',
-            monitor_phrase: 'Look at the monitor — PEA. No pulse on check. Begin CPR.',
+            monitor_phrase: 'Look at the monitor. No pulse on check. Apply defibrillator pads and identify the rhythm.',
             hs_ts: [
               'Hypovolemia — assess volume status',
               'Hypoxia — ensure adequate ventilation and oxygenation',
@@ -3365,10 +3365,10 @@ const SEPSIS_CASES = [
           showVitalsButton: true,
           showCodeBlue: true,
           codeBlueConfig: {
-            rhythm: 'Pulseless Electrical Activity (PEA)',
+            rhythm: '',
             overhead: 'Code Blue, Tower 3 Bed 14. Code Blue, Tower 3 Bed 14.',
-            cause: 'PEA arrest from refractory distributive shock. Fluid overload impaired respiratory function (bilateral crackles, SpO₂ 87%) while untreated vasoplegia drove progressive hemodynamic collapse.',
-            monitor_phrase: 'Look at the monitor — organized electrical activity, no pulse. PEA arrest.',
+            cause: 'Cardiac arrest from refractory distributive shock. Fluid overload impaired respiratory function while untreated vasoplegia drove progressive hemodynamic collapse.',
+            monitor_phrase: 'Look at the monitor. No pulse on check. Apply defibrillator pads and identify the rhythm.',
             hs_ts: [
               'Hypovolemia — assess volume status',
               'Hypoxia — ensure adequate ventilation and oxygenation',
@@ -7408,10 +7408,10 @@ function renderPhase4_Decision(decisionKey) {
     showCodeBlueModal(
       () => { renderPhase4_Decision('decision_toxic_postrosc'); },
       {
-        rhythm: 'Pulseless Electrical Activity (PEA — Septic + Obstructive)',
+        rhythm: '',
         overhead: 'Code Blue, Tower 3 Bed 14. Code Blue, Tower 3 Bed 14. General Surgery to Tower 3 Bed 14 STAT.',
         cause: '',
-        monitor_phrase: 'Look at the monitor — PEA. Rigid, silent abdomen. No pulse on check. Begin CPR immediately.',
+        monitor_phrase: 'Look at the monitor. No pulse on check. Apply defibrillator pads — identify the rhythm. Begin CPR immediately.',
         hs_ts: [
               'Hypovolemia — assess volume status',
               'Hypoxia — ensure adequate ventilation and oxygenation',
@@ -8680,7 +8680,7 @@ function showCodeBlueModal(onROSC, config, onNoROSC) {
 
   // ── defaults (backward-compatible with CC-2 existing calls) ──
   const cfg = Object.assign({
-    rhythm:        'Pulseless Electrical Activity (PEA)',
+    rhythm: '',
     overhead:      'Code Blue, ICU Bed 12. Code Blue, ICU Bed 12.',
     cause:         'Hemodynamic collapse from untreated shock',
     hs_ts:         [
