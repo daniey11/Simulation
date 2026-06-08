@@ -320,7 +320,7 @@ e.g.: Lactate, CBC, CMP, cultures, oxygen, etc.`,
           decisions: [
             'Failed to initiate simultaneous resuscitation with diagnostic workup',
             'Sepsis bundle must be started within the first hour',
-            'PEA arrest from distributive shock — treated with volume + vasopressors during CPR',
+            'Cardiac arrest from distributive shock — treat with vasopressors and address reversible causes during CPR',
             'After ROSC: target MAP ≥65, repeat lactate, continue antibiotics'
           ],
           updatedExam: [
@@ -1305,7 +1305,7 @@ e.g.: Labs, imaging, oxygen, medications, consults, etc.`,
           headline: 'Large fluid bolus worsens RV failure',
           narrative: `You ordered additional fluid resuscitation despite the patient already showing signs of RV failure from massive PE.<br/><br/>
           In obstructive shock with RV dysfunction, large fluid boluses are <span class="hl">contraindicated</span>. The RV is already pressure-overloaded and cannot handle additional preload.<br/><br/>
-          After the fluid bolus: HR → 152, BP drops to <span class="hl">58/32 mm Hg</span>. The patient becomes unresponsive. Monitor shows PEA arrest.`,
+          After the fluid bolus: HR → 152, BP drops to <span class="hl">58/32 mm Hg</span>. The patient becomes unresponsive. Monitor shows no pulse — Code Blue is called.`,
           showVitalsButton: true,
           showCodeBlue: true,
           codeBlueConfig: {
@@ -1376,7 +1376,7 @@ e.g.: Labs, imaging, oxygen, medications, consults, etc.`,
             { lbl: 'SpO₂',  val: '78%',   unit: 'NRB',    st: 'vc' },
             { lbl: 'GCS',   val: '3',     unit: '/15',    st: 'vc' },
           ],
-          vitalsMsg: `<strong>Critical Error:</strong> Large volume fluid administration in massive PE with RV dysfunction caused acute RV distension → complete hemodynamic collapse → PEA arrest.<br/><br/>
+          vitalsMsg: `<strong>Critical Error:</strong> Large volume fluid administration in massive PE with RV dysfunction caused acute RV distension → complete hemodynamic collapse → cardiac arrest.<br/><br/>
           After ROSC is achieved, emergency PERT consultation is called. The team proceeds with emergent catheter-directed thrombolysis in the ICU.`,
           nextDecision: 'decision2'
         },
@@ -8708,13 +8708,8 @@ function showCodeBlueModal(onROSC, config, onNoROSC) {
     rosc_label:    '✓ ROSC Achieved — Return of Spontaneous Circulation →'
   }, config || {});
 
-  const isVFib = cfg.rhythm.toLowerCase().includes('vfib') ||
-                 cfg.rhythm.toLowerCase().includes('ventricular fibrillation') ||
-                 cfg.rhythm.toLowerCase().includes('vf ') ||
-                 cfg.rhythm.toLowerCase().includes('pulseless vt');
-
-  const rhythmColor = isVFib ? 'var(--amber)' : 'var(--red)';
-  const rhythmIcon  = isVFib ? '⚡' : '📉';
+  const rhythmColor = 'var(--red)';
+  const rhythmIcon  = '📟';
 
   const hsTsHtml = cfg.hs_ts.map(h =>
     `<li style="margin:3px 0;">${h}</li>`
@@ -8751,10 +8746,10 @@ function showCodeBlueModal(onROSC, config, onNoROSC) {
         </div>
 
         <!-- MONITOR ALERT -->
-        <div style="background:var(--bg-3);border:2px solid ${rhythmColor};border-radius:8px;padding:14px 16px;text-align:center;">
-          <div style="font-size:28px;margin-bottom:6px;">${rhythmIcon}</div>
-          <div style="font-family:var(--font-h);font-size:15px;font-weight:700;color:${rhythmColor};margin-bottom:4px;">${cfg.monitor_phrase}</div>
-          <div style="display:inline-block;background:var(--bg);border:1px solid ${rhythmColor};border-radius:4px;padding:6px 16px;font-family:var(--font-mono);font-size:13px;color:${rhythmColor};font-weight:600;margin-top:4px;">${cfg.rhythm || 'Assess rhythm — apply ACLS algorithm'}</div>
+        <div style="background:var(--bg-3);border:2px solid var(--red);border-radius:8px;padding:14px 16px;text-align:center;">
+          <div style="font-size:28px;margin-bottom:6px;">📟</div>
+          <div style="font-family:var(--font-h);font-size:15px;font-weight:700;color:var(--red);margin-bottom:4px;">${cfg.monitor_phrase}</div>
+          <div style="display:inline-block;background:var(--bg);border:1px solid var(--red);border-radius:4px;padding:6px 16px;font-family:var(--font-mono);font-size:13px;color:var(--red);font-weight:600;margin-top:4px;">Identify rhythm → apply ACLS algorithm</div>
         </div>
 
         <!-- CAUSE -->
@@ -8780,43 +8775,17 @@ function showCodeBlueModal(onROSC, config, onNoROSC) {
             </div>
           </div>
 
-          <!-- Rhythm-specific steps -->
-          ${!cfg.rhythm ? `
-          <div style="background:rgba(100,100,180,0.08);border:1px solid var(--blue);border-radius:6px;padding:12px 14px;margin-bottom:10px;">
-            <div style="font-size:11px;font-weight:700;color:var(--blue, #4a6fa5);margin-bottom:8px;">🎯 ASSESS THE RHYTHM — APPLY ACLS ALGORITHM</div>
+          <!-- Rhythm assessment steps — always generic -->
+          <div style="background:rgba(100,100,180,0.08);border:1px solid var(--bd);border-radius:6px;padding:12px 14px;margin-bottom:10px;">
+            <div style="font-size:11px;font-weight:700;color:var(--cyan);margin-bottom:8px;">🎯 ASSESS THE RHYTHM — APPLY ACLS ALGORITHM</div>
             <div style="font-size:12px;color:var(--tx-1);line-height:1.8;">
               1. <strong>Start high-quality CPR</strong> — rate 100–120/min, depth ≥2 inches<br/>
               2. <strong>Attach monitor/defibrillator</strong> — identify the rhythm<br/>
-              3. <strong>Is it shockable?</strong> (VFib/Pulseless VT) → defibrillate 200J immediately<br/>
-              4. <strong>Non-shockable?</strong> (PEA/Asystole) → CPR + epinephrine, treat H's and T's<br/>
+              3. <strong>Shockable?</strong> (VFib / Pulseless VT) → defibrillate 200J immediately<br/>
+              4. <strong>Non-shockable?</strong> (PEA / Asystole) → CPR + epinephrine, treat H's &amp; T's<br/>
               5. Reassess rhythm every 2 min after each CPR cycle
             </div>
           </div>
-          ` : isVFib ? `
-          <div style="background:rgba(233,165,53,0.1);border:1px solid var(--amber);border-radius:6px;padding:12px 14px;margin-bottom:10px;">
-            <div style="font-size:11px;font-weight:700;color:var(--amber);margin-bottom:8px;">⚡ SHOCKABLE RHYTHM — VFib / Pulseless VT</div>
-            <div style="font-size:12px;color:var(--tx-1);line-height:1.8;">
-              1. <strong>Defibrillate immediately</strong> — 200J biphasic (or max monophasic)<br/>
-              2. Resume CPR immediately × 2 min, then reassess<br/>
-              3. IV/IO access → <strong>Epinephrine 1 mg IV q3–5 min</strong><br/>
-              4. <strong>Amiodarone 300 mg IV</strong> (first dose) — after 2nd shock if refractory<br/>
-              5. Amiodarone 150 mg IV (second dose if needed)<br/>
-              6. Reassess rhythm after each 2-min CPR cycle
-            </div>
-          </div>
-          ` : `
-          <div style="background:rgba(224,79,79,0.1);border:1px solid var(--red);border-radius:6px;padding:12px 14px;margin-bottom:10px;">
-            <div style="font-size:11px;font-weight:700;color:var(--red);margin-bottom:8px;">📉 NON-SHOCKABLE RHYTHM — PEA / Asystole</div>
-            <div style="font-size:12px;color:var(--tx-1);line-height:1.8;">
-              1. <strong>CPR immediately</strong> — do NOT defibrillate<br/>
-              2. <strong>Epinephrine 1 mg IV q3–5 min</strong> — give ASAP<br/>
-              3. No routine role for atropine in PEA<br/>
-              4. Reassess rhythm every 2 min<br/>
-              5. <strong>Treat reversible causes (H's and T's)</strong> — this is the key intervention
-            </div>
-          </div>
-          `}
-
           <!-- H's and T's -->
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;">
             <div style="background:var(--bg);border:1px solid var(--bd);border-radius:6px;padding:10px 12px;">
@@ -8967,7 +8936,7 @@ function showNoROSCScreen(customMsg) {
           <div style="background:var(--bg-3);border-left:4px solid var(--cyan);border-radius:6px;padding:14px 16px;margin-bottom:16px;text-align:left;">
             <div style="font-size:11px;font-weight:700;letter-spacing:1.5px;color:var(--cyan);margin-bottom:8px;">ACLS PEARL — PULSELESS SEPTIC PATIENT</div>
             <div style="font-size:12px;color:var(--tx-1);line-height:1.8;">
-              In PEA arrest from septic shock, <strong>treating the underlying cause</strong> is the only definitive intervention.<br/>
+              In cardiac arrest from septic shock, <strong>treating the underlying cause</strong> is the only definitive intervention.<br/>
               Epinephrine q3–5 min maintains perfusion pressure, but survival depends on:<br/>
               <ul style="margin:6px 0 0 18px;padding:0;line-height:1.8;">
                 <li>IV antibiotics started <em>during</em> resuscitation</li>
